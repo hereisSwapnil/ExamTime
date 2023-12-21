@@ -1,4 +1,5 @@
 import mongoose, { Schema } from "mongoose";
+import passportLocalMongoose from "passport-local-mongoose";
 
 const userSchema = new Schema(
   {
@@ -12,33 +13,29 @@ const userSchema = new Schema(
     },
     email: {
       type: String,
-      required: true,
       unique: true,
       lowercase: true,
       trim: true,
+      required: [true, "Email is required"],
     },
-    fullname: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    firstName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-    lastName: {
-      type: String,
-      required: true,
-      trim: true,
-    },
+    // name: {
+    //   type: String,
+    //   trim: true,
+    // },
+    // fullname: {
+    //   type: String,
+    //   trim: true,
+    // },
+    // firstName: {
+    //   type: String,
+    //   trim: true,
+    // },
+    // lastName: {
+    //   type: String,
+    //   trim: true,
+    // },
     userPhoto: {
       type: String,
-      required: true,
-    },
-    password: {
-      type: String,
-      required: [true, "Passoword is required"],
     },
     notes: [
       {
@@ -57,6 +54,8 @@ const userSchema = new Schema(
     timestamps: true,
   }
 );
+
+userSchema.plugin(passportLocalMongoose);
 
 const User = mongoose.model("User", userSchema);
 

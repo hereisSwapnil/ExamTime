@@ -1,6 +1,12 @@
 import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
+import session from "express-session";
+import passport from "passport";
+import LocalStrategy from "passport-local";
+import MongoStore from "connect-mongo";
+import methodOverride from "method-override";
+import User from "./models/user.model.js";
 
 const app = express();
 
@@ -10,14 +16,37 @@ app.use(
   })
 );
 
+app.use(
+  session({
+    secret: process.env.SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      httpOnly: true,
+      maxAge: Date.now() + 7 * 24 * 60 * 60 * 1000,
+      expires: 7 * 24 * 60 * 60 * 1000,
+    },
+    store: MongoStore.create({
+      mongoUrl: process.env.MONGODB_URI,
+    }),
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
+passport.use(new LocalStrategy(User.authenticate()));
+passport.serializeUser(User.serializeUser());
+passport.deserializeUser(User.deserializeUser());
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
+app.use(methodOverride("_method"));
 
 // routes import
-// import userRoutes from "./routes/user.routes.js";
+import userRoutes from "./routes/user.routes.js";
 
 // routes declare
-// app.use("/user", userRoutes);
+app.use("/user", userRoutes);
 
 export default app;
