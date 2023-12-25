@@ -1,27 +1,28 @@
-import asyncHandler from "../utils/asyncHandler.js";
+import wrapAsync from "../utils/wrapAsync.js";
+import College from "../models/college.model.js";
 
-const getCollege = asyncHandler((req, res) => {
-  res.status(200).json({
-    message: "get college",
-  });
+const addCollege = wrapAsync(async (req, res) => {
+  try {
+    const { collegeName } = req.body;
+    const college = await College.create({ collegeName });
+    if (!college) {
+      return res.status(400).json({ message: "College not created" });
+    }
+    res.status(201).json(college);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Could not create college" });
+  }
 });
 
-const AddCollege = asyncHandler((req, res) => {
-  res.status(200).json({
-    message: "add college",
-  });
+const getColleges = wrapAsync(async (req, res) => {
+  try {
+    const colleges = await College.find();
+    res.status(200).json(colleges);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Could not get colleges" });
+  }
 });
 
-const UpdateCollege = asyncHandler((req, res) => {
-  res.status(200).json({
-    message: "update college",
-  });
-});
-
-const deleteCollege = asyncHandler((req, res) => {
-  res.status(200).json({
-    message: "delete college",
-  });
-});
-
-export default { getCollege, AddCollege, UpdateCollege, deleteCollege };
+export { addCollege, getColleges };

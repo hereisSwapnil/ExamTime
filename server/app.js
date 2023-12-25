@@ -45,8 +45,14 @@ app.use(methodOverride("_method"));
 
 // routes import
 import userRoutes from "./routes/user.routes.js";
+import noteRoutes from "./routes/note.routes.js";
+import collegeRoutes from "./routes/college.routes.js";
+import subjectRoutes from "./routes/subject.routes.js";
 
 // routes declare
 app.use("/user", userRoutes);
+app.use("", noteRoutes);
+app.use("/college", collegeRoutes);
+app.use("/subject", subjectRoutes);
 
 export default app;

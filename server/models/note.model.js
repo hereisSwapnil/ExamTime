@@ -5,9 +5,7 @@ const noteSchema = new Schema(
     title: {
       type: String,
       required: true,
-      unique: true,
       trim: true,
-      index: true,
     },
     description: {
       type: String,
@@ -16,7 +14,6 @@ const noteSchema = new Schema(
     },
     thumbnail: {
       type: String,
-      required: true,
       trim: true,
     },
     createdBy: {
@@ -35,6 +32,10 @@ const noteSchema = new Schema(
       type: String,
       required: true,
       trim: true,
+    },
+    college: {
+      type: Schema.Types.ObjectId,
+      ref: "College",
     },
   },
   {

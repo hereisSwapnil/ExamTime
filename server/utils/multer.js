@@ -1,6 +1,6 @@
-const multer = require("multer");
-const storage = require("./cloudnary.js");
+import multer from "multer";
 
-const upload = multer({ storage });
+const storage = multer.memoryStorage();
+const upload = multer({ storage: storage }).single("file");
 
 module.exports = upload;
