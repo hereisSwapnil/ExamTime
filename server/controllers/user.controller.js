@@ -1,6 +1,6 @@
-import wrapAsync from "../utils/wrapAsync.js";
-import User from "../models/user.model.js";
-import passport from "passport";
+const passport = require("passport");
+const User = require("../models/user.model.js");
+const wrapAsync = require("../utils/wrapAsync");
 
 const checkUsername = wrapAsync(async (req, res) => {
   let { username } = req.body;
@@ -18,14 +18,14 @@ const checkUsername = wrapAsync(async (req, res) => {
 
 const registerUser = wrapAsync(async (req, res) => {
   try {
-    let { username, password, email } = req.body;
+    let { username, password, email, college } = req.body;
     let user = await User.findOne({ email });
     if (user) {
       return res.status(400).json({
         message: "user already exists",
       });
     }
-    const newUser = new User({ email, username });
+    const newUser = new User({ email, username, college });
     const registeredUser = await User.register(newUser, password);
     console.log(registeredUser);
     req.login(registeredUser, () => {
@@ -76,4 +76,28 @@ const logoutUser = wrapAsync((req, res) => {
   });
 });
 
-export { registerUser, loginUser, logoutUser, checkUsername };
+const getUser = wrapAsync(async (req, res) => {
+  try {
+    let user = await User.findById(req.user._id);
+    if (!user) {
+      return res.status(400).json({
+        message: "User not logged in",
+      });
+    }
+    res.status(200).json({
+      user: user,
+    });
+  } catch (error) {
+    res.status(400).json({
+      message: "User get failed",
+    });
+  }
+});
+
+module.exports = {
+  checkUsername,
+  registerUser,
+  loginUser,
+  logoutUser,
+  getUser,
+};

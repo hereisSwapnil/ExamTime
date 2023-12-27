@@ -1,5 +1,5 @@
-import wrapAsync from "../utils/wrapAsync.js";
-import Subject from "../models/subject.model.js";
+const wrapAsync = require("../utils/wrapAsync.js");
+const Subject = require("../models/subject.model.js");
 
 const addSubject = wrapAsync(async (req, res) => {
   try {
@@ -17,7 +17,7 @@ const addSubject = wrapAsync(async (req, res) => {
 
 const getSubjects = wrapAsync(async (req, res) => {
   try {
-    const subjects = await Subject.find();
+    const subjects = await Subject.find({});
     res.status(200).json(subjects);
   } catch (error) {
     console.error(error);
@@ -25,4 +25,19 @@ const getSubjects = wrapAsync(async (req, res) => {
   }
 });
 
-export { addSubject, getSubjects };
+const getNotesBySubject = wrapAsync(async (req, res) => {
+  try {
+    const { subjectId } = req.params;
+    const subject = await Subject.find({ _id: subjectId });
+    if (!subject) {
+      return res.status(404).json({ message: "Subject not found" });
+    }
+    const subject_ = await subject[0].populate("notes");
+    res.status(200).json(subject_.notes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Could not get notes by subject" });
+  }
+});
+
+module.exports = { addSubject, getSubjects, getNotesBySubject };

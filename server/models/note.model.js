@@ -1,4 +1,5 @@
-import mongoose, { Schema } from "mongoose";
+const mongoose = require("mongoose");
+const Schema = mongoose.Schema;
 
 const noteSchema = new Schema(
   {
@@ -15,6 +16,8 @@ const noteSchema = new Schema(
     thumbnail: {
       type: String,
       trim: true,
+      default:
+        "https://www.umass.edu/studentsuccess/sites/default/files/inline-images/cornell-note-taking-strategy.jpg",
     },
     createdBy: {
       type: Schema.Types.ObjectId,
@@ -37,6 +40,11 @@ const noteSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: "College",
     },
+    url: {
+      type: String,
+      trim: true,
+      required: true,
+    },
   },
   {
     timestamps: true,
@@ -45,4 +53,4 @@ const noteSchema = new Schema(
 
 const Note = mongoose.model("Note", noteSchema);
 
-export default Note;
+module.exports = Note;

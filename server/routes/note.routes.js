@@ -1,9 +1,14 @@
-import { Router } from "express";
-import { searchNotesByTitle, addNote } from "../controllers/note.controller.js";
+const Router = require("express");
+const {
+  searchNotesByTitle,
+  addNote,
+} = require("../controllers/note.controller.js");
+const firebaseUpload = require("../middlewares/firebaseUpload.middleware.js");
+const multerUpload = require("../middlewares/multer.middleware.js");
 
 const router = Router();
 
-router.post("/note", addNote);
+router.post("/note", multerUpload, firebaseUpload, addNote);
 router.get("/notes/search", searchNotesByTitle);
 
-export default router;
+module.exports = router;

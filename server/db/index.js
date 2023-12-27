@@ -1,6 +1,6 @@
-import dotenv from "dotenv";
-import mongoose from "mongoose";
-import { DB_NAME } from "../constants.js";
+const dotenv = require("dotenv");
+const mongoose = require("mongoose");
+const DB_NAME = require("../constants.js");
 
 dotenv.config({
   path: ".env",
@@ -20,4 +20,4 @@ const connectDB = async () => {
   }
 };
 
-export default connectDB;
+module.exports = connectDB;

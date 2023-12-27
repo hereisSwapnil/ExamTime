@@ -1,5 +1,5 @@
-import wrapAsync from "../utils/wrapAsync.js";
-import College from "../models/college.model.js";
+const wrapAsync = require("../utils/wrapAsync.js");
+const College = require("../models/college.model.js");
 
 const addCollege = wrapAsync(async (req, res) => {
   try {
@@ -25,4 +25,23 @@ const getColleges = wrapAsync(async (req, res) => {
   }
 });
 
-export { addCollege, getColleges };
+const getNotesByCollege = wrapAsync(async (req, res) => {
+  try {
+    const { collegeId } = req.params;
+    const college = await College.find({ _id: collegeId });
+    if (!college) {
+      return res.status(404).json({ message: "College not found" });
+    }
+    const college_ = await college[0].populate("notes");
+    res.status(200).json(college_.notes);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Could not get notes by college" });
+  }
+});
+
+module.exports = {
+  addCollege,
+  getColleges,
+  getNotesByCollege,
+};

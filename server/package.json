@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "dev": "nodemon index.js"
   },
@@ -11,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "@google-cloud/storage": "^7.7.0",
+    "canvas": "^2.11.2",
     "cloudinary": "^1.41.0",
     "connect-mongo": "^5.1.0",
     "cookie-parser": "^1.4.6",
@@ -19,11 +19,15 @@
     "express": "^4.18.2",
     "firebase": "^10.7.1",
     "firebase-admin": "^12.0.0",
+    "fs": "^0.0.1-security",
     "method-override": "^3.0.0",
     "mongoose": "^8.0.3",
-    "multer": "*",
+    "multer": "^1.4.5-lts.1",
     "passport": "^0.7.0",
     "passport-local-mongoose": "^8.0.0",
+    "pdf-image": "^2.0.0",
+    "pdftopic": "^1.0.1-alpha",
+    "sharp": "^0.33.1",
     "unique-filename": "^3.0.0"
   }
 }

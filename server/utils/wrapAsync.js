@@ -6,4 +6,4 @@ const wrapAsync = (fn) => {
   };
 };
 
-export default wrapAsync;
+module.exports = wrapAsync;
