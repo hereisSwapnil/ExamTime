@@ -16,22 +16,23 @@ const Login = () => {
   const loginUser = async (data) => {
     try {
       console.log(data);
-      const res = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/user/login`,
-        data,
-        { withCredentials: true }
-      );
-      console.log(res.data.message);
-      if (res.data.message === "login success") {
-        setloginError("");
-        navigate("/");
-      } else if (res.data.message === "user not found") {
-        setloginError("User not found");
-      } else if (res.data.message === "Invalid Credentials") {
-        setloginError("Invalid Credentials");
-      } else {
-        setloginError("Something went wrong!");
-      }
+      axios
+        .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          console.log(res.data.message);
+          if (res.data.message === "login success") {
+            setloginError("");
+            navigate("/");
+          } else if (res.data.message === "user not found") {
+            setloginError("User not found");
+          } else if (res.data.message === "Invalid Credentials") {
+            setloginError("Invalid Credentials");
+          } else {
+            setloginError("Something went wrong!");
+          }
+        });
     } catch (error) {
       console.error(error);
     }

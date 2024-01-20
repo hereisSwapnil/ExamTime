@@ -219,9 +219,9 @@ const DocGrid = () => {
           </h2>
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {college.notes.map((note) => (
+            {college.notes.map((note, index) => (
               <div
-                key={note.id}
+                key={index}
                 className="group relative hover:cursor-pointer"
                 onClick={() => handleNoteClick(note)}
               >
@@ -239,7 +239,7 @@ const DocGrid = () => {
                       {note.title}
                     </h3>
                     <p className="mt-1 text-sm text-gray-500">{note.subject}</p>
-                    <p className="mt-1 text-sm text-gray-500">
+                    <div className="mt-1 text-sm text-gray-500">
                       <ReactStars
                         count={5}
                         size={24}
@@ -248,7 +248,7 @@ const DocGrid = () => {
                         value={note.rating}
                         edit={false}
                       />
-                    </p>
+                    </div>
                   </div>
                 </div>
               </div>
