@@ -8,7 +8,7 @@ const multerUpload = require("../middlewares/multer.middleware.js");
 
 const router = Router();
 
-router.post("/note", multerUpload, firebaseUpload, addNote);
-router.get("/notes/search", searchNotesByTitle);
+router.post("/add", multerUpload, firebaseUpload, addNote);
+router.get("/search", searchNotesByTitle);
 
 module.exports = router;

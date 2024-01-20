@@ -4,12 +4,11 @@ const {
   getSubjects,
   getNotesBySubject,
 } = require("../controllers/subject.controller");
-const { getNotes } = require("../controllers/college.controller");
 
 const router = Router();
 
 router.post("/", addSubject);
 router.get("/", getSubjects);
-router.get("/:subjectId", getNotesBySubject);
+router.get("/notes/:subjectId", getNotesBySubject);
 
 module.exports = router;

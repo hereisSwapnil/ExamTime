@@ -36,10 +36,6 @@ const noteSchema = new Schema(
       required: true,
       trim: true,
     },
-    college: {
-      type: Schema.Types.ObjectId,
-      ref: "College",
-    },
     url: {
       type: String,
       trim: true,

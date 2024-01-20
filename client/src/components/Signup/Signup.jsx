@@ -1,6 +1,76 @@
-import React from "react";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { GoEye, GoEyeClosed } from "react-icons/go";
+import MoonLoader from "react-spinners/MoonLoader";
+import { ImCross } from "react-icons/im";
+import { TiTick } from "react-icons/ti";
+import axios from "axios";
+import { useNavigate } from "react-router";
 
 const Signup = () => {
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+  } = useForm();
+
+  const navigate = useNavigate();
+
+  const [registerError, setRegisterError] = useState();
+  const [passToggle, setPassToggle] = useState("password");
+  const [checkUsernameLoading, setCheckUsernameLoading] = useState(null);
+  const [usernameExists, setUsernameExists] = useState();
+
+  const registerUser = async (data) => {
+    try {
+      console.log(data);
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/user/register`,
+        data
+      );
+      console.log(res.data.message);
+      if (res.data.message === "register success") {
+        setRegisterError("");
+        navigate("/login");
+      } else if (res.data.message === "user already exists") {
+        setRegisterError("User already exists");
+      } else {
+        setRegisterError("Something went wrong!");
+      }
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const togglePassword = () => {
+    if (passToggle === "password") {
+      setPassToggle("text");
+    } else {
+      setPassToggle("password");
+    }
+  };
+
+  const handleUsernameChange = async (event) => {
+    const username = event.target.value;
+    console.log(username);
+    setUsernameExists(false);
+
+    if (username.trim() !== "") {
+      setCheckUsernameLoading(true);
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/user/checkusername/${username}`
+      );
+      if (res.data.message === "username taken") {
+        setUsernameExists(true);
+        setCheckUsernameLoading(false);
+      } else {
+        setUsernameExists(false);
+        setCheckUsernameLoading(false);
+      }
+    }
+  };
+
   return (
     <>
       <div className="flex min-h-screen flex-1 flex-col justify-center px-6 lg:px-8">
@@ -18,8 +88,9 @@ const Signup = () => {
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form
             className="space-y-6"
-            action="http://localhost:8080/signup}"
-            method="POST"
+            onSubmit={handleSubmit((data) => {
+              registerUser(data);
+            })}
           >
             <div>
               <label
@@ -30,13 +101,25 @@ const Signup = () => {
               </label>
               <div className="mt-2">
                 <input
-                  id="email"
                   name="email"
-                  type="email"
-                  autoComplete="email"
-                  required
+                  autoComplete="username"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  {...register("email", {
+                    validate: {
+                      matchPatern: (value) =>
+                        /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi.test(value) ||
+                        "Enter a valid email address",
+                    },
+                  })}
                 />
+                {errors.email && (
+                  <p
+                    className="text-sm text-red-500 mt-1"
+                    dangerouslySetInnerHTML={{
+                      __html: errors.email.message,
+                    }}
+                  ></p>
+                )}
               </div>
             </div>
 
@@ -49,15 +132,54 @@ const Signup = () => {
                   Username
                 </label>
               </div>
-              <div className="mt-2">
+              <div className="mt-2 relative">
                 <input
                   id="username"
                   name="username"
                   type="text"
-                  autoComplete="current-password"
-                  required
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full pr-5 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  {...register("username", {
+                    validate: (value) =>
+                      !usernameExists || "Username is already taken",
+                  })}
+                  onChange={handleUsernameChange}
                 />
+                {!checkUsernameLoading && (
+                  <p
+                    className={`text-sm ${
+                      usernameExists ? "text-red-500" : "text-green-500"
+                    }  mt-1`}
+                  >
+                    {checkUsernameLoading
+                      ? ""
+                      : usernameExists == true
+                      ? "Username taken"
+                      : usernameExists == false
+                      ? "Username available"
+                      : ""}
+                  </p>
+                )}
+                <span
+                  className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 ${
+                    checkUsernameLoading
+                      ? ""
+                      : usernameExists == true
+                      ? "mb-[20px]"
+                      : usernameExists == false
+                      ? "mb-[20px]"
+                      : ""
+                  }`}
+                >
+                  {checkUsernameLoading ? (
+                    <MoonLoader color="#000000" size={15} />
+                  ) : usernameExists == true ? (
+                    <ImCross />
+                  ) : usernameExists == false ? (
+                    <TiTick />
+                  ) : (
+                    ""
+                  )}
+                </span>
               </div>
             </div>
 
@@ -70,16 +192,43 @@ const Signup = () => {
                   Password
                 </label>
               </div>
-              <div className="mt-2">
+              <div className="mt-2 relative">
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={passToggle}
                   autoComplete="current-password"
-                  required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  {...register("password", {
+                    validate: {
+                      matchPatern: (value) =>
+                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm.test(
+                          value
+                        ) ||
+                        "- at least 8 characters <br />- must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number<br />- Can contain special characters",
+                    },
+                  })}
                 />
+                <button
+                  type="button"
+                  onClick={togglePassword}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                >
+                  {passToggle === "text" ? (
+                    <GoEyeClosed className="text-lg" />
+                  ) : (
+                    <GoEye className="text-lg" />
+                  )}
+                </button>
               </div>
+              {errors.password && (
+                <p
+                  className="text-sm text-red-500 mt-1"
+                  dangerouslySetInnerHTML={{
+                    __html: errors.password.message,
+                  }}
+                ></p>
+              )}
             </div>
 
             <div>
@@ -95,11 +244,23 @@ const Signup = () => {
                 <input
                   id="confirm_password"
                   name="confirm_password"
-                  type="password"
+                  type={passToggle}
                   autoComplete="current-password"
-                  required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  {...register("confirm_password", {
+                    required: "Enter confirm password",
+                    validate: (val) => {
+                      if (watch("password") != val) {
+                        return "Your passwords do no match";
+                      }
+                    },
+                  })}
                 />
+                {errors.confirm_password && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.confirm_password.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -110,13 +271,16 @@ const Signup = () => {
               >
                 Sign up
               </button>
+              <p className="text-sm mt-5 text-red-500 text-center">
+                {registerError && registerError}
+              </p>
             </div>
           </form>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
+          <p className="mt-5 text-center text-sm text-gray-500">
             Already have an account?{" "}
             <a
-              href="/signup"
+              href="/login"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
             >
               Sign In

@@ -1,5 +1,4 @@
 const wrapAsync = require("../utils/wrapAsync.js");
-const College = require("../models/college.model.js");
 const Subject = require("../models/subject.model.js");
 const Note = require("../models/note.model.js");
 
@@ -26,8 +25,7 @@ const addNote = wrapAsync(async (req, res) => {
   try {
     const { title, description, subject, year, course } = req.body;
     const createdBy = req.user;
-    const college = req.user.college;
-    if (!title || !description || !subject || !year || !course || !college) {
+    if (!title || !description || !subject || !year || !course) {
       return res.status(400).json({ message: "Missing fields" });
     }
     const url = req.file.url;
@@ -38,18 +36,11 @@ const addNote = wrapAsync(async (req, res) => {
       subject,
       year,
       course,
-      college,
       url,
     });
     if (!note) {
       return res.status(400).json({ message: "Note not created" });
     }
-    const college_ = await College.findById(note.college);
-    if (!college_) {
-      return res.status(404).json({ message: "College not found" });
-    }
-    college_.notes.push(note);
-    await college_.save();
     const subject_ = await Subject.findById(note.subject);
     if (!subject_) {
       return res.status(404).json({ message: "Subject not found" });
@@ -59,7 +50,9 @@ const addNote = wrapAsync(async (req, res) => {
     res.status(201).json(note);
   } catch (error) {
     console.error(error);
-    res.status(500).json({ message: "Could not add notes" });
+    res
+      .status(500)
+      .json({ message: "Could not add notes", error: error.message });
   }
 });
 

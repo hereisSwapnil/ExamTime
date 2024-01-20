@@ -1,17 +1,27 @@
-const passport = require("passport");
+// const passport = require("passport");
 const User = require("../models/user.model.js");
 const wrapAsync = require("../utils/wrapAsync");
+const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
 
 const checkUsername = wrapAsync(async (req, res) => {
-  let { username } = req.body;
-  let user = await User.findOne({ username });
-  if (user) {
-    return res.status(400).json({
-      message: "username taken",
-    });
-  } else {
-    return res.status(200).json({
-      message: "username available",
+  try {
+    let username = req.params.username;
+    let user = await User.findOne({ username });
+    console.log(user);
+    if (user) {
+      return res.status(200).json({
+        message: "username taken",
+      });
+    } else {
+      return res.status(200).json({
+        message: "username available",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "username check failed",
+      error: error.message,
     });
   }
 });
@@ -21,77 +31,93 @@ const registerUser = wrapAsync(async (req, res) => {
     let { username, password, email, college } = req.body;
     let user = await User.findOne({ email });
     if (user) {
-      return res.status(400).json({
+      return res.status(200).json({
         message: "user already exists",
       });
     }
-    const newUser = new User({ email, username, college });
-    const registeredUser = await User.register(newUser, password);
-    console.log(registeredUser);
-    req.login(registeredUser, () => {
-      res.status(200).json({
-        user: req.user,
-        message: "register success",
-      });
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hashSync(password, salt);
+    const newUser = new User({
+      username,
+      email,
+      password: hashedPassword,
+      college,
+    });
+    const registeredUser = await newUser.save();
+    const { password: password_, ...info } = registeredUser._doc;
+    res.status(200).json({
+      user: info,
+      message: "register success",
     });
   } catch (error) {
     console.log(error);
     res.status(400).json({
       message: "register failed",
+      error: error.message,
     });
   }
 });
 
-const loginUser = wrapAsync((req, res, next) => {
-  passport.authenticate("local", (err, user, info) => {
-    if (err) {
-      return res.status(500).json({ message: "Authentication error" });
-    }
-
+const loginUser = wrapAsync(async (req, res, next) => {
+  try {
+    const { email, password } = req.body;
+    const user = await User.findOne({ email });
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
-    }
-
-    req.login(user, (err) => {
-      if (err) {
-        return res.status(500).json({ message: "Login error" });
-      }
-
-      res.status(200).json({
-        user: user,
-        message: "Login success",
+      return res.status(200).json({
+        message: "user not found",
       });
-    });
-  })(req, res, next);
+    }
+    const matchPassword = await bcrypt.compareSync(password, user.password);
+    if (!matchPassword) {
+      return res.status(200).json({ message: "Invalid Credentials" });
+    }
+    const token = jwt.sign(
+      {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        college: user.college,
+      },
+      process.env.SECRET,
+      {
+        expiresIn: "14d",
+      }
+    );
+    const { password: UserPassword, ...info } = user._doc;
+    res
+      .cookie("token", token, { secure: true })
+      .status(200)
+      .json({ user: info, message: "login success" });
+  } catch (error) {
+    res.status(500).json({ message: "login failed", error: error.message });
+  }
 });
 
 const logoutUser = wrapAsync((req, res) => {
-  req.logout(() => {
-    {
-      req.session.destroy();
-      res.status(200).json({
-        message: "logout success",
-      });
-    }
-  });
+  try {
+    res
+      .clearCookie("token", { secure: true })
+      .status(200)
+      .json({ message: "logout success" });
+  } catch (error) {
+    res.status(500).json({
+      message: "logout failed",
+      error: error.message,
+    });
+  }
 });
 
 const getUser = wrapAsync(async (req, res) => {
-  try {
-    let user = await User.findById(req.user._id);
-    if (!user) {
-      return res.status(400).json({
-        message: "User not logged in",
+  const token = req.cookies.token;
+  jwt.verify(token, process.env.SECRET, {}, async (err, data) => {
+    if (err) {
+      return res.status(404).json({
+        message: "get user failed",
+        error: err.message,
       });
     }
-    res.status(200).json({
-      user: user,
-    });
-  } catch (error) {
-    res.status(400).json({
-      message: "User get failed",
-    });
-  }
+    res.status(200).json(data);
+  });
 });
 
 module.exports = {
