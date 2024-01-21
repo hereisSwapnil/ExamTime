@@ -22,22 +22,16 @@ const userSchema = new Schema(
       type: String,
       required: true,
     },
-    // fullname: {
-    //   type: String,
-    //   trim: true,
-    // },
-    // firstName: {
-    //   type: String,
-    //   trim: true,
-    // },
-    // lastName: {
-    //   type: String,
-    //   trim: true,
-    // },
     userPhoto: {
       type: String,
     },
     notes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Note",
+      },
+    ],
+    likedNotes: [
       {
         type: Schema.Types.ObjectId,
         ref: "Note",

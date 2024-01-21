@@ -28,7 +28,7 @@ const checkUsername = wrapAsync(async (req, res) => {
 
 const registerUser = wrapAsync(async (req, res) => {
   try {
-    let { username, password, email, college } = req.body;
+    let { username, password, email } = req.body;
     let user = await User.findOne({ email });
     if (user) {
       return res.status(200).json({
@@ -37,11 +37,12 @@ const registerUser = wrapAsync(async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hashSync(password, salt);
+    let userPhoto = `https://ui-avatars.com/api/?name=${username}&background=29335C&size=128&color=fff&format=png&length=1`;
     const newUser = new User({
       username,
       email,
       password: hashedPassword,
-      college,
+      userPhoto,
     });
     const registeredUser = await newUser.save();
     const { password: password_, ...info } = registeredUser._doc;
@@ -76,7 +77,7 @@ const loginUser = wrapAsync(async (req, res, next) => {
         id: user._id,
         username: user.username,
         email: user.email,
-        college: user.college,
+        userPhoto: user.userPhoto,
       },
       process.env.SECRET,
       {

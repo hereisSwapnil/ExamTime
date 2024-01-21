@@ -1,8 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
-import ReactStars from "react-rating-stars-component";
+import { useLocation } from "react-router";
+import axios from "axios";
+import MyImage from "../MyImage/MyImage";
+import LikeButton from "../LikeButton/LikeButton";
 
 const colleges = {
   harvard: false,
@@ -18,172 +21,67 @@ const colleges = {
   other: false,
 };
 
-const college = {
-  collegeName: "JSSATEN",
-  notes: [
-    {
-      id: "1",
-      title: "Coa notes unit 2",
-      description: "Coa notes unit 2 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "COA",
-      year: 2,
-      course: "Btech.",
-      rating: 3,
-    },
-    {
-      id: "2",
-      title: "Maths 4 notes unit 1",
-      description: "Maths 4 notes unit 1 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "Math 4",
-      year: 2,
-      course: "Btech.",
-      rating: 5,
-    },
-    {
-      id: "3",
-      title: "Physics notes unit 2",
-      description: "Physics notes unit 2 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "Physics",
-      year: 1,
-      course: "Btech.",
-      rating: 2,
-    },
-    {
-      id: "4",
-      title: "DBMS notes unit 2",
-      description: "DBMS notes unit 2 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "DBMS",
-      year: 3,
-      course: "Btech.",
-      rating: 4,
-    },
-    {
-      id: "1",
-      title: "Coa notes unit 2",
-      description: "Coa notes unit 2 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "COA",
-      year: 2,
-      course: "Btech.",
-      rating: 3,
-    },
-    {
-      id: "2",
-      title: "Maths 4 notes unit 1",
-      description: "Maths 4 notes unit 1 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "Math 4",
-      year: 2,
-      course: "Btech.",
-      rating: 5,
-    },
-    {
-      id: "3",
-      title: "Physics notes unit 2",
-      description: "Physics notes unit 2 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "Physics",
-      year: 1,
-      course: "Btech.",
-      rating: 2,
-    },
-    {
-      id: "4",
-      title: "DBMS notes unit 2",
-      description: "DBMS notes unit 2 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "DBMS",
-      year: 3,
-      course: "Btech.",
-      rating: 4,
-    },
-    {
-      id: "1",
-      title: "Coa notes unit 2",
-      description: "Coa notes unit 2 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "COA",
-      year: 2,
-      course: "Btech.",
-      rating: 3,
-    },
-    {
-      id: "2",
-      title: "Maths 4 notes unit 1",
-      description: "Maths 4 notes unit 1 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "Math 4",
-      year: 2,
-      course: "Btech.",
-      rating: 5,
-    },
-    {
-      id: "3",
-      title: "Physics notes unit 2",
-      description: "Physics notes unit 2 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "Physics",
-      year: 1,
-      course: "Btech.",
-      rating: 2,
-    },
-    {
-      id: "4",
-      title: "DBMS notes unit 2",
-      description: "DBMS notes unit 2 description",
-      thumbnail: "https://i.postimg.cc/dtjCRDV9/image.png",
-      createdBy: "swampgt",
-      subject: "DBMS",
-      year: 3,
-      course: "Btech.",
-      rating: 4,
-    },
-  ],
-};
-
 const DocGrid = () => {
   const [open, setOpen] = useState(false);
   const [note_, setNote_] = useState({});
   const [selectedColleges, setSelectedColleges] = useState({});
+  const { search } = useLocation();
+  // const [activeHeart, setActiveHeart] = useState(false);
 
-  const ratingChanged = (newRating) => {
-    console.log(newRating);
-  };
+  const [notes, setNotes] = useState([]);
+
+  // const ratingChanged = (newRating) => {
+  //   console.log(newRating);
+  // };
 
   const handleNoteClick = (note) => {
     setOpen(true);
     setNote_(note);
+    console.log(note);
   };
 
-  const toggle = (college) => {
-    setSelectedColleges((prevSelectedColleges) => ({
-      ...prevSelectedColleges,
-      [college]: !prevSelectedColleges[college],
-    }));
+  // const toggle = (college) => {
+  //   setSelectedColleges((prevSelectedColleges) => ({
+  //     ...prevSelectedColleges,
+  //     [college]: !prevSelectedColleges[college],
+  //   }));
+  // };
+
+  const fetchNotes = async () => {
+    const res = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/note${search}`,
+      {
+        withCredentials: true,
+      }
+    );
+    console.log(res.data);
+    setNotes(res.data);
   };
+
+  useEffect(() => {
+    fetchNotes();
+  }, []);
+
+  if (notes.length == 0) {
+    return (
+      <div className="bg-white">
+        <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-4">
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+            No results found ...
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-4">
-          <p className="text-sm font-medium text-gray-500 mb-4">
+          {/* <p className="text-sm font-medium text-gray-500 mb-4">
             Select College
-          </p>
-          <div className="mb-16">
+          </p> */}
+          {/* <div className="mb-16">
             {Object.keys(colleges).map((c) => (
               <button
                 key={c}
@@ -213,42 +111,39 @@ const DocGrid = () => {
                 <span className="capitalize text-[15px]">{c}</span>
               </button>
             ))}
-          </div>
+          </div> */}
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
             Find your notes here...
           </h2>
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {college.notes.map((note, index) => (
+            {notes.map((note, index) => (
               <div
                 key={index}
                 className="group relative hover:cursor-pointer"
                 onClick={() => handleNoteClick(note)}
               >
-                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-800 p-[2px] lg:aspect-none group-hover:opacity-50 lg:h-80">
-                  <img
+                <div className="aspect-h-1 aspect-w-1 w-full overflow-hidden rounded-md bg-gray-800 border border-black lg:aspect-none group-hover:opacity-50 lg:h-80">
+                  <MyImage
                     src={note.thumbnail}
                     alt={note.thumbnail}
                     className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                   />
+                  {/* <img
+                    src={note.thumbnail}
+                    alt={note.thumbnail}
+                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                  /> */}
                 </div>
                 <div className="mt-4 flex justify-between">
-                  <div>
-                    <h3 className="text-sm text-gray-700 font-bold">
-                      <span aria-hidden="true" className="absolute inset-0" />
-                      {note.title}
+                  <div className="w-full">
+                    <h3 className="text-sm text-gray-700 font-bold flex justify-between w-full">
+                      <p>{note.title}</p>{" "}
+                      {note.liked > 0 ? <p>❤️ {note.likes}</p> : ""}
                     </h3>
-                    <p className="mt-1 text-sm text-gray-500">{note.subject}</p>
-                    <div className="mt-1 text-sm text-gray-500">
-                      <ReactStars
-                        count={5}
-                        size={24}
-                        activeColor="#ffd700"
-                        isHalf="true"
-                        value={note.rating}
-                        edit={false}
-                      />
-                    </div>
+                    <p className="mt-1 text-sm text-gray-500">
+                      {note.subject.subjectName}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -314,7 +209,7 @@ const DocGrid = () => {
 
                           <p className="text-md text-gray-700">
                             <span className="font-bold mr-2">Subject:</span>{" "}
-                            {note_.subject}
+                            {note_.subject?.subjectName}
                           </p>
 
                           <p className="text-md text-gray-700">
@@ -333,17 +228,13 @@ const DocGrid = () => {
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">Rating:</span>{" "}
-                            {note_.rating} out of 5
+                            <span className="font-bold mr-2">Likes:</span>{" "}
+                            {note_.likes}
                           </p>
 
-                          <ReactStars
-                            count={5}
-                            onChange={ratingChanged}
-                            size={24}
-                            activeColor="#ffd700"
-                            isHalf="true"
-                          />
+                          <div style={{ width: "20px" }}>
+                            <LikeButton noteId={note_?._id} />
+                          </div>
                         </section>
 
                         <section aria-labelledby="options-heading" className="">
@@ -356,15 +247,17 @@ const DocGrid = () => {
                               href="#"
                               className="hover:underline hover:text-gray-900"
                             >
-                              @{note_.createdBy}
+                              @{note_.author?.username}
                             </a>
                           </p>
-                          <button
+                          <a
                             type="submit"
-                            className="mt-6 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            className="mt-6 flex w-full cursor-pointer items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            href={note_?.fileUrl}
+                            target="_blank"
                           >
                             Download
-                          </button>
+                          </a>
                         </section>
                       </div>
                     </div>

@@ -1,14 +1,19 @@
 const Router = require("express");
 const {
-  searchNotesByTitle,
+  searchNotes,
   addNote,
+  likeNotes,
+  unlikeNotes,
+  checkIfLiked,
 } = require("../controllers/note.controller.js");
-const firebaseUpload = require("../middlewares/firebaseUpload.middleware.js");
-const multerUpload = require("../middlewares/multer.middleware.js");
+const verifyToken = require("../middlewares/verifyToken.js");
 
 const router = Router();
 
-router.post("/add", multerUpload, firebaseUpload, addNote);
-router.get("/search", searchNotesByTitle);
+router.post("/", verifyToken, addNote);
+router.get("/", verifyToken, searchNotes);
+router.get("/like/:noteId", verifyToken, likeNotes);
+router.get("/unlike/:noteId", verifyToken, unlikeNotes);
+router.get("/checklike/:noteId", verifyToken, checkIfLiked);
 
 module.exports = router;

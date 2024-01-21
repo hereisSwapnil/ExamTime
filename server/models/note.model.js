@@ -19,9 +19,10 @@ const noteSchema = new Schema(
       default:
         "https://www.umass.edu/studentsuccess/sites/default/files/inline-images/cornell-note-taking-strategy.jpg",
     },
-    createdBy: {
+    author: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
     subject: {
       type: Schema.Types.ObjectId,
@@ -36,11 +37,21 @@ const noteSchema = new Schema(
       required: true,
       trim: true,
     },
-    url: {
+    fileUrl: {
       type: String,
       trim: true,
       required: true,
     },
+    likes: {
+      type: Number,
+      default: 0,
+    },
+    likedBy: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+    ],
   },
   {
     timestamps: true,

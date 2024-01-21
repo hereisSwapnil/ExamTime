@@ -9,8 +9,8 @@ const verifyToken = (req, res, next) => {
     if (err) {
       res.status(403).send("Token is not valid");
     }
-    console.log(data);
-    req.userId = data.id;
+    // console.log(data);
+    req.user = data;
     next();
   });
 };

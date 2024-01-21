@@ -17,10 +17,12 @@ app.use(methodOverride("_method"));
 const userRoutes = require("./routes/user.routes.js");
 const noteRoutes = require("./routes/note.routes.js");
 const subjectRoutes = require("./routes/subject.routes.js");
+const requestRoutes = require("./routes/request.routes.js");
 
 // routes declare
 app.use("/user", userRoutes);
-app.use("note", noteRoutes);
+app.use("/note", noteRoutes);
 app.use("/subject", subjectRoutes);
+app.use("/request", requestRoutes);
 
 module.exports = app;

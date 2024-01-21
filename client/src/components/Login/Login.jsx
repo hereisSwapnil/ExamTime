@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import axios from "axios";
+import { UserContext } from "../../Context/UserContext";
 
 const Login = () => {
   const {
@@ -10,6 +11,7 @@ const Login = () => {
     formState: { errors },
   } = useForm();
   const [loginError, setloginError] = useState();
+  const { user, setUser } = useContext(UserContext);
 
   const navigate = useNavigate();
 
@@ -21,8 +23,9 @@ const Login = () => {
           withCredentials: true,
         })
         .then((res) => {
-          console.log(res.data.message);
+          console.log(res.data.user);
           if (res.data.message === "login success") {
+            setUser(res.data.user);
             setloginError("");
             navigate("/");
           } else if (res.data.message === "user not found") {

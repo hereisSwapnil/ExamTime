@@ -1,19 +1,68 @@
-import { Fragment } from "react";
+import { Fragment, useContext, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Badge, Button } from "@material-tailwind/react";
 import TextLogo from "../../assets/logo_.png";
-
-const navigation = [
-  { name: "Upload Notes", href: "/upload", current: true },
-  { name: "Request Notes", href: "/request", current: false },
-];
+import { UserContext } from "../../Context/UserContext";
+import axios from "axios";
+import { useLocation, useNavigate } from "react-router";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const Navbar = () => {
+  const { user, setUser } = useContext(UserContext);
+  const loc = useLocation().pathname;
+  const [uploadNav, setUploadNav] = useState(false);
+  const [requestNav, setRequestNav] = useState(false);
+
+  const navigation = [
+    { name: "Upload Notes", href: "/upload", current: uploadNav },
+    { name: "Request Notes", href: "/request", current: requestNav },
+  ];
+  const navigate = useNavigate();
+
+  const [requests, setRequests] = useState([]);
+
+  const handleSignout = async () => {
+    try {
+      await axios.get(`${import.meta.env.VITE_BASE_URL}/user/logout`, {
+        withCredentials: true,
+      });
+      setUser(null);
+      navigate("/login");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getRequests = () => {
+    try {
+      axios
+        .get(`${import.meta.env.VITE_BASE_URL}/request`, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          console.log(res.data);
+          setRequests(res.data);
+        });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getRequests();
+    if (loc === "/request") {
+      setRequestNav(true);
+      setUploadNav(false);
+    } else if (loc === "/upload") {
+      setRequestNav(false);
+      setUploadNav(true);
+    }
+  }, []);
+
   return (
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
@@ -38,12 +87,12 @@ const Navbar = () => {
                     <img
                       className="h-auto w-[150px]"
                       src={TextLogo}
-                      alt="Your Company"
+                      alt="Exam Time"
                     />
                   </a>
                 </div>
                 <div className="hidden sm:ml-6 sm:block self-center">
-                  <div className="flex space-x-4">
+                  <div className="flex">
                     {navigation.map((item) => (
                       <a
                         key={item.name}
@@ -94,10 +143,18 @@ const Navbar = () => {
                 </div>
                 <div className="relative mx-auto text-gray-600">
                   <input
-                    className="border-2 border-gray-300 bg-white h-10 px-5 w-[600px] pr-8 rounded-lg text-sm focus:outline-none appearance-none"
+                    className="border-2 border-gray-300 bg-white h-10 px-5 md:w-[600px] lg:w-[500px] w-[10vw] pr-8 rounded-lg text-sm focus:outline-none appearance-none"
                     type="search"
                     name="search"
                     placeholder="Search"
+                    onKeyPress={(e) => {
+                      if (e.key === "Enter") {
+                        const searchTerm = e.target.value;
+                        window.location.href = `?search=${encodeURIComponent(
+                          searchTerm
+                        )}`;
+                      }
+                    }}
                   />
                   <button
                     type="submit"
@@ -143,17 +200,35 @@ const Navbar = () => {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="absolute w-[20vw] right-0 z-10 mt-2 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      {requests.map((request, index) => (
+                        <Menu.Item key={index}>
+                          {({ active }) => (
+                            <a
+                              href="#"
+                              className={classNames(
+                                active ? "bg-gray-100" : "",
+                                "block px-4 py-2 text-sm text-gray-700 border-b-2"
+                              )}
+                            >
+                              <p>{request?.description}</p>
+                              <p className="text-[13px] text-end">
+                                @{request?.author.username}
+                              </p>
+                            </a>
+                          )}
+                        </Menu.Item>
+                      ))}
                       <Menu.Item>
                         {({ active }) => (
                           <a
                             href="#"
                             className={classNames(
-                              active ? "bg-gray-100" : "",
-                              "block px-4 py-2 text-sm text-gray-700"
+                              active ? "underline" : "",
+                              "block px-4 py-2 text-sm text-end text-blue-700"
                             )}
                           >
-                            Sign out
+                            View more...
                           </a>
                         )}
                       </Menu.Item>
@@ -169,7 +244,7 @@ const Navbar = () => {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full"
-                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                        src={user?.userPhoto}
                         alt=""
                       />
                     </Menu.Button>
@@ -212,15 +287,15 @@ const Navbar = () => {
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <a
-                            href="#"
+                          <p
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
                             )}
+                            onClick={handleSignout}
                           >
                             Sign out
-                          </a>
+                          </p>
                         )}
                       </Menu.Item>
                     </Menu.Items>
