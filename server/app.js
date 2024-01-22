@@ -5,7 +5,7 @@ const methodOverride = require("method-override");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({ origin: "https://exam-time.vercel.app/", credentials: true }));
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
