@@ -25,4 +25,8 @@ app.use("/note", noteRoutes);
 app.use("/subject", subjectRoutes);
 app.use("/request", requestRoutes);
 
+app.get("/", (req, res) => {
+  res.send("Yupp The server is runnng 🎉 !");
+});
+
 module.exports = app;
