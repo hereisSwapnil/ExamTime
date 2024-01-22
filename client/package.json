@@ -15,6 +15,8 @@
     "@material-tailwind/react": "^2.1.7",
     "axios": "^1.6.5",
     "dotenv": "^16.3.1",
+    "firebase": "^10.7.2",
+    "pdf-lib": "^1.17.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-heart": "^1.0.6",
@@ -25,7 +27,10 @@
     "react-router": "^6.21.0",
     "react-router-dom": "^6.21.1",
     "react-select-search": "^4.1.7",
-    "react-spinners": "^0.13.8"
+    "react-spinners": "^0.13.8",
+    "react-toastify": "^10.0.4",
+    "unique-filename": "^3.0.0",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@skeletonlabs/skeleton": "^2.6.0",

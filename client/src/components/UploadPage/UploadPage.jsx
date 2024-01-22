@@ -5,12 +5,16 @@ import { useNavigate } from "react-router";
 import { UserContext } from "../../Context/UserContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import storage from "../../firebase/firebase";
+import { toast, Bounce } from "react-toastify";
 
 const UploadPage = () => {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [subjects, setSubjects] = useState([]);
+  const [fileUploadProgress, setFileUploadProgress] = useState(0);
   const {
     register,
     handleSubmit,
@@ -18,12 +22,96 @@ const UploadPage = () => {
   } = useForm();
   const [selectedFile, setSelectedFile] = useState([]);
   const [isFileSeleted, setIsFileSelected] = useState(false);
+  const [fileUrl, setFileUrl] = useState("");
+  const [addSubject_, setAddSubject_] = useState("");
+
+  const addSubject = () => {
+    if (addSubject_ === "") {
+      return;
+    }
+    try {
+      console.log(addSubject_);
+      axios
+        .post(
+          `${import.meta.env.VITE_BASE_URL}/subject`,
+          { subjectName: addSubject_ },
+          { withCredentials: true }
+        )
+        .then((res) => {
+          getSubjects();
+        });
+      toast.success("Subject added successfully", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      setAddSubject_("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const uploadFile = async (file) => {
+    const storageRef = ref(storage, "notes/" + file.name);
+    const uploadTask = uploadBytesResumable(storageRef, file);
+    setFileUploadProgress(0);
+    uploadTask.on(
+      "state_changed",
+      (snapshot) => {
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        console.log("Upload is " + Math.trunc(progress) + "% done");
+        setFileUploadProgress(Math.trunc(progress));
+        switch (snapshot.state) {
+          case "paused":
+            console.log("Upload is paused");
+            break;
+          case "running":
+            console.log("Upload is running");
+            break;
+        }
+      },
+      (error) => {
+        // A full list of error codes is available at
+        // https://firebase.google.com/docs/storage/web/handle-errors
+        switch (error.code) {
+          case "storage/unauthorized":
+            // User doesn't have permission to access the object
+            break;
+          case "storage/canceled":
+            // User canceled the upload
+            break;
+
+          // ...
+
+          case "storage/unknown":
+            // Unknown error occurred, inspect error.serverResponse
+            break;
+        }
+      },
+      () => {
+        // Upload completed successfully, now we can get the download URL
+        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+          console.log("File available at", downloadURL);
+          setFileUrl(downloadURL);
+        });
+      }
+    );
+  };
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     console.log(file.name);
     setSelectedFile(file);
     setIsFileSelected(true);
+    uploadFile(file);
   };
 
   useEffect(() => {
@@ -45,13 +133,36 @@ const UploadPage = () => {
   };
 
   const uploadNotes = async (data) => {
-    console.log(selectedFile);
-    if (selectedFile.length == 0) {
-      console.log("no file selected");
-      setIsFileSelected(false);
-      return;
+    try {
+      console.log(selectedFile);
+      if (selectedFile.length == 0) {
+        console.log("no file selected");
+        setIsFileSelected(false);
+        return;
+      }
+      console.log(data);
+      axios
+        .post(
+          `${import.meta.env.VITE_BASE_URL}/note`,
+          {
+            title: data.title,
+            description: data.description,
+            subject: data.subject,
+            year: data.year,
+            course: data.course,
+            fileUrl: fileUrl,
+          },
+          {
+            withCredentials: true,
+          }
+        )
+        .then((res) => {
+          console.log("Notes uploaded successfully");
+          navigate("/");
+        });
+    } catch (error) {
+      console.log(error);
     }
-    console.log(data);
   };
 
   if (loading) {
@@ -169,6 +280,32 @@ const UploadPage = () => {
 
               <div className="mb-5">
                 <label
+                  htmlFor="subject"
+                  className="mb-1 block text-base text-[14px] text-red-500"
+                >
+                  Didn't find the subject add your own
+                </label>
+                <div className="flex justify-center gap-5">
+                  <input
+                    type="text"
+                    name="subject"
+                    id="subject"
+                    value={addSubject_}
+                    onChange={(e) => setAddSubject_(e.target.value)}
+                    placeholder="Add a subject..."
+                    className="rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  ></input>
+                  <div
+                    className="hover:shadow-form rounded-md cursor-pointer bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
+                    onClick={addSubject}
+                  >
+                    Add Subject
+                  </div>
+                </div>
+              </div>
+
+              <div className="mb-5">
+                <label
                   htmlFor="course"
                   className="mb-3 block text-base font-small text-[#07074D]"
                 >
@@ -235,6 +372,7 @@ const UploadPage = () => {
                     onChange={handleFileChange}
                     className="sr-only cursor-pointer"
                     multiple={false}
+                    accept="application/pdf"
                   />
                   <label
                     htmlFor="file"
@@ -258,7 +396,7 @@ const UploadPage = () => {
                   ""
                 ) : (
                   <p className="text-sm text-red-500 mt-1">
-                    Please select a file to upload
+                    Please select a file to upload <br /> Allowed format - .pdf
                   </p>
                 )}
 
@@ -266,7 +404,7 @@ const UploadPage = () => {
                   <div className="mb-5 rounded-md bg-[#F5F7FB] py-4 px-8">
                     <div className="flex items-center justify-between">
                       <span className="truncate pr-3 text-base font-small text-[#07074D]">
-                        {selectedFile?.name || "wef"}
+                        {selectedFile?.name || "No file selected"}
                       </span>
                       <button
                         className="text-[#07074D]"
@@ -293,6 +431,12 @@ const UploadPage = () => {
                           />
                         </svg>
                       </button>
+                    </div>
+                    <div className="relative mt-5 h-[6px] w-full rounded-lg bg-[#E2E5EF]">
+                      <div
+                        style={{ width: `${fileUploadProgress}%` }}
+                        className={`hover:shadow-form rounded-md bg-[#6A64F1] py-1 px-8 text-center text-base font-semibold text-white outline-none`}
+                      ></div>
                     </div>
                   </div>
                 )}
