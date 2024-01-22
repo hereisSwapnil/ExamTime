@@ -139,7 +139,7 @@ const DocGrid = () => {
                   <div className="w-full">
                     <h3 className="text-sm text-gray-700 font-bold flex justify-between w-full">
                       <p>{note.title}</p>{" "}
-                      {note.liked > 0 ? <p>❤️ {note.likes}</p> : ""}
+                      {note.likes > 0 ? <p>❤️ {note.likes}</p> : ""}
                     </h3>
                     <p className="mt-1 text-sm text-gray-500">
                       {note.subject.subjectName}
