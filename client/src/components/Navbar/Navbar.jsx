@@ -44,7 +44,6 @@ const Navbar = () => {
           withCredentials: true,
         })
         .then((res) => {
-          console.log(res.data);
           setRequests(res.data);
         });
     } catch (error) {

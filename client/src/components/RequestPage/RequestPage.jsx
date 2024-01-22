@@ -5,6 +5,7 @@ import { useNavigate } from "react-router";
 import { UserContext } from "../../Context/UserContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
+import { toast, Bounce } from "react-toastify";
 
 const RequestPage = () => {
   const { user, setUser } = useContext(UserContext);
@@ -29,7 +30,17 @@ const RequestPage = () => {
         withCredentials: true,
       })
       .then((res) => {
-        console.log("Request made...");
+        toast.success("Requese made successfully!", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
         navigate("/");
       });
   };

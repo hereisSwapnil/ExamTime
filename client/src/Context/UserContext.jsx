@@ -1,5 +1,6 @@
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
+import { Loader } from "../components/Loader/Loader";
 
 export const UserContext = createContext();
 
@@ -11,7 +12,7 @@ export const UserContextProvider = ({ children }) => {
       const res = await axios.get(`${import.meta.env.VITE_BASE_URL}/user/get`, {
         withCredentials: true,
       });
-      console.log(res.data);
+      // console.log(res.data);
       setUser(res.data);
     } catch (error) {
       console.log(error);
@@ -24,7 +25,7 @@ export const UserContextProvider = ({ children }) => {
   }, []);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <Loader />;
   }
 
   return (

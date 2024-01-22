@@ -6,26 +6,28 @@ import { useLocation } from "react-router";
 import axios from "axios";
 import MyImage from "../MyImage/MyImage";
 import LikeButton from "../LikeButton/LikeButton";
+import { Loader } from "../Loader/Loader";
 
-const colleges = {
-  harvard: false,
-  stanford: false,
-  mit: false,
-  oxford: false,
-  cambridge: false,
-  yale: false,
-  princeton: false,
-  caltech: false,
-  chicago: false,
-  columbia: false,
-  other: false,
-};
+// const colleges = {
+//   harvard: false,
+//   stanford: false,
+//   mit: false,
+//   oxford: false,
+//   cambridge: false,
+//   yale: false,
+//   princeton: false,
+//   caltech: false,
+//   chicago: false,
+//   columbia: false,
+//   other: false,
+// };
 
 const DocGrid = () => {
   const [open, setOpen] = useState(false);
   const [note_, setNote_] = useState({});
   const [selectedColleges, setSelectedColleges] = useState({});
   const { search } = useLocation();
+
   // const [activeHeart, setActiveHeart] = useState(false);
 
   const [notes, setNotes] = useState([]);
@@ -37,7 +39,6 @@ const DocGrid = () => {
   const handleNoteClick = (note) => {
     setOpen(true);
     setNote_(note);
-    console.log(note);
   };
 
   // const toggle = (college) => {
@@ -54,7 +55,6 @@ const DocGrid = () => {
         withCredentials: true,
       }
     );
-    console.log(res.data);
     setNotes(res.data);
   };
 

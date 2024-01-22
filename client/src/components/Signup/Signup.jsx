@@ -7,6 +7,7 @@ import { TiTick } from "react-icons/ti";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
+import { toast, Bounce } from "react-toastify";
 
 const Signup = () => {
   const {
@@ -25,19 +26,39 @@ const Signup = () => {
 
   const registerUser = async (data) => {
     try {
-      console.log(data);
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/user/register`,
         data
       );
-      console.log(res.data.message);
       if (res.data.message === "register success") {
         setRegisterError("");
         navigate("/login");
       } else if (res.data.message === "user already exists") {
         setRegisterError("User already exists");
+        toast.warning("User already exists!", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       } else {
         setRegisterError("Something went wrong!");
+        toast.error("Some error occurred!", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       }
     } catch (error) {
       console.error(error);
@@ -54,7 +75,6 @@ const Signup = () => {
 
   const handleUsernameChange = async (event) => {
     const username = event.target.value;
-    console.log(username);
     setUsernameExists(false);
 
     if (username.trim() !== "") {

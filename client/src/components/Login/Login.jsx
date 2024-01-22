@@ -5,6 +5,7 @@ import axios from "axios";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import { UserContext } from "../../Context/UserContext";
 import TextLogo from "../../assets/blackLogo.png";
+import { toast, Bounce } from "react-toastify";
 
 const Login = () => {
   const {
@@ -28,23 +29,54 @@ const Login = () => {
 
   const loginUser = async (data) => {
     try {
-      console.log(data);
       axios
         .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data, {
           withCredentials: true,
         })
         .then((res) => {
-          console.log(res.data.user);
           if (res.data.message === "login success") {
             setUser(res.data.user);
             setloginError("");
             navigate("/");
           } else if (res.data.message === "user not found") {
             setloginError("User not found");
+            toast.warning("User not found!", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: false,
+              draggable: false,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+            });
           } else if (res.data.message === "Invalid Credentials") {
             setloginError("Invalid Credentials");
+            toast.error("Invalid credentials!", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: false,
+              draggable: false,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+            });
           } else {
             setloginError("Something went wrong!");
+            toast.error("An error occurred!", {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: false,
+              draggable: false,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+            });
           }
         });
     } catch (error) {

@@ -30,7 +30,6 @@ const UploadPage = () => {
       return;
     }
     try {
-      console.log(addSubject_);
       axios
         .post(
           `${import.meta.env.VITE_BASE_URL}/subject`,
@@ -67,16 +66,15 @@ const UploadPage = () => {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-        console.log("Upload is " + Math.trunc(progress) + "% done");
         setFileUploadProgress(Math.trunc(progress));
-        switch (snapshot.state) {
-          case "paused":
-            console.log("Upload is paused");
-            break;
-          case "running":
-            console.log("Upload is running");
-            break;
-        }
+        // switch (snapshot.state) {
+        //   case "paused":
+        //     console.log("Upload is paused");
+        //     break;
+        //   case "running":
+        //     console.log("Upload is running");
+        //     break;
+        // }
       },
       (error) => {
         // A full list of error codes is available at
@@ -99,7 +97,7 @@ const UploadPage = () => {
       () => {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          console.log("File available at", downloadURL);
+          // console.log("File available at", downloadURL);
           setFileUrl(downloadURL);
         });
       }
@@ -108,7 +106,6 @@ const UploadPage = () => {
 
   const handleFileChange = (event) => {
     const file = event.target.files[0];
-    console.log(file.name);
     setSelectedFile(file);
     setIsFileSelected(true);
     uploadFile(file);
@@ -134,13 +131,10 @@ const UploadPage = () => {
 
   const uploadNotes = async (data) => {
     try {
-      console.log(selectedFile);
       if (selectedFile.length == 0) {
-        console.log("no file selected");
         setIsFileSelected(false);
         return;
       }
-      console.log(data);
       axios
         .post(
           `${import.meta.env.VITE_BASE_URL}/note`,
@@ -157,7 +151,6 @@ const UploadPage = () => {
           }
         )
         .then((res) => {
-          console.log("Notes uploaded successfully");
           navigate("/");
         });
     } catch (error) {

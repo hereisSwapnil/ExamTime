@@ -25,7 +25,6 @@ const addRequest = wrapAsync(async (req, res) => {
 const getRequests = wrapAsync(async (req, res) => {
   try {
     const requests = await Request.find({}).populate("author");
-    console.log(requests);
     res.status(201).json(requests);
   } catch (error) {
     console.error(error);
