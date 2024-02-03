@@ -166,7 +166,7 @@ const UploadPage = () => {
     <>
       <Navbar />
       <div>
-        <div className="flex items-center justify-center p-12">
+        <div className="flex items-center justify-center">
           <div className="mx-auto w-full max-w-[550px] bg-white">
             <form
               className="py-6 px-9"
@@ -271,14 +271,14 @@ const UploadPage = () => {
                 )}
               </div>
 
-              <div className="mb-5">
+              <div className="mb-5 mt-10">
                 <label
                   htmlFor="subject"
                   className="mb-1 block text-base text-[14px] text-red-500"
                 >
                   Didn't find the subject add your own
                 </label>
-                <div className="flex justify-center gap-5">
+                <div className="flex flex-col md:flex-row justify-center gap-5">
                   <input
                     type="text"
                     name="subject"
@@ -425,12 +425,30 @@ const UploadPage = () => {
                         </svg>
                       </button>
                     </div>
-                    <div className="relative mt-5 h-[6px] w-full rounded-lg bg-[#E2E5EF]">
-                      <div
-                        style={{ width: `${fileUploadProgress}%` }}
-                        className={`hover:shadow-form rounded-md bg-[#6A64F1] py-1 px-8 text-center text-base font-semibold text-white outline-none`}
-                      ></div>
-                    </div>
+
+                    {fileUploadProgress != 100 ? (
+                      <div className="relative mt-5 h-[6px] w-full rounded-lg bg-[#E2E5EF]">
+                        <div
+                          style={{ width: `${fileUploadProgress}%` }}
+                          className={`hover:shadow-form rounded-md bg-[#6A64F1] py-1 px-8 text-center text-base font-semibold text-white outline-none`}
+                        ></div>
+                      </div>
+                    ) : (
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        strokeWidth={1.5}
+                        stroke="green"
+                        className="w-6 h-6"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="m4.5 12.75 6 6 9-13.5"
+                        />
+                      </svg>
+                    )}
                   </div>
                 )}
               </div>

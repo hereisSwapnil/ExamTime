@@ -53,7 +53,7 @@ const RequestPage = () => {
     <>
       <Navbar />
       <div>
-        <div className="flex items-center justify-center p-12">
+        <div className="flex items-center justify-center">
           <div className="mx-auto w-full max-w-[550px] bg-white">
             <form
               className="py-6 px-9"
@@ -61,7 +61,7 @@ const RequestPage = () => {
                 addRequest(data);
               })}
             >
-              <h2 className="text-2xl mb-[50px] font-bold tracking-tight text-gray-900">
+              <h2 className="text-xl md:text-2xl mb-[50px] font-bold tracking-tight text-gray-900">
                 Request notes here...
               </h2>
               <div className="mb-5">

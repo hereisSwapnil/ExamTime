@@ -2,7 +2,6 @@ import { Fragment, useContext, useEffect, useState } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import { Bars3Icon, BellIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { Badge, Button } from "@material-tailwind/react";
-import TextLogo from "../../assets/logo_.png";
 import { UserContext } from "../../Context/UserContext";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router";
@@ -68,24 +67,12 @@ const Navbar = () => {
         <>
           <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
             <div className="relative flex h-16 items-center justify-between">
-              <div className="absolute inset-y-0 left-0 flex items-center sm:hidden">
-                {/* Mobile menu button*/}
-                <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
-                  <span className="absolute -inset-0.5" />
-                  <span className="sr-only">Open main menu</span>
-                  {open ? (
-                    <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
-                  ) : (
-                    <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
-                  )}
-                </Disclosure.Button>
-              </div>
-              <div className="flex flex-1 items-center justify-center">
-                <div className="flex flex-shrink-0 items-center">
+              <div className="flex flex-1 items-center">
+                <div className="flex ml-[10px] flex-shrink-0 items-center">
                   <a href="/">
                     <img
                       className="h-auto w-[150px]"
-                      src={TextLogo}
+                      src="https://i.postimg.cc/m2qJB5J2/logo-1.png"
                       alt="Exam Time"
                     />
                   </a>
@@ -140,7 +127,8 @@ const Navbar = () => {
                     ))}
                   </div>
                 </div>
-                <div className="relative mx-auto text-gray-600">
+                {/* INPUT  */}
+                {/* <div className="relative mx-auto text-gray-600">
                   <input
                     className="border-2 border-gray-300 bg-white h-10 px-5 md:w-[600px] lg:w-[500px] w-[10vw] pr-8 rounded-lg text-sm focus:outline-none appearance-none"
                     type="search"
@@ -176,9 +164,8 @@ const Navbar = () => {
                       <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
                     </svg>
                   </button>
-                </div>
+                </div> */}
               </div>
-
               <div className="absolute inset-y-0 right-0 flex gap-3 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <Menu as="div" className="relative ml-3">
                   <div>
@@ -199,7 +186,7 @@ const Navbar = () => {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute w-[20vw] right-0 z-10 mt-2 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="absolute w-[60vw] md:w-[30vw] right-0 z-10 mt-2 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       {requests.map((request, index) => (
                         <Menu.Item key={index}>
                           {({ active }) => (
@@ -300,6 +287,19 @@ const Navbar = () => {
                     </Menu.Items>
                   </Transition>
                 </Menu>
+
+                <div className="flex items-center sm:hidden">
+                  {/* Mobile menu button*/}
+                  <Disclosure.Button className="relative inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-700 hover:text-white focus:outline-none focus:ring-2 focus:ring-inset focus:ring-white">
+                    <span className="absolute -inset-0.5" />
+                    <span className="sr-only">Open main menu</span>
+                    {open ? (
+                      <XMarkIcon className="block h-6 w-6" aria-hidden="true" />
+                    ) : (
+                      <Bars3Icon className="block h-6 w-6" aria-hidden="true" />
+                    )}
+                  </Disclosure.Button>
+                </div>
               </div>
             </div>
           </div>
