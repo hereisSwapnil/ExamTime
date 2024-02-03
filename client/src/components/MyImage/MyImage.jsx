@@ -39,7 +39,7 @@ export default function MyImage({ src, width, size }) {
           color="#ffffffd1"
           ariaLabel="puff-loading"
           wrapperStyle={{}}
-          wrapperClass=""
+          wrapperclassName=""
         />
       </div>
     </div>

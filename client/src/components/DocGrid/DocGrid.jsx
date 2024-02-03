@@ -73,22 +73,10 @@ const DocGrid = () => {
     return (
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-4">
-          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            No results found ...
-          </h2>
-        </div>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <div className="bg-white">
-        <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-4">
-          <div class="flex rounded-md overflow-hidden w-full">
+          <div className="flex rounded-md overflow-hidden w-full">
             <input
               type="text"
-              class="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
+              className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
               placeholder="Search courses"
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
@@ -102,7 +90,46 @@ const DocGrid = () => {
               }}
             />
             <button
-              class="bg-indigo-600 text-white px-6 text-lg font-semibold py-4 rounded-r-md"
+              className="rounded-md mt-3 mb-10 rounded-l-none pl-4 bg-indigo-600 text-white px-6 text-lg font-semibold py-4 rounded-r-md"
+              onClick={() => {
+                window.location.href = `?search=${encodeURIComponent(
+                  searchInput
+                )}`;
+              }}
+            >
+              Go
+            </button>
+          </div>
+          <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+            No Results Found
+          </h2>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <>
+      <div className="bg-white">
+        <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-4">
+          <div className="flex rounded-md overflow-hidden w-full">
+            <input
+              type="text"
+              className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
+              placeholder="Search courses"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  const searchTerm = e.target.value;
+                  window.location.href = `?search=${encodeURIComponent(
+                    searchTerm
+                  )}`;
+                }
+              }}
+            />
+            <button
+              className="rounded-md mt-3 mb-10 rounded-l-none pl-4 bg-indigo-600 text-white px-6 text-lg font-semibold py-4 rounded-r-md"
               onClick={() => {
                 window.location.href = `?search=${encodeURIComponent(
                   searchInput
@@ -147,7 +174,7 @@ const DocGrid = () => {
             ))}
           </div> */}
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            Find your notes here...
+            Find Your Notes Here
           </h2>
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
