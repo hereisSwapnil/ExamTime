@@ -85,7 +85,7 @@ const loginUser = wrapAsync(async (req, res, next) => {
     );
     const { password: UserPassword, ...info } = user._doc;
     res
-      .cookie("token", token, { secure: true })
+      .cookie("token", token, { sameSite: "None", secure: true })
       .status(200)
       .json({ user: info, message: "login success" });
   } catch (error) {
@@ -96,7 +96,7 @@ const loginUser = wrapAsync(async (req, res, next) => {
 const logoutUser = wrapAsync((req, res) => {
   try {
     res
-      .clearCookie("token", { secure: true })
+      .clearCookie("token", { sameSite: "None", secure: true })
       .status(200)
       .json({ message: "logout success" });
   } catch (error) {

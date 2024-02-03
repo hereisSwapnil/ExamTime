@@ -30,14 +30,9 @@ const Login = () => {
   const loginUser = async (data) => {
     try {
       axios
-        .post(
-          `${import.meta.env.VITE_BASE_URL}/user/login`,
-          data,
-          {
-            withCredentials: true,
-          },
-          { sameSite: "None", secure: true }
-        )
+        .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data, {
+          withCredentials: true,
+        })
         .then((res) => {
           if (res.data.message === "login success") {
             setUser(res.data.user);
