@@ -23,8 +23,10 @@ const Signup = () => {
   const [passToggle, setPassToggle] = useState("password");
   const [checkUsernameLoading, setCheckUsernameLoading] = useState(null);
   const [usernameExists, setUsernameExists] = useState();
+  const [loading, setLoading] = useState(false);
 
   const registerUser = async (data) => {
+    setLoading(true);
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/user/register`,
@@ -60,8 +62,10 @@ const Signup = () => {
           transition: Bounce,
         });
       }
+      setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
 
@@ -91,6 +95,10 @@ const Signup = () => {
       }
     }
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <>

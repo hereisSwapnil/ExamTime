@@ -27,6 +27,8 @@ const DocGrid = () => {
   const [note_, setNote_] = useState({});
   const [selectedColleges, setSelectedColleges] = useState({});
   const { search } = useLocation();
+  const [loading, setLoading] = useState(true);
+  const [searchInput, setSearchInput] = useState("");
 
   // const [activeHeart, setActiveHeart] = useState(false);
 
@@ -56,11 +58,16 @@ const DocGrid = () => {
       }
     );
     setNotes(res.data);
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchNotes();
   }, []);
+
+  if (loading) {
+    return <Loader />;
+  }
 
   if (notes.length == 0) {
     return (
@@ -78,6 +85,33 @@ const DocGrid = () => {
     <>
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-4">
+          <div class="flex rounded-md overflow-hidden w-full">
+            <input
+              type="text"
+              class="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
+              placeholder="Search courses"
+              value={searchInput}
+              onChange={(e) => setSearchInput(e.target.value)}
+              onKeyPress={(e) => {
+                if (e.key === "Enter") {
+                  const searchTerm = e.target.value;
+                  window.location.href = `?search=${encodeURIComponent(
+                    searchTerm
+                  )}`;
+                }
+              }}
+            />
+            <button
+              class="bg-indigo-600 text-white px-6 text-lg font-semibold py-4 rounded-r-md"
+              onClick={() => {
+                window.location.href = `?search=${encodeURIComponent(
+                  searchInput
+                )}`;
+              }}
+            >
+              Go
+            </button>
+          </div>
           {/* <p className="text-sm font-medium text-gray-500 mb-4">
             Select College
           </p> */}

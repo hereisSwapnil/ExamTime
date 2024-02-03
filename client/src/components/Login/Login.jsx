@@ -6,6 +6,7 @@ import { GoEye, GoEyeClosed } from "react-icons/go";
 import { UserContext } from "../../Context/UserContext";
 import TextLogo from "../../assets/blackLogo.png";
 import { toast, Bounce } from "react-toastify";
+import { Loader } from "../Loader/Loader";
 
 const Login = () => {
   const {
@@ -16,6 +17,7 @@ const Login = () => {
   const [loginError, setloginError] = useState();
   const { user, setUser } = useContext(UserContext);
   const [passToggle, setPassToggle] = useState("password");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
 
@@ -28,6 +30,7 @@ const Login = () => {
   };
 
   const loginUser = async (data) => {
+    setLoading(true);
     try {
       axios
         .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data, {
@@ -79,10 +82,16 @@ const Login = () => {
             });
           }
         });
+      setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
     }
   };
+
+  if (loading) {
+    return <Loader />;
+  }
 
   return (
     <>

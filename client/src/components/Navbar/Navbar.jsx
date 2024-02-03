@@ -15,6 +15,7 @@ const Navbar = () => {
   const loc = useLocation().pathname;
   const [uploadNav, setUploadNav] = useState(false);
   const [requestNav, setRequestNav] = useState(false);
+  const [searchInput, setSearchInput] = useState("");
 
   const navigation = [
     { name: "Upload Notes", href: "/upload", current: uploadNav },
