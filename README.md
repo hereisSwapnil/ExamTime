@@ -1,19 +1,19 @@
-### ExamTime
+## ExamTime
 
-#### Overview
+## Overview
 ExamTime is a platform designed to facilitate exam preparation by providing a centralized location for sharing and downloading notes in PDF format. Whether you're a student looking for study materials or someone willing to contribute by sharing your notes, ExamTime aims to make exam preparation more efficient and collaborative.
 
-#### Features
+## Features
 - **Note Sharing**: Easily upload and share your study notes in PDF format.
 - **Download**: Access a wide range of notes uploaded by other users for various subjects and topics.
 - **Search**: Quickly find notes relevant to your exam by searching through the available collection.
 - **Contribute**: Help fellow students by contributing your own notes to the platform.
 
-#### Demo Credentials
+## Demo Credentials
 - **Username**: demo@mail.xyz
 - **Password**: Demodemo#1
 
-#### Live Demo
+## Live Demo
 Check out the live demo of ExamTime [here](https://exam-time.vercel.app/).
 
 #### Tech Stack
