@@ -1,6 +1,4 @@
 ## ExamTime
-
-## Overview
 ExamTime is a platform designed to facilitate exam preparation by providing a centralized location for sharing and downloading notes in PDF format. Whether you're a student looking for study materials or someone willing to contribute by sharing your notes, ExamTime aims to make exam preparation more efficient and collaborative.
 
 ## Features
