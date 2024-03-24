@@ -7,7 +7,7 @@ ExamTime is a platform designed to facilitate exam preparation by providing a ce
 - **Search**: Quickly find notes relevant to your exam by searching through the available collection.
 - **Contribute**: Help fellow students by contributing your own notes to the platform.
 
-## Demo Credentials
+## Demo Credential
 - **Username**: demo@mail.xyz
 - **Password**: Demodemo#1
 
