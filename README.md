@@ -15,7 +15,7 @@ ExamTime is a platform designed to facilitate exam preparation by providing a ce
 Check out the live demo of ExamTime [here](https://exam-time.vercel.app/).
 
 #### Tech Stack
-- Frontend: HTML, CSS, JavaScript
+- Frontend: ReactJs
 - Backend: Node.js, Express.js
 - Database: MongoDB
 - PDF Handling: PDF.js
