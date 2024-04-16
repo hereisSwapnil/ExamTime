@@ -25,98 +25,111 @@ const checkUsername = wrapAsync(async (req, res) => {
   }
 });
 
+const createToken = (_id) => {
+  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "365d" });
+};
+
 const registerUser = wrapAsync(async (req, res) => {
   try {
-    let { username, password, email } = req.body;
-    let user = await User.findOne({ email });
-    if (user) {
-      return res.status(200).json({
-        message: "user already exists",
+    const { username, password, email } = req.body;
+    console.log(req.body);
+    const existingUser = await User.findOne({ email });
+    console.log(existingUser);
+    if (existingUser) {
+      return res.status(400).json({
+        message: "User already exists",
       });
     }
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hashSync(password, salt);
+
+    const hashedPassword = await bcrypt.hash(password, 10);
     let userPhoto = `https://ui-avatars.com/api/?name=${username}&background=29335C&size=128&color=fff&format=png&length=1`;
+
     const newUser = new User({
-      username,
       email,
+      username,
       password: hashedPassword,
       userPhoto,
     });
+
     const registeredUser = await newUser.save();
-    const { password: password_, ...info } = registeredUser._doc;
-    res.status(200).json({
-      user: info,
-      message: "register success",
-    });
+
+    const token = createToken(registeredUser._id);
+
+    res.status(200).json({ user: registeredUser, token });
   } catch (error) {
-    console.log(error);
+    console.log(error.message);
     res.status(400).json({
-      message: "register failed",
+      message: "Register failed",
       error: error.message,
     });
   }
 });
 
-const loginUser = wrapAsync(async (req, res, next) => {
+const loginUser = wrapAsync(async (req, res) => {
   try {
     const { email, password } = req.body;
+    console.log(email, password);
+
     const user = await User.findOne({ email });
+
     if (!user) {
-      return res.status(200).json({
-        message: "user not found",
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    if (passwordMatch) {
+      const token = createToken(user._id);
+
+      res.status(200).json({
+        user,
+        token,
       });
+    } else {
+      res.status(401).json({ message: "Invalid credentials" });
     }
-    const matchPassword = await bcrypt.compareSync(password, user.password);
-    if (!matchPassword) {
-      return res.status(200).json({ message: "Invalid Credentials" });
-    }
-    const token = jwt.sign(
-      {
-        id: user._id,
-        username: user.username,
-        email: user.email,
-        userPhoto: user.userPhoto,
-      },
-      process.env.SECRET,
-      {
-        expiresIn: "14d",
-      }
-    );
-    const { password: UserPassword, ...info } = user._doc;
-    res
-      .cookie("token", token, { sameSite: "None", secure: true })
-      .status(200)
-      .json({ user: info, message: "login success" });
   } catch (error) {
-    res.status(500).json({ message: "login failed", error: error.message });
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
-const logoutUser = wrapAsync((req, res) => {
-  try {
-    res
-      .clearCookie("token", { sameSite: "None", secure: true })
-      .status(200)
-      .json({ message: "logout success" });
-  } catch (error) {
-    res.status(500).json({
-      message: "logout failed",
-      error: error.message,
+// Get a user
+const getUser = wrapAsync(async (req, res) => {
+  // Retrieve the token from the request headers
+  const token =
+    req.headers.authorization && req.headers.authorization.split(" ")[1];
+
+  if (!token) {
+    return res.status(401).json({
+      message: "Unauthorized",
     });
   }
-});
 
-const getUser = wrapAsync(async (req, res) => {
-  const token = req.cookies.token;
-  jwt.verify(token, process.env.SECRET, {}, async (err, data) => {
+  jwt.verify(token, process.env.SECRET, {}, async (err, decoded) => {
     if (err) {
       return res.status(404).json({
-        message: "get user failed",
+        message: "Failed to verify token",
         error: err.message,
       });
     }
-    res.status(200).json(data);
+
+    try {
+      // Assuming you have a User model with findById method
+      const user = await User.findById(decoded._id).select("-password");
+
+      if (!user) {
+        return res.status(404).json({
+          message: "User not found",
+        });
+      }
+
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(500).json({
+        message: "Internal server error",
+        error: error.message,
+      });
+    }
   });
 });
 
@@ -124,6 +137,5 @@ module.exports = {
   checkUsername,
   registerUser,
   loginUser,
-  logoutUser,
   getUser,
 };
