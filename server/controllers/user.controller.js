@@ -99,7 +99,7 @@ const getUser = wrapAsync(async (req, res) => {
   const token =
     req.cookies.token ||
     (req.headers.authorization && req.headers.authorization.split(" ")[1]);
-
+  console.log(token);
   if (!token) {
     return res.status(401).json({
       message: "Unauthorized",
@@ -117,7 +117,7 @@ const getUser = wrapAsync(async (req, res) => {
     try {
       // Assuming you have a User model with findById method
       const user = await User.findById(decoded._id).select("-password");
-
+      console.log(user);
       if (!user) {
         return res.status(404).json({
           message: "User not found",

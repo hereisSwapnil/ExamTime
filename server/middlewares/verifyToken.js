@@ -4,6 +4,7 @@ const verifyToken = (req, res, next) => {
   const token =
     req.cookies.token ||
     (req.headers.authorization && req.headers.authorization.split(" ")[1]);
+  console.log(token);
   if (!token) {
     return res.status(401).send("You are not authenticated");
   }
@@ -11,7 +12,7 @@ const verifyToken = (req, res, next) => {
     if (err) {
       res.status(403).send("Token is not valid");
     }
-    // console.log(data);
+    console.log(data);
     req.user = data;
     next();
   });
