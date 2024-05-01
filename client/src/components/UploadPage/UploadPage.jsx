@@ -30,11 +30,18 @@ const UploadPage = () => {
       return;
     }
     try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      };
       axios
         .post(
           `${import.meta.env.VITE_BASE_URL}/subject`,
           { subjectName: addSubject_ },
-          { withCredentials: true }
+          config
         )
         .then((res) => {
           getSubjects();
@@ -120,10 +127,15 @@ const UploadPage = () => {
   }, [user, navigate]);
 
   const getSubjects = () => {
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    };
     axios
-      .get(`${import.meta.env.VITE_BASE_URL}/subject`, {
-        withCredentials: true,
-      })
+      .get(`${import.meta.env.VITE_BASE_URL}/subject`, config)
       .then((res) => {
         setSubjects(res.data);
       });
@@ -135,6 +147,13 @@ const UploadPage = () => {
         setIsFileSelected(false);
         return;
       }
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      };
       axios
         .post(
           `${import.meta.env.VITE_BASE_URL}/note`,
@@ -146,9 +165,7 @@ const UploadPage = () => {
             course: data.course,
             fileUrl: fileUrl,
           },
-          {
-            withCredentials: true,
-          }
+          config
         )
         .then((res) => {
           navigate("/");

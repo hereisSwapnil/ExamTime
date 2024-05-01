@@ -32,12 +32,18 @@ const Login = () => {
   const loginUser = async (data) => {
     setLoading(true);
     try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      };
       axios
-        .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data, {
-          withCredentials: true,
-        })
+        .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data, config)
         .then((res) => {
           if (res.data.message === "login success") {
+            localStorage.setItem("token", res.data.token);
             setUser(res.data.user);
             setloginError("");
             navigate("/");

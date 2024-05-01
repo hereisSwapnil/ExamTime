@@ -9,9 +9,16 @@ const LikeButton = ({ noteId }) => {
   useEffect(() => {
     const checkIfLiked = async () => {
       try {
+        const token = localStorage.getItem("token");
+        const config = {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        };
         const response = await axios.get(
           `${import.meta.env.VITE_BASE_URL}/note/checklike/${noteId}`,
-          { withCredentials: true }
+          config
         );
         setIsLiked(response.data?.isLiked);
       } catch (error) {
@@ -24,8 +31,15 @@ const LikeButton = ({ noteId }) => {
 
   const likeNote = async () => {
     try {
-      await axios.get(`${import.meta.env.VITE_BASE_URL}/note/like/${noteId}`, {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
+      };
+      await axios.get(`${import.meta.env.VITE_BASE_URL}/note/like/${noteId}`, {
+        config,
       });
 
       setIsLiked(true);
@@ -36,9 +50,16 @@ const LikeButton = ({ noteId }) => {
 
   const unlikeNote = async () => {
     try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      };
       await axios.get(
         `${import.meta.env.VITE_BASE_URL}/note/unlike/${noteId}`,
-        { withCredentials: true }
+        config
       );
 
       setIsLiked(false);

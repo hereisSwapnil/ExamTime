@@ -27,9 +27,14 @@ const Navbar = () => {
 
   const handleSignout = async () => {
     try {
-      await axios.get(`${import.meta.env.VITE_BASE_URL}/user/logout`, {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
         withCredentials: true,
-      });
+      };
+      await axios.get(`${import.meta.env.VITE_BASE_URL}/user/logout`, config);
       setUser(null);
       navigate("/login");
     } catch (error) {
@@ -39,10 +44,15 @@ const Navbar = () => {
 
   const getRequests = () => {
     try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      };
       axios
-        .get(`${import.meta.env.VITE_BASE_URL}/request`, {
-          withCredentials: true,
-        })
+        .get(`${import.meta.env.VITE_BASE_URL}/request`, config)
         .then((res) => {
           setRequests(res.data);
         });

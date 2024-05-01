@@ -25,10 +25,15 @@ const RequestPage = () => {
   }, [user, navigate]);
 
   const addRequest = async (data) => {
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    };
     axios
-      .post(`${import.meta.env.VITE_BASE_URL}/request`, data, {
-        withCredentials: true,
-      })
+      .post(`${import.meta.env.VITE_BASE_URL}/request`, data, config)
       .then((res) => {
         toast.success("Requese made successfully!", {
           position: "top-center",

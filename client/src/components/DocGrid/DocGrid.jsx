@@ -51,11 +51,16 @@ const DocGrid = () => {
   // };
 
   const fetchNotes = async () => {
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    };
     const res = await axios.get(
       `${import.meta.env.VITE_BASE_URL}/note${search}`,
-      {
-        withCredentials: true,
-      }
+      config
     );
     setNotes(res.data);
     setLoading(false);
