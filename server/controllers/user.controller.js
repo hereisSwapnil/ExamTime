@@ -52,7 +52,7 @@ const registerUser = wrapAsync(async (req, res) => {
     const registeredUser = await newUser.save();
 
     const token = createToken(registeredUser._id);
-    res.cookie("token", token, { httpOnly: true, secure: true });
+    res.cookie("token", token, { secure: true });
     res
       .status(200)
       .json({ user: registeredUser, token, message: "register success" });
@@ -79,7 +79,7 @@ const loginUser = wrapAsync(async (req, res) => {
 
     if (passwordMatch) {
       const token = createToken(user._id);
-      res.cookie("token", token, { httpOnly: true, secure: true });
+      res.cookie("token", token, { secure: true });
       res.status(200).json({
         user,
         token,
