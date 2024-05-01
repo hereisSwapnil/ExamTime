@@ -32,9 +32,7 @@ const createToken = (_id) => {
 const registerUser = wrapAsync(async (req, res) => {
   try {
     const { username, password, email } = req.body;
-    console.log(req.body);
     const existingUser = await User.findOne({ email });
-    console.log(existingUser);
     if (existingUser) {
       return res.status(400).json({
         message: "User already exists",
@@ -54,8 +52,10 @@ const registerUser = wrapAsync(async (req, res) => {
     const registeredUser = await newUser.save();
 
     const token = createToken(registeredUser._id);
-
-    res.status(200).json({ user: registeredUser, token });
+    res.cookie("token", token, { httpOnly: true, secure: true });
+    res
+      .status(200)
+      .json({ user: registeredUser, token, message: "register success" });
   } catch (error) {
     console.log(error.message);
     res.status(400).json({
@@ -68,22 +68,22 @@ const registerUser = wrapAsync(async (req, res) => {
 const loginUser = wrapAsync(async (req, res) => {
   try {
     const { email, password } = req.body;
-    console.log(email, password);
 
     const user = await User.findOne({ email });
 
     if (!user) {
-      return res.status(401).json({ message: "Invalid credentials" });
+      return res.status(401).json({ message: "user not found" });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (passwordMatch) {
       const token = createToken(user._id);
-
+      res.cookie("token", token, { httpOnly: true, secure: true });
       res.status(200).json({
         user,
         token,
+        message: "login success",
       });
     } else {
       res.status(401).json({ message: "Invalid credentials" });
@@ -97,7 +97,8 @@ const loginUser = wrapAsync(async (req, res) => {
 const getUser = wrapAsync(async (req, res) => {
   // Retrieve the token from the request headers
   const token =
-    req.headers.authorization && req.headers.authorization.split(" ")[1];
+    req.cookies.token ||
+    (req.headers.authorization && req.headers.authorization.split(" ")[1]);
 
   if (!token) {
     return res.status(401).json({
