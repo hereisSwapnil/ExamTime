@@ -35,7 +35,7 @@ const RequestPage = () => {
     axios
       .post(`${import.meta.env.VITE_BASE_URL}/request`, data, config)
       .then((res) => {
-        toast.success("Requese made successfully!", {
+        toast.success("Request made successfully!", {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -47,6 +47,20 @@ const RequestPage = () => {
           transition: Bounce,
         });
         navigate("/");
+      })
+      .catch((error) => {
+        console.log(error.message);
+        toast.error("An error occurred", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       });
   };
 

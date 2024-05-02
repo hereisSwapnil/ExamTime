@@ -55,6 +55,19 @@ const Navbar = () => {
         .get(`${import.meta.env.VITE_BASE_URL}/request`, config)
         .then((res) => {
           setRequests(res.data);
+        })
+        .catch((error) => {
+          toast.error("An error occurred", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
         });
     } catch (error) {
       console.log(error);

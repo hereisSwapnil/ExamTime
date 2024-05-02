@@ -4,7 +4,7 @@ const Request = require("../models/request.model.js");
 const addRequest = wrapAsync(async (req, res) => {
   try {
     const { description } = req.body;
-    const author = req.user.id;
+    const author = req.user._id;
     if (author === undefined) {
       return res.status(401).json({ message: "Unauthorized" });
     }

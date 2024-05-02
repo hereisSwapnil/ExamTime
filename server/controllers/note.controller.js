@@ -24,7 +24,7 @@ const searchNotes = wrapAsync(async (req, res) => {
 const addNote = wrapAsync(async (req, res) => {
   try {
     const { title, description, subject, year, course, fileUrl } = req.body;
-    const author = req.user.id;
+    const author = req.user._id;
     if (!title || !description || !subject || !year || !course || !fileUrl) {
       return res.status(400).json({ message: "Missing fields" });
     }
@@ -57,7 +57,7 @@ const addNote = wrapAsync(async (req, res) => {
 
 const likeNotes = wrapAsync(async (req, res) => {
   const { noteId } = req.params;
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   try {
     const note = await Note.findById(noteId);
@@ -89,7 +89,7 @@ const likeNotes = wrapAsync(async (req, res) => {
 
 const unlikeNotes = wrapAsync(async (req, res) => {
   const { noteId } = req.params;
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   try {
     const note = await Note.findById(noteId);
@@ -121,7 +121,7 @@ const unlikeNotes = wrapAsync(async (req, res) => {
 
 const checkIfLiked = wrapAsync(async (req, res) => {
   const { noteId } = req.params;
-  const userId = req.user.id;
+  const userId = req.user._id;
 
   try {
     const note = await Note.findById(noteId);
