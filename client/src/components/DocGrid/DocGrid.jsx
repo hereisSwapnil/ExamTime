@@ -30,25 +30,12 @@ const DocGrid = () => {
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState("");
 
-  // const [activeHeart, setActiveHeart] = useState(false);
-
   const [notes, setNotes] = useState([]);
-
-  // const ratingChanged = (newRating) => {
-  //   console.log(newRating);
-  // };
 
   const handleNoteClick = (note) => {
     setOpen(true);
     setNote_(note);
   };
-
-  // const toggle = (college) => {
-  //   setSelectedColleges((prevSelectedColleges) => ({
-  //     ...prevSelectedColleges,
-  //     [college]: !prevSelectedColleges[college],
-  //   }));
-  // };
 
   const fetchNotes = async () => {
     const token = localStorage.getItem("token");
@@ -144,40 +131,6 @@ const DocGrid = () => {
               Go
             </button>
           </div>
-          {/* <p className="text-sm font-medium text-gray-500 mb-4">
-            Select College
-          </p> */}
-          {/* <div className="mb-16">
-            {Object.keys(colleges).map((c) => (
-              <button
-                key={c}
-                className={`chip ${
-                  selectedColleges[c] ? "variant-filled" : "variant-soft"
-                } bg-gray-100 mr-2 rounded-lg hover:bg-gray-400`}
-                onClick={() => toggle(c)}
-              >
-                {selectedColleges[c] && (
-                  <span>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
-                      strokeWidth={1.5}
-                      stroke="currentColor"
-                      className="w-3 h-3"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M4.5 12.75l6 6 9-13.5"
-                      />
-                    </svg>
-                  </span>
-                )}
-                <span className="capitalize text-[15px]">{c}</span>
-              </button>
-            ))}
-          </div> */}
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
             Find Your Notes Here
           </h2>
@@ -195,11 +148,6 @@ const DocGrid = () => {
                     alt={note.thumbnail}
                     className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                   />
-                  {/* <img
-                    src={note.thumbnail}
-                    alt={note.thumbnail}
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                  /> */}
                 </div>
                 <div className="mt-4 flex justify-between">
                   <div className="w-full">
