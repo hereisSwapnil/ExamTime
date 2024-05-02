@@ -210,7 +210,7 @@ const Navbar = () => {
                             >
                               <p>{request?.description}</p>
                               <p className="text-[13px] text-end">
-                                @{request?.author.username}
+                                @{request?.author?.username}
                               </p>
                             </a>
                           )}

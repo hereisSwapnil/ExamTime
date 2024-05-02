@@ -5,6 +5,9 @@ const addRequest = wrapAsync(async (req, res) => {
   try {
     const { description } = req.body;
     const author = req.user.id;
+    if (author === undefined) {
+      return res.status(401).json({ message: "Unauthorized" });
+    }
     if (!description) {
       return res.status(400).json({ message: "Missing fields" });
     }
