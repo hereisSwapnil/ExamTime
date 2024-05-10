@@ -30,6 +30,17 @@ const Login = () => {
   };
 
   const loginUser = async (data) => {
+    const tostStyle=  {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: false,
+              draggable: false,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+            };
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
@@ -49,43 +60,17 @@ const Login = () => {
             navigate("/");
           } else if (res.data.message === "user not found") {
             setloginError("User not found");
-            toast.warning("User not found!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
-            });
+            toast.warning("User not found!",tostStyle);
           } else if (res.data.message === "Invalid Credentials") {
             setloginError("Invalid Credentials");
-            toast.error("Invalid credentials!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
-            });
-          } else {
+            toast.error("Invalid credentials!",tostStyle);
+          } else if (res.data.message === "Unauthorized") {
+            setloginError("Invalid Credentials");
+            toast.error("Invalid credentials!",tostStyle);
+          } 
+          else {
             setloginError("Something went wrong!");
-            toast.error("An error occurred!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
-            });
+            toast.error("An error occurred!",tostStyle);
           }
         });
       setLoading(false);
