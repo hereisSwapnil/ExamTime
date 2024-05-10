@@ -156,7 +156,7 @@ const DocGrid = () => {
                       {note.likes > 0 ? <p>❤️ {note.likes}</p> : ""}
                     </h3>
                     <p className="mt-1 text-sm text-gray-500">
-                      {note.subject.subjectName}
+                      {note.subject?.subjectName}
                     </p>
                   </div>
                 </div>

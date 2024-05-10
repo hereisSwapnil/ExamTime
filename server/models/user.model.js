@@ -37,6 +37,10 @@ const userSchema = new Schema(
         ref: "Note",
       },
     ],
+    coins:{
+      type: Number,
+      default: 0
+    }
   },
   {
     timestamps: true,
