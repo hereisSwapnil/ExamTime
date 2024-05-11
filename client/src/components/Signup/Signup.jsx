@@ -8,6 +8,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
 import { toast, Bounce } from "react-toastify";
+import { Loader } from "../Loader/Loader.jsx";
 
 const Signup = () => {
   const {
@@ -34,6 +35,7 @@ const Signup = () => {
       );
       if (res.data.message === "register success") {
         setRegisterError("");
+        
         navigate("/login");
       } else if (res.data.message === "user already exists") {
         setRegisterError("User already exists");
