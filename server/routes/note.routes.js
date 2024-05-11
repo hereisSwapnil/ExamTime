@@ -5,6 +5,7 @@ const {
   likeNotes,
   unlikeNotes,
   checkIfLiked,
+  deleteNote
 } = require("../controllers/note.controller.js");
 const verifyToken = require("../middlewares/verifyToken.js");
 
@@ -15,5 +16,5 @@ router.get("/", verifyToken, searchNotes);
 router.get("/like/:noteId", verifyToken, likeNotes);
 router.get("/unlike/:noteId", verifyToken, unlikeNotes);
 router.get("/checklike/:noteId", verifyToken, checkIfLiked);
-
+router.delete("/delete/:noteId", verifyToken, deleteNote);
 module.exports = router;

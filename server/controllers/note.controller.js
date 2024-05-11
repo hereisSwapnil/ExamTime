@@ -141,6 +141,30 @@ const checkIfLiked = wrapAsync(async (req, res) => {
     });
   }
 });
+const deleteNote = async (req, res) => {
+  try {
+    const note = await Note.findById(req.params.id);
+
+    if (!note) {
+      return res.status(404).json({
+        success: false,
+        error: 'No note found',
+      });
+    }
+
+    await note.remove();
+
+    return res.status(200).json({
+      success: true,
+      data: {},
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      error: 'Server Error',
+    });
+  }
+};
 
 module.exports = {
   searchNotes,
@@ -148,4 +172,5 @@ module.exports = {
   likeNotes,
   unlikeNotes,
   checkIfLiked,
+  deleteNote
 };
