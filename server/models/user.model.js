@@ -46,6 +46,16 @@ const userSchema = new Schema(
         ref: "Note",
       },
     ],
+    bookMarkedNotes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Note",
+      },
+    ],
+    coins:{
+      type: Number,
+      default: 0
+    }
   },
   {
     timestamps: true,
