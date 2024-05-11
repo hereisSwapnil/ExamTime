@@ -1,0 +1,31 @@
+name: "✨ Documentation Update Request"
+description: "Request an update to project documentation"
+title: "Doc:"
+labels: [Doc, Needs Triage]
+body:
+  - type: textarea
+    attributes:
+      label: "Describe the documentation update needed"
+      description: "Detail what aspects of the documentation require updating or improvement."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "Reason for Update"
+      description: "Explain why this update is necessary or beneficial."
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "Proposed Changes"
+      description: "Provide specific details on the changes you suggest."
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: "Record"
+      options:
+        - label: "I agree to follow this project's Code of Conduct"
+          required: true
+        - label: "I'm a GSSoC'24 contributor"
+        - label: "I want to work on this issue"
