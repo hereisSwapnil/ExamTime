@@ -156,10 +156,69 @@ const checkIfLiked = wrapAsync(async (req, res) => {
   }
 });
 
+const bookMarkNotes = async (req, res) => {
+  const { noteId } = req.params;
+  const userId = req.user._id;
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.bookMarkedNotes.includes(noteId)) {
+      user.bookMarkedNotes = user.bookMarkedNotes.filter(
+        (id) => id.toString() !== noteId
+      );
+      await user.save();
+      return res
+        .status(200)
+        .json({ message: "Note unbookmarked successfully" });
+    } else {
+      user.bookMarkedNotes.push(noteId);
+      await user.save();
+      return res.status(200).json({ message: "Note bookmarked successfully" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "error bookmarking notes",
+      error: error.message,
+    });
+  }
+};
+
+const getBookMarkedNotesByUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId)
+      .populate({
+        path: "bookMarkedNotes",
+        populate: [{ path: "author" }, { path: "subject" }],
+      })
+      .select("-password")
+      .exec();
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json(user.bookMarkedNotes);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Error getting bookmarked notes",
+      error: error.message,
+    });
+  }
+};
+
 module.exports = {
   searchNotes,
   addNote,
   likeNotes,
   unlikeNotes,
   checkIfLiked,
+  bookMarkNotes,
+  getBookMarkedNotesByUser,
 };
