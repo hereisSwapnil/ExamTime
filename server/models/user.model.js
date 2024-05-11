@@ -37,6 +37,12 @@ const userSchema = new Schema(
         ref: "Note",
       },
     ],
+    bookMarkedNotes: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Note",
+      },
+    ],
   },
   {
     timestamps: true,

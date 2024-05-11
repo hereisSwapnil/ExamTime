@@ -7,6 +7,8 @@ import axios from "axios";
 import MyImage from "../MyImage/MyImage";
 import LikeButton from "../LikeButton/LikeButton";
 import { Loader } from "../Loader/Loader";
+import { CiBookmark } from "react-icons/ci";
+import { toast } from "react-toastify";
 
 // const colleges = {
 //   harvard: false,
@@ -29,6 +31,7 @@ const DocGrid = () => {
   const { search } = useLocation();
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState("");
+  const [activeTab, setActiveTab] = useState("All");
 
   const [notes, setNotes] = useState([]);
 
@@ -57,11 +60,59 @@ const DocGrid = () => {
     fetchNotes();
   }, []);
 
+  const handleBookMark = (noteID) => {
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    };
+    axios
+      .post(
+        `${import.meta.env.VITE_BASE_URL}/note/bookmark/${noteID}`,
+        null,
+        config
+      )
+      .then((res) => {
+        console.log(res);
+        toast.success(res.data.message);
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.error);
+      });
+  };
+
+  const fetchBookMarkedNotes = async () => {
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    };
+    const res = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/note/bookmarks`,
+      config
+    );
+    setNotes(res.data);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (activeTab === "BookMarked") {
+      fetchBookMarkedNotes();
+    } else {
+      fetchNotes();
+    }
+  }, [activeTab]);
+
   if (loading) {
     return <Loader />;
   }
 
-  if (notes.length == 0) {
+  if (notes.length == 0 && activeTab == "All") {
     return (
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-4">
@@ -131,6 +182,37 @@ const DocGrid = () => {
               Go
             </button>
           </div>
+          <div className="flex gap-2 mb-2">
+            <div
+              onClick={() => {
+                setActiveTab("All");
+              }}
+              className={`flex-1 border-2 ${
+                activeTab === "All"
+                  ? "bg-indigo-600 text-white"
+                  : "border-black"
+              } rounded-lg p-2 `}
+            >
+              <h2 className="text-2xl font-bold tracking-tight  justify-center flex text-center">
+                All Notes
+              </h2>
+            </div>
+            <div
+              onClick={() => {
+                setActiveTab("BookMarked");
+              }}
+              className={`flex-1 border-2 ${
+                activeTab === "BookMarked"
+                  ? "bg-indigo-600 text-white"
+                  : "border-black"
+              } rounded-lg p-2 `}
+            >
+              <h2 className="text-2xl font-bold tracking-tight first-center justify-center flex text-center">
+                BookMarked Notes
+              </h2>
+            </div>
+          </div>
+
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
             Find Your Notes Here
           </h2>
@@ -163,6 +245,14 @@ const DocGrid = () => {
               </div>
             ))}
           </div>
+
+          {activeTab !== "All" && notes.length === 0 ? (
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+              No BookMarked Notes
+            </h2>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       <Transition.Root show={open} as={Fragment}>
@@ -245,9 +335,18 @@ const DocGrid = () => {
                             <span className="font-bold mr-2">Likes:</span>{" "}
                             {note_.likes}
                           </p>
-
-                          <div style={{ width: "20px" }}>
-                            <LikeButton noteId={note_?._id} />
+                          <div className="flex gap-2 ">
+                            <div style={{ width: "15px" }}>
+                              <LikeButton noteId={note_?._id} />
+                            </div>
+                            <div style={{ width: "40px" }}>
+                              <CiBookmark
+                                onClick={() => {
+                                  handleBookMark(note_?._id);
+                                }}
+                                width={100}
+                              />
+                            </div>
                           </div>
                         </section>
 
