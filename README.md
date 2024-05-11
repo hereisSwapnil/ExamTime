@@ -1,143 +1,184 @@
-
 <div align="center">
- 
-<a href="https://github.com/hereisSwapnil/ExamTime.git" target="_blank" title="ExamTime">![ExamTime](https://socialify.git.ci/hereisSwapnil/ExamTime/image?description=1&descriptionEditable=Get%20all%20your%20college%20notes%20in%20one%20place%20with%20ExamTime&font=Jost&name=1&owner=1&pattern=Plus&theme=Auto)</a>
-
-<br>
- 
-![Open Source Love](https://badges.frapsoft.com/os/v2/open-source.svg?v=103) &nbsp; ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-green.svg) &nbsp;
-<a href="https://github.com/hereisSwapnil/ExamTime"><img src="https://sloc.xyz/github/hereisSwapnil/ExamTime" alt="Lines of Code"/></a> &nbsp;
-<a href="https://github.com/hereisSwapnil/ExamTime/stargazers"><img src="https://img.shields.io/github/stars/hereisSwapnil/ExamTime" alt="Stars Badge"/></a> &nbsp;<a href="https://github.com/hereisSwapnil/ExamTime.git/network/members"><img src="https://img.shields.io/github/forks/hereisSwapnil/ExamTime" alt="Forks Badge"/></a> &nbsp;
-![GitHub contributors](https://img.shields.io/github/contributors/hereisSwapnil/ExamTime?color=blue) &nbsp;
-![GitHub last commit](https://img.shields.io/github/last-commit/hereisSwapnil/ExamTime?color=red&style=plastic) &nbsp;
-![Repo. Size](https://img.shields.io/github/repo-size/hereisSwapnil/ExamTime?color=white) &nbsp;  
-<a href="https://github.com/hereisSwapnil/ExamTime/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg?v=103"></a>&nbsp;
-<a href="https://github.com/hereisSwapnil/ExamTime/issues"><img src="https://img.shields.io/github/issues/hereisSwapnil/ExamTime?color=0059b3"></a>&nbsp;
-<a href="https://github.com/hereisSwapnil/ExamTime/issues?q=is%3Aissue+is%3Aclosed"><img src="https://img.shields.io/github/issues-closed-raw/hereisSwapnil/ExamTime?color=yellow"></a>&nbsp;
-<a href="https://github.com/hereisSwapnil/ExamTime/pulls"><img src="https://img.shields.io/github/issues-pr/hereisSwapnil/ExamTime?color=brightgreen"></a>&nbsp;
-<a href="https://github.com/hereisSwapnil/ExamTime/pulls?q=is%3Apr+is%3Aclosed"><img src="https://img.shields.io/github/issues-pr-closed-raw/hereisSwapnil/ExamTime?color=0059b3"></a> &nbsp;
-
-</br>
+<h1>
+<font size="10"> ExamTime</font>
+</h1>
 </div>
 
+<div align="center">
 
-# ExamTime
+<h3><font size="4">ExamTime is a platform designed to facilitate exam preparation by providing a centralized location for sharing and downloading notes in PDF format. Whether you're a student looking for study materials or someone willing to contribute by sharing your notes, ExamTime aims to make exam preparation more efficient and collaborative.
+</font>
+<br>
+<br>
+<p>
 
-ExamTime is a platform designed to facilitate exam preparation by providing a centralized location for sharing and downloading notes in PDF format. Whether you're a student looking for study materials or someone willing to contribute by sharing your notes, ExamTime aims to make exam preparation more efficient and collaborative.
+## Why to Open Source
 
-## Key Features
-- **Note Sharing**: Easily upload and share your study notes in PDF format.
-- **Download**: Access a wide range of notes uploaded by other users for various subjects and topics.
-- **Search**: Quickly find notes relevant to your exam by searching through the available collection.
-- **Contribute**: Help fellow students by contributing your own notes to the platform.
+Contributing in open source increases your opportunities to work with different projects and mentors, getting to know various insights and ideas. It is a platform where contributors grow together with a construvtive and a positive attitude.
 
-## Demo Credential
-- **Username**: `demo@mail.xyz`
-- **Password**: `Demodemo#1`
+[![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)]()
 
-## Live Demo
-Check out the live demo of ExamTime [here](https://exam-time.vercel.app/).
+![GitHub issues](https://img.shields.io/github/issues/hereisSwapnil/ExamTime)
+![GitHub forks](https://img.shields.io/github/forks/hereisSwapnil/ExamTime)
+![GitHub pull requests](https://img.shields.io/github/issues-pr/hereisSwapnil/ExamTime)
+![GitHub Repo stars](https://img.shields.io/github/stars/hereisSwapnil/ExamTime?style=social)
+![GitHub contributors](https://img.shields.io/github/contributors/hereisSwapnil/ExamTime)
+![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=blue&up_message=online&url=https://exam-time.vercel.app/)
 
-#### Tech Stack
-- Frontend: ReactJs
-- Backend: Node.js, Express.js
-- Database: MongoDB
-- PDF Handling: PDF.js
+</p>
 
-## Video
+</div>
+<br>
 
-[Screencast from 02-04-24 03:28:07 PM IST.webm](https://github.com/hereisSwapnil/ExamTime/assets/85278243/a84c0562-40b6-4ad7-bbcf-b4acbfdc9470)
+<!-- tech stacks -->
 
+</div>
+<div align="center">
+<h2><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/High%20Voltage.png" alt="High Voltage" width="40" height="40" /><font size="6">Tech Stack</font></h2>
 
-## Screenshots
+<br>
+</div>
+<center>
+  <p>
+    <div align="center">
+      <a href="https://reactjs.org/"><img src="https://img.shields.io/badge/Frontend-ReactJs-61DAFB.svg?style=for-the-badge&logo=React&logoColor=black"></a>
+      <a href="https://nodejs.org/"><img src="https://img.shields.io/badge/Node.js-43853D.svg?style=for-the-badge&logo=Node.js&logoColor=white"></a>
+      <a href="https://expressjs.com/"><img src="https://img.shields.io/badge/Express.js-000000.svg?style=for-the-badge&logo=Express&logoColor=white"></a>
+      <a href="https://www.mongodb.com/"><img src="https://img.shields.io/badge/MongoDB-47A248.svg?style=for-the-badge&logo=MongoDB&logoColor=white"></a>
+      <a href="https://mozilla.github.io/pdf.js/"><img src="https://img.shields.io/badge/PDF.js-FF5722.svg?style=for-the-badge&logo=JavaScript&logoColor=white"></a>
+    </div>
+  </p>
+</center>
 
-![image.png](https://i.postimg.cc/Z5zspJMy/image.png)
+<br>
 
-![image.png](https://i.postimg.cc/43YTFfXN/image.png)
+<br>
 
-![image.png](https://i.postimg.cc/bv1RP5Hc/image.png)
+<!-- lets get started -->
 
-![image.png](https://i.postimg.cc/FKPC889r/image.png)
+<div align="center">
+<h2><font size="6"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Travel%20and%20places/Rocket.png" alt="Rocket" width="40" height="40" /> Let's get started</font></h2>
 
-![image.png](https://i.postimg.cc/FKfntG10/image.png)
+</div>
 
-![image.png](https://i.postimg.cc/g0JrGLPV/image.png)
-
+<!-- contribution steps -->
 
 ## Environment Variables
 
-To run this project, you will need to add the following environment variables to your .env file
-You will find a `.env.sample` file to refer in both server as well as client
+To run this project, you will need to add the following environment variables to your `.env` file. You can refer to the `.env.dev` file located in both the server and client directories.
 
 #### For server
 
-`PORT`
-
-`MONGODB_URI`
-
-`SECRET`
-
-`ORIGIN`
+- `PORT`
+- `MONGODB_URI`
+- `SECRET`
+- `ORIGIN`
 
 #### For client
 
-`VITE_BASE_URL`
-
+- `VITE_BASE_URL`
 
 ## Run Locally
 
-Clone the project
+### Clone the project
 
 ```bash
-  git clone https://github.com/hereisSwapnil/ExamTime.git
+git clone https://github.com/<your_username>/ExamTime.git
 ```
 
-Go to the server
+### Navigate to the server directory
 
 ```bash
-  cd server
+cd server
 ```
 
-Install dependencies
+### Install server dependencies
 
 ```bash
-  npm install
+npm install
 ```
 
-Start the server
+### Start the server
 
 ```bash
- npm run dev
+npm run dev
 ```
 
-Go to the client
+### Navigate to the client directory
 
 ```bash
-  cd client
+cd ../client
 ```
 
-Install dependencies
+### Install client dependencies
 
 ```bash
-  npm install
+npm install
 ```
 
-Start the server
+### Start the client
 
 ```bash
- npm run dev
+npm run dev
 ```
 
+<br>
+
+<div align="center">
+<h2><font size="6"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Objects/Page%20with%20Curl.png" alt="Page with Curl" width="40" height="40" /> Contributing Guideline </font></h2>
+</div>
+<br>
+
+<!-- contributing guideline detail -->
+
+- Read our [CONTRIBUTING GUIDELINE](./.github/CONTRIBUTING_GUIDELINE.md) to get all details about contributing to **ExamTime**
+- Learn all about development process and all information you need to contribute to our project
+- If you are having the basic queries make sure you checkout resources there
+
+<br>
+
+<!-- code of conduct -->
+
+<div align="center">
+<h2><font size="6"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Hand%20gestures/Handshake.png" alt="Handshake" width="40" height="40" /> Code of Conduct </font></h2>
+</div>
+<br>
+
+- Please note that this project is released with [CODE OF CONDUCT](./.github/CODE_OF_CONDUCT.md). By participating in this project you agree to abide by its terms.
+
+<br>
 
 ## License
 
-[MIT](https://choosealicense.com/licenses/mit/)
+[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
+Terms and conditions for use, reproduction and distribution are under the [Apache-2.0 License](https://opensource.org/license/apache-2-0/).
 
+<!-- mentors -->
 
-## Our Valuable Contributors ✨❤️
+<br>
+<br>
 
+<div align="center">
 
-   
-   [![Contributors](https://contrib.rocks/image?repo=hereisSwapnil/ExamTime)](https://github.com/hereisSwapnil/ExamTime/graphs/contributors)
-   
+</div>
+<br>
+<br>
+<!-- a big thanks to all the contributors -->
+<div align="center">
+<h2><font size="6"><img src="https://raw.githubusercontent.com/Tarikul-Islam-Anik/Animated-Fluent-Emojis/master/Emojis/Smilies/Red%20Heart.png" alt="Red Heart" width="40" height="40" /> Contributors </font></h2>
+</div>
+<br>
+
+- This project thanking all the contributors for having your valuable contribution to our project
+- Make sure you show some love by giving ⭐ to our repository
+
+<br>
+
+<center>
+<a href="https://github.com/hereisSwapnil/ExamTime/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=hereisSwapnil/ExamTime" />
+</a>
+</center>
+<br>
+<p align="right"><a href="#top">Back to top</a></p>
