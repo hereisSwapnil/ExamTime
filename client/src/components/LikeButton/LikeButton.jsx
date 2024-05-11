@@ -38,9 +38,9 @@ const LikeButton = ({ noteId }) => {
         },
         withCredentials: true,
       };
-      await axios.get(`${import.meta.env.VITE_BASE_URL}/note/like/${noteId}`, {
+      await axios.get(`${import.meta.env.VITE_BASE_URL}/note/like/${noteId}`, 
         config,
-      });
+      );
 
       setIsLiked(true);
     } catch (error) {
