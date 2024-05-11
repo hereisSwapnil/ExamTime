@@ -15,11 +15,13 @@ const Navbar = () => {
   const loc = useLocation().pathname;
   const [uploadNav, setUploadNav] = useState(false);
   const [requestNav, setRequestNav] = useState(false);
+  const [leaderBoardNav, setleaderBoardNav] = useState(false);
   const [searchInput, setSearchInput] = useState("");
 
   const navigation = [
     { name: "Upload Notes", href: "/upload", current: uploadNav },
     { name: "Request Notes", href: "/request", current: requestNav },
+    { name: "Leaderboard", href: "/leaderboard", current: leaderBoardNav },
   ];
   const navigate = useNavigate();
 
@@ -82,6 +84,10 @@ const Navbar = () => {
     } else if (loc === "/upload") {
       setRequestNav(false);
       setUploadNav(true);
+    } else {
+      setleaderBoardNav(true);
+      setRequestNav(false);
+      setUploadNav(false);
     }
   }, []);
 
@@ -130,7 +136,19 @@ const Navbar = () => {
                               d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15"
                             />
                           </svg>
-                        ) : (
+                        ) :item.name === "Leaderboard" ? (
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            strokeWidth="1.5"
+                            stroke="currentColor"
+                            className="w-5 h-5"
+                          >
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492c.963-.203 1.934-.377 2.916-.52M4.5 15.75v6.75c0 1.035.84 1.875 1.875 1.875h9.75c1.035 0 1.875-.84 1.875-1.875v-6.75m-12.75 0h15m-9.75 0a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg> 
+
+                        ):(
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -149,6 +167,10 @@ const Navbar = () => {
                         {item.name}
                       </a>
                     ))}
+
+                    <div className="text-gray-200  mt-2 ml-2">
+                      Coins:{user.coins}
+                    </div>
                   </div>
                 </div>
                 {/* INPUT  */}
