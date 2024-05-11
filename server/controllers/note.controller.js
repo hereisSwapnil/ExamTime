@@ -46,6 +46,20 @@ const addNote = wrapAsync(async (req, res) => {
     }
     subject_.notes.push(note);
     await subject_.save();
+    const user = await User.findById(note.author);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.notes.push(note);
+    //add the coins to the user 10 coins per note
+    if(user.coins){
+      user.coins+=10;
+    }
+    else{
+      user.coins=10;
+    }
+    await user.save();
+
     res.status(201).json(note);
   } catch (error) {
     console.error(error);
