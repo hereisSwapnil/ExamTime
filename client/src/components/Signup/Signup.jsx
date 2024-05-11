@@ -8,6 +8,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
 import { toast, Bounce } from "react-toastify";
+import { Loader } from "../Loader/Loader";
 
 const Signup = () => {
   const {
@@ -32,9 +33,9 @@ const Signup = () => {
         `${import.meta.env.VITE_BASE_URL}/user/register`,
         data
       );
-      if (res.data.message === "register success") {
-        setRegisterError("");
-        navigate("/login");
+      if (res.data.sucesss === true) {
+        setRegisterError(res.data.message);
+        navigate("/verifyOtp");
       } else if (res.data.message === "user already exists") {
         setRegisterError("User already exists");
         toast.warning("User already exists!", {

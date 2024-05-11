@@ -5,6 +5,7 @@ import Signup from "./components/Signup/Signup";
 import UploadPage from "./components/UploadPage/UploadPage";
 import RequestPage from "./components/RequestPage/RequestPage";
 import { UserContextProvider } from "./Context/UserContext";
+import VerifyOtp from "./components/OtpVerificationPage/verifyOtp";
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/request" element={<RequestPage />} />
+          <Route path="/verifyOtp" element={<VerifyOtp/>} />
         </Routes>
       </UserContextProvider>
     </>
