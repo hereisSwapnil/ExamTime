@@ -142,7 +142,7 @@ const DocGrid = () => {
                 className="group relative hover:cursor-pointer"
                 onClick={() => handleNoteClick(note)}
               >
-                <div className="aspect-h-1 aspect-w-1 flex items-center w-full overflow-hidden rounded-md bg-gray-800 border border-black lg:aspect-none group-hover:opacity-50 lg:h-80">
+                <div className="aspect-h-1 aspect-w-1 flex items-center w-full overflow-hidden rounded-md bg-gray-800 border border-black lg:aspect-none group-hover:opacity-50 h-80">
                   <MyImage
                     src={note.thumbnail}
                     alt={note.thumbnail}
