@@ -9,6 +9,9 @@ import LikeButton from "../LikeButton/LikeButton";
 import { Loader } from "../Loader/Loader";
 import { CiBookmark } from "react-icons/ci";
 import { toast } from "react-toastify";
+import { useContext } from "react";
+import { UserContext } from "../../Context/UserContext";
+import { FcBookmark } from "react-icons/fc";
 
 // const colleges = {
 //   harvard: false,
@@ -32,6 +35,9 @@ const DocGrid = () => {
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState("");
   const [activeTab, setActiveTab] = useState("All");
+  const { user, setUser, getUser } = useContext(UserContext);
+
+  console.log(user);
 
   const [notes, setNotes] = useState([]);
 
@@ -77,6 +83,7 @@ const DocGrid = () => {
       .then((res) => {
         console.log(res);
         toast.success(res.data.message);
+        getUser();
       })
       .catch((err) => {
         console.log(err);
@@ -336,16 +343,21 @@ const DocGrid = () => {
                             {note_.likes}
                           </p>
                           <div className="flex gap-2 ">
-                            <div style={{ width: "15px" }}>
+                            <div style={{ width: "22px" }}>
                               <LikeButton noteId={note_?._id} />
                             </div>
                             <div style={{ width: "40px" }}>
-                              <CiBookmark
-                                onClick={() => {
-                                  handleBookMark(note_?._id);
-                                }}
-                                width={100}
-                              />
+                              {user?.bookMarkedNotes?.includes(note_._id) ? (
+                                <FcBookmark
+                                  onClick={() => handleBookMark(note_._id)}
+                                  className="text-2xl cursor-pointer"
+                                />
+                              ) : (
+                                <CiBookmark
+                                  onClick={() => handleBookMark(note_._id)}
+                                  className="text-2xl cursor-pointer"
+                                />
+                              )}
                             </div>
                           </div>
                         </section>
