@@ -233,28 +233,32 @@ const Navbar = () => {
                     leaveTo="transform opacity-0 scale-95"
                   >
                     <Menu.Items className="absolute w-[60vw] md:w-[30vw] right-0 z-10 mt-2 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-                      {requests.map((request, index) => (
-                        <Menu.Item key={index}>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700 border-b-2"
-                              )}
-                            >
-                              <p>{request?.description}</p>
-                              <p className="text-[13px] text-end">
-                                @{request?.author?.username}
-                              </p>
-                            </a>
-                          )}
-                        </Menu.Item>
-                      ))}
+                      {requests
+                        .slice(0, 4)
+                        .reverse()
+                        .map((request, index) => (
+                          <Menu.Item key={index}>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700 border-b-2"
+                                )}
+                              >
+                                <p>{request?.description}</p>
+                                <p className="text-[13px] text-end">
+                                  @{request?.author?.username}
+                                </p>
+                              </a>
+                            )}
+                          </Menu.Item>
+                        ))}
+
                       <Menu.Item>
                         {({ active }) => (
                           <a
-                            href="#"
+                            href="/notifications"
                             className={classNames(
                               active ? "underline" : "",
                               "block px-4 py-2 text-sm text-end text-blue-700"
