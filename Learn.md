@@ -28,62 +28,60 @@ You can start contributing with knowledge of ReactJs and learn others on the go.
 
 # <a name="3-running-the-project-locally">Running the Project Locally:</a>
 
-[Note: Ensure you have set up .env file using the .env.dev]
+To run the project locally, you need to set up both the server and the client. Here are the steps:
 
-**Clone the project:**
+**Server Setup:**
 
-```bash
-git clone https://github.com/hereisSwapnil/ExamTime.git
-```
+1. Navigate to the server directory:
 
-**Go to the server:**
+    ```bash
+    cd ExamTime/server
+    ```
 
-```bash
-cd ExamTime/server
-```
+2. Install the necessary dependencies:
 
-**Install dependencies:**
+    ```bash
+    npm install
+    ```
 
-```bash
-npm install
-```
+    This command installs all the necessary dependencies for the server. It reads the `package.json` file to determine what packages are needed, and then downloads them into a `node_modules` folder.
 
-**Start the server:**
+3. Start the server:
 
-```bash
-npm run dev
-```
+    ```bash
+    npm run dev
+    ```
 
-**Go to the client:**
+    This command starts the server in development mode. It looks for a script named "dev" in the `package.json` file and runs it. This usually starts up a local development server and rebuilds the app whenever you make changes.
 
-```bash
-cd ../client
-```
+**Client Setup:**
 
-**Install dependencies:**
+1. Navigate to the client directory:
 
-```bash
-npm install
-```
+    ```bash
+    cd ../client
+    ```
 
-**Start the client:**
+2. Install the necessary dependencies:
 
-```bash
-npm run dev
-```
+    ```bash
+    npm install
+    ```
+
+    This command installs all the necessary dependencies for the client. It reads the `package.json` file to determine what packages are needed, and then downloads them into a `node_modules` folder.
+
+3. Start the client:
+
+    ```bash
+    npm run dev
+    ```
+
+    This command starts the client in development mode. It looks for a script named "dev" in the `package.json` file and runs it. This usually starts up a local development server and rebuilds the app whenever you make changes.
 
 # <a name="4-contributing">Contributing:</a>
 
+Contributions to this project are welcome! Here's how you can contribute:
+
 [Note: Always create a new branch for a new PR]
 
-Refer to [CONTRIBUTING.md](https://github.com/hereisSwapnil/ExamTime/blob/main/CONTRIBUTING.md) for contribution guidelines.
-
-Refer to [CODE_OF_CONDUCT.md](https://github.com/hereisSwapnil/ExamTime/blob/main/CODE_OF_CONDUCT.md) for code of conduct.
-
-<br>
-
----
-
-<br>
-
-This project needs a ⭐️ from you. Don't forget to leave a star ⭐️
+Before you start coding, create a new branch for your work. This keeps your changes separate from the main codebase and makes it easier to merge your changes later.
