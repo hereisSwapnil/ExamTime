@@ -29,6 +29,7 @@ const DocGrid = () => {
   const { search } = useLocation();
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState("");
+  const [dynamicSearch, setDynamicSearch] = useState('')
 
   const [notes, setNotes] = useState([]);
 
@@ -71,7 +72,7 @@ const DocGrid = () => {
               className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
               placeholder="Search courses"
               value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
+              onChange={(e) => { setSearchInput(e.target.value); setDynamicSearch(e.target.value); }}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   const searchTerm = e.target.value;
@@ -110,7 +111,7 @@ const DocGrid = () => {
               className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
               placeholder="Search courses"
               value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
+              onChange={(e) => { setSearchInput(e.target.value); setDynamicSearch(e.target.value) }}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   const searchTerm = e.target.value;
@@ -136,7 +137,10 @@ const DocGrid = () => {
           </h2>
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {notes.map((note, index) => (
+            {notes.filter((note) =>
+              note.title.toLowerCase().includes(dynamicSearch.toLowerCase()) ||
+              note.subject.subjectName.toLowerCase().includes(dynamicSearch.toLowerCase())
+            ).map((note, index) => (
               <div
                 key={index}
                 className="group relative hover:cursor-pointer"
