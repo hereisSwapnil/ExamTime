@@ -36,7 +36,7 @@ const Signup = () => {
       if (res.data.message === "register success") {
         setRegisterError("");
         
-        navigate("/login");
+        navigate("/");
       } else if (res.data.message === "user already exists") {
         setRegisterError("User already exists");
         toast.warning("User already exists!", {
