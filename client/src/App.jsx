@@ -5,6 +5,8 @@ import Signup from "./components/Signup/Signup";
 import UploadPage from "./components/UploadPage/UploadPage";
 import RequestPage from "./components/RequestPage/RequestPage";
 import { UserContextProvider } from "./Context/UserContext";
+import { Analytics } from "@vercel/analytics/react";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 function App() {
   return (
@@ -17,6 +19,8 @@ function App() {
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/request" element={<RequestPage />} />
         </Routes>
+        <Analytics />
+        <SpeedInsights />
       </UserContextProvider>
     </>
   );
