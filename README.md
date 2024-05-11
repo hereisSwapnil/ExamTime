@@ -39,6 +39,7 @@ ExamTime is a platform designed to facilitate exam preparation by providing a ce
 - **Note Sharing**: Easily upload and share your study notes in PDF format.
 - **Download**: Access a wide range of notes uploaded by other users for various subjects and topics.
 - **Search**: Quickly find notes relevant to your exam by searching through the available collection.
+- **Request**: Request notes for your required subject if not available on the platform already.
 - **Contribute**: Help fellow students by contributing your own notes to the platform.
 
 ## Demo Credential
