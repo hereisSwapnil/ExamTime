@@ -7,6 +7,11 @@ import axios from "axios";
 import MyImage from "../MyImage/MyImage";
 import LikeButton from "../LikeButton/LikeButton";
 import { Loader } from "../Loader/Loader";
+import { CiBookmark } from "react-icons/ci";
+import { toast } from "react-toastify";
+import { useContext } from "react";
+import { UserContext } from "../../Context/UserContext";
+import { FcBookmark } from "react-icons/fc";
 
 // const colleges = {
 //   harvard: false,
@@ -29,7 +34,11 @@ const DocGrid = () => {
   const { search } = useLocation();
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState("");
-  const [dynamicSearch, setDynamicSearch] = useState('')
+  const [dynamicSearch, setDynamicSearch] = useState("");
+  const [activeTab, setActiveTab] = useState("All");
+  const { user, setUser, getUser } = useContext(UserContext);
+
+  console.log(user);
 
   const [notes, setNotes] = useState([]);
 
@@ -58,11 +67,60 @@ const DocGrid = () => {
     fetchNotes();
   }, []);
 
+  const handleBookMark = (noteID) => {
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    };
+    axios
+      .post(
+        `${import.meta.env.VITE_BASE_URL}/note/bookmark/${noteID}`,
+        null,
+        config
+      )
+      .then((res) => {
+        console.log(res);
+        toast.success(res.data.message);
+        getUser();
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error(err.response.data.error);
+      });
+  };
+
+  const fetchBookMarkedNotes = async () => {
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    };
+    const res = await axios.get(
+      `${import.meta.env.VITE_BASE_URL}/note/bookmarks`,
+      config
+    );
+    setNotes(res.data);
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (activeTab === "BookMarked") {
+      fetchBookMarkedNotes();
+    } else {
+      fetchNotes();
+    }
+  }, [activeTab]);
+
   if (loading) {
     return <Loader />;
   }
 
-  if (notes.length == 0) {
+  if (notes.length == 0 && activeTab == "All") {
     return (
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-4">
@@ -72,7 +130,10 @@ const DocGrid = () => {
               className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
               placeholder="Search courses"
               value={searchInput}
-              onChange={(e) => { setSearchInput(e.target.value); setDynamicSearch(e.target.value); }}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+                setDynamicSearch(e.target.value);
+              }}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   const searchTerm = e.target.value;
@@ -111,7 +172,10 @@ const DocGrid = () => {
               className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
               placeholder="Search courses"
               value={searchInput}
-              onChange={(e) => { setSearchInput(e.target.value); setDynamicSearch(e.target.value) }}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+                setDynamicSearch(e.target.value);
+              }}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   const searchTerm = e.target.value;
@@ -132,41 +196,87 @@ const DocGrid = () => {
               Go
             </button>
           </div>
+          <div className="flex gap-2 mb-2">
+            <div
+              onClick={() => {
+                setActiveTab("All");
+              }}
+              className={`flex-1 border-2 ${
+                activeTab === "All"
+                  ? "bg-indigo-600 text-white"
+                  : "border-black"
+              } rounded-lg p-2 `}
+            >
+              <h2 className="text-2xl font-bold tracking-tight  justify-center flex text-center">
+                All Notes
+              </h2>
+            </div>
+            <div
+              onClick={() => {
+                setActiveTab("BookMarked");
+              }}
+              className={`flex-1 border-2 ${
+                activeTab === "BookMarked"
+                  ? "bg-indigo-600 text-white"
+                  : "border-black"
+              } rounded-lg p-2 `}
+            >
+              <h2 className="text-2xl font-bold tracking-tight first-center justify-center flex text-center">
+                BookMarked Notes
+              </h2>
+            </div>
+          </div>
+
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
             Find Your Notes Here
           </h2>
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {notes.filter((note) =>
-              note.title.toLowerCase().includes(dynamicSearch.toLowerCase()) ||
-              note.subject.subjectName.toLowerCase().includes(dynamicSearch.toLowerCase())
-            ).map((note, index) => (
-              <div
-                key={index}
-                className="group relative hover:cursor-pointer"
-                onClick={() => handleNoteClick(note)}
-              >
-                <div className="aspect-h-1 aspect-w-1 flex items-center w-full overflow-hidden rounded-md bg-gray-800 border border-black lg:aspect-none group-hover:opacity-50 lg:h-80">
-                  <MyImage
-                    src={note.thumbnail}
-                    alt={note.thumbnail}
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                  />
-                </div>
-                <div className="mt-4 flex justify-between">
-                  <div className="w-full">
-                    <h3 className="text-sm text-gray-700 font-bold flex justify-between w-full">
-                      <p>{note.title}</p>{" "}
-                      {note.likes > 0 ? <p>❤️ {note.likes}</p> : ""}
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      {note.subject.subjectName}
-                    </p>
+            {notes
+              .filter(
+                (note) =>
+                  note.title
+                    .toLowerCase()
+                    .includes(dynamicSearch.toLowerCase()) ||
+                  note.subject.subjectName
+                    .toLowerCase()
+                    .includes(dynamicSearch.toLowerCase())
+              )
+              .map((note, index) => (
+                <div
+                  key={index}
+                  className="group relative hover:cursor-pointer"
+                  onClick={() => handleNoteClick(note)}
+                >
+                  <div className="aspect-h-1 aspect-w-1 flex items-center w-full overflow-hidden rounded-md bg-gray-800 border border-black lg:aspect-none group-hover:opacity-50 h-80">
+                    <MyImage
+                      src={note.thumbnail}
+                      alt={note.thumbnail}
+                      className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                    />
+                  </div>
+                  <div className="mt-4 flex justify-between">
+                    <div className="w-full">
+                      <h3 className="text-sm text-gray-700 font-bold flex justify-between w-full">
+                        <p>{note.title}</p>{" "}
+                        {note.likes > 0 ? <p>❤️ {note.likes}</p> : ""}
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-500">
+                        {note.subject?.subjectName}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
+
+          {activeTab !== "All" && notes.length === 0 ? (
+            <h2 className="text-2xl font-bold tracking-tight text-gray-900">
+              No BookMarked Notes
+            </h2>
+          ) : (
+            ""
+          )}
         </div>
       </div>
       <Transition.Root show={open} as={Fragment}>
@@ -249,9 +359,23 @@ const DocGrid = () => {
                             <span className="font-bold mr-2">Likes:</span>{" "}
                             {note_.likes}
                           </p>
-
-                          <div style={{ width: "20px" }}>
-                            <LikeButton noteId={note_?._id} />
+                          <div className="flex gap-2 ">
+                            <div style={{ width: "22px" }}>
+                              <LikeButton noteId={note_?._id} />
+                            </div>
+                            <div style={{ width: "40px" }}>
+                              {user?.bookMarkedNotes?.includes(note_._id) ? (
+                                <FcBookmark
+                                  onClick={() => handleBookMark(note_._id)}
+                                  className="text-2xl cursor-pointer"
+                                />
+                              ) : (
+                                <CiBookmark
+                                  onClick={() => handleBookMark(note_._id)}
+                                  className="text-2xl cursor-pointer"
+                                />
+                              )}
+                            </div>
                           </div>
                         </section>
 
