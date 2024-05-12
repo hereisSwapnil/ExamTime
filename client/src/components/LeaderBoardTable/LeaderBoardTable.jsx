@@ -34,7 +34,7 @@ const LeaderBoardTable = () => {
     <div className="flex justify-center mt-4">
       <button
         className={`mx-1 px-3 py-1 rounded-md ${
-          currentPage === 1 ? "bg-blue-500 text-white" : "bg-gray-300"
+          currentPage === 1 ? "bg-black text-white" : "bg-gray-300"
         }`}
         onClick={() => setCurrentPage(1)}
         disabled={currentPage === 1}
@@ -43,7 +43,7 @@ const LeaderBoardTable = () => {
       </button>
       <button
         className={`mx-1 px-3 py-1 rounded-md ${
-          currentPage === 1 ? "bg-blue-500 text-white" : "bg-gray-300"
+          currentPage === 1 ? "bg-black text-white" : "bg-gray-300"
         }`}
         onClick={() => setCurrentPage(currentPage - 1)}
         disabled={currentPage === 1}
