@@ -65,7 +65,7 @@ const DocGrid = () => {
 
   useEffect(() => {
     fetchNotes();
-  }, []);
+  }, [open]);
 
   const handleBookMark = (noteID) => {
     const token = localStorage.getItem("token");
