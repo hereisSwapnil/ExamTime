@@ -8,7 +8,6 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
 import { toast, Bounce } from "react-toastify";
-import {Loader} from "../Loader/Loader"
 
 const Signup = () => {
   const {

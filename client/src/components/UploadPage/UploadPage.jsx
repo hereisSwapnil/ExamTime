@@ -217,7 +217,6 @@ const UploadPage = () => {
             subject: data.subject,
             year: data.year,
             course: data.course,
-            // fileUrl: fileUrl,
             fileUrl:fileUrl,
           },
           config
