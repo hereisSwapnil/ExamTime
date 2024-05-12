@@ -55,7 +55,7 @@ const DocGrid = () => {
 
   useEffect(() => {
     fetchNotes();
-  }, []);
+  }, [open]);
 
   if (loading) {
     return <Loader />;
