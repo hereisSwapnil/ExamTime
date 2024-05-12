@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import MoonLoader from "react-spinners/MoonLoader";
@@ -8,6 +8,8 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
 import { toast, Bounce } from "react-toastify";
+import { UserContext } from "../../Context/UserContext";
+import { Loader } from "../Loader/Loader";
 
 const Signup = () => {
   const {
@@ -24,18 +26,24 @@ const Signup = () => {
   const [checkUsernameLoading, setCheckUsernameLoading] = useState(null);
   const [usernameExists, setUsernameExists] = useState();
   const [loading, setLoading] = useState(false);
+  const { user, setUser } = useContext(UserContext);
 
   const registerUser = async (data) => {
     setLoading(true);
+    console.log(data);
+
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/user/register`,
         data
       );
-      if (res.data.message === "register success") {
+
+      if (res.status === 200) {
         setRegisterError("");
-        navigate("/login");
-      } else if (res.data.message === "user already exists") {
+        localStorage.setItem("token", res.data.token);
+        setUser(res.data.user);
+        navigate("/");
+      } else if (res.status === 409) {
         setRegisterError("User already exists");
         toast.warning("User already exists!", {
           position: "top-center",
@@ -49,22 +57,23 @@ const Signup = () => {
           transition: Bounce,
         });
       } else {
-        setRegisterError("Something went wrong!");
-        toast.error("Some error occurred!", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
+        throw new Error("Something went wrong!");
       }
-      setLoading(false);
     } catch (error) {
+      setRegisterError("Something went wrong!");
       console.error(error);
+      toast.error("Some error occurred!", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } finally {
       setLoading(false);
     }
   };
