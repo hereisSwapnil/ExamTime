@@ -169,8 +169,8 @@ const Navbar = () => {
                       </a>
                     ))}
 
-                    <div className="text-gray-200  mt-2 ml-2">
-                      Coins:{user.coins}
+                    <div className="text-gray-200  mt-2 ml-2 ">
+                      Coins : {user.coins}
                     </div>
                   </div>
                 </div>
