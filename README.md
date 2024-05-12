@@ -42,6 +42,8 @@ Contributing in open source increases your opportunities to work with different 
 ![Website](https://img.shields.io/website?down_color=red&down_message=offline&up_color=blue&up_message=online&url=https://exam-time.vercel.app/)
 
 </p>
+
+</div>
 ##Key Features
 - **Note Sharing**: Easily upload and share your study notes in PDF format.
 - **Download**: Access a wide range of notes uploaded by other users for various subjects and topics.
@@ -49,7 +51,6 @@ Contributing in open source increases your opportunities to work with different 
 - **Request**: Request notes for your required subject if not available on the platform already.
 - **Contribute**: Help fellow students by contributing your own notes to the platform.
 
-</div>
 
 <br>
 
