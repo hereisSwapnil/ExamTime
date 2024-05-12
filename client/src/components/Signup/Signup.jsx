@@ -175,11 +175,11 @@ const Signup = () => {
                   })}
                   onChange={handleUsernameChange}
                 />
-                {!checkUsernameLoading && (
+                {!checkUsernameLoading ? (
                   <p
                     className={`text-sm ${
                       usernameExists ? "text-red-500" : "text-green-500"
-                    }  mt-1`}
+                    }  `}
                   >
                     {checkUsernameLoading
                       ? ""
@@ -189,6 +189,8 @@ const Signup = () => {
                       ? "Username available"
                       : ""}
                   </p>
+                ) : (
+                  <p className="text-sm text-gray-500 ">Checking...</p> // instead of empty space showing checking will not decrease the height
                 )}
                 <span
                   className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 ${
