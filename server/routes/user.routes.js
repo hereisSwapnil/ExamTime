@@ -13,6 +13,7 @@ const {
   logoutUser,
   checkUsername,
   getUser,
+  getLeaderBoard
 } = require("../controllers/user.controller");
 
 const router = Router();
@@ -23,5 +24,6 @@ router.post("/register", registerUser);
 router.get('/logout',logoutUser);
 router.get("/checkusername/:username", checkUsername);
 router.get("/get", getUser);
+router.get("/leaderboard", getLeaderBoard);
 
 module.exports = router;

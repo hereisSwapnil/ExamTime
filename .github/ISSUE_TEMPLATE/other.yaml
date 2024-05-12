@@ -1,0 +1,25 @@
+name: 👽 Other Issues
+description: File an issue not in category from above.
+title: "Other:"
+labels: [Other, Needs Triage]
+body:
+  - type: textarea
+    attributes:
+      label: "Describe the feature"
+      description:
+    validations:
+      required: true
+  - type: textarea
+    attributes:
+      label: "Add ScreenShots"
+      description: "Add sufficient SS to explain your issue."
+    validations:
+      required: true
+  - type: checkboxes
+    attributes:
+      label: "Record"
+      options:
+        - label: "I agree to follow this project's Code of Conduct"
+          required: true
+        - label: "I'm a GSSoC'24 contributor"
+        - label: "I want to work on this issue"
