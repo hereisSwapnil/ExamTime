@@ -4,15 +4,12 @@
 </h1>
 </div>
 
-<div align="center">
-
 <h3><font size="4">ExamTime is a platform designed to facilitate exam preparation by providing a centralized location for sharing and downloading notes in PDF format. Whether you're a student looking for study materials or someone willing to contribute by sharing your notes, ExamTime aims to make exam preparation more efficient and collaborative.
 </font>
 <br>
 <br>
 <p>
 
-## Why to Open Source
 
 Contributing in open source increases your opportunities to work with different projects and mentors, getting to know various insights and ideas. It is a platform where contributors grow together with a construvtive and a positive attitude.
 

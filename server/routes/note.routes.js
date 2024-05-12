@@ -5,7 +5,9 @@ const {
   likeNotes,
   unlikeNotes,
   checkIfLiked,
-  deleteNote
+  deleteNote,
+  bookMarkNotes,
+  getBookMarkedNotesByUser,
 } = require("../controllers/note.controller.js");
 const verifyToken = require("../middlewares/verifyToken.js");
 
@@ -17,5 +19,7 @@ router.get("/like/:noteId", verifyToken, likeNotes);
 router.get("/unlike/:noteId", verifyToken, unlikeNotes);
 router.get("/checklike/:noteId", verifyToken, checkIfLiked);
 router.delete("/:noteId", verifyToken, deleteNote);
+router.post("/bookmark/:noteId", verifyToken, bookMarkNotes);
+router.get("/bookmarks", verifyToken, getBookMarkedNotesByUser);
 
 module.exports = router;

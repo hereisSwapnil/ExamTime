@@ -46,6 +46,20 @@ const addNote = wrapAsync(async (req, res) => {
     }
     subject_.notes.push(note);
     await subject_.save();
+    const user = await User.findById(note.author);
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    user.notes.push(note);
+    //add the coins to the user 10 coins per note
+    if(user.coins){
+      user.coins+=10;
+    }
+    else{
+      user.coins=10;
+    }
+    await user.save();
+
     res.status(201).json(note);
   } catch (error) {
     console.error(error);
@@ -179,6 +193,62 @@ const deleteNote = wrapAsync(async (req, res) => {
     return res.status(500).json({ message: "Error deleting note", error: error.message });
   }
 });
+const bookMarkNotes = async (req, res) => {
+  const { noteId } = req.params;
+  const userId = req.user._id;
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    if (user.bookMarkedNotes.includes(noteId)) {
+      user.bookMarkedNotes = user.bookMarkedNotes.filter(
+        (id) => id.toString() !== noteId
+      );
+      await user.save();
+      return res
+        .status(200)
+        .json({ message: "Note unbookmarked successfully" });
+    } else {
+      user.bookMarkedNotes.push(noteId);
+      await user.save();
+      return res.status(200).json({ message: "Note bookmarked successfully" });
+    }
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "error bookmarking notes",
+      error: error.message,
+    });
+  }
+};
+
+const getBookMarkedNotesByUser = async (req, res) => {
+  try {
+    const userId = req.user._id;
+    const user = await User.findById(userId)
+      .populate({
+        path: "bookMarkedNotes",
+        populate: [{ path: "author" }, { path: "subject" }],
+      })
+      .select("-password")
+      .exec();
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    return res.status(200).json(user.bookMarkedNotes);
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({
+      message: "Error getting bookmarked notes",
+      error: error.message,
+    });
+  }
+};
 
 module.exports = {
   searchNotes,
@@ -186,5 +256,7 @@ module.exports = {
   likeNotes,
   unlikeNotes,
   checkIfLiked,
-  deleteNote
+  deleteNote,
+  bookMarkNotes,
+  getBookMarkedNotesByUser,
 };
