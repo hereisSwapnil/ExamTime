@@ -53,6 +53,28 @@ const DocGrid = () => {
     setLoading(false);
   };
 
+  const deleteNote = async (noteId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      };
+      await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/note/${noteId}`,
+        config
+      );
+      
+      setNotes(notes.filter((note) => note._id !== noteId));
+      setOpen(false); 
+    } catch (error) {
+      console.error("Error deleting note:", error);
+      
+    }
+  };
+
   useEffect(() => {
     fetchNotes();
   }, []);
@@ -159,8 +181,19 @@ const DocGrid = () => {
                       {note.subject.subjectName}
                     </p>
                   </div>
+                  <button
+                className="bg-blue-700 p-2 rounded-md text-white font-bold"
+                onClick={(e) => {
+                  e.stopPropagation(); 
+                  deleteNote(note._id);
+                }}
+              >
+                Delete
+              </button>
                 </div>
+                
               </div>
+              
             ))}
           </div>
         </div>
