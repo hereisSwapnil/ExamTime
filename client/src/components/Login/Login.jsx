@@ -31,68 +31,71 @@ const Login = () => {
 
   const loginUser = async (data) => {
     setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      };
-      axios
-        .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data, config)
-        .then((res) => {
-          if (res.data.message === "login success") {
-            localStorage.setItem("token", res.data.token);
-            setUser(res.data.user);
-            setloginError("");
-            navigate("/");
-          } else if (res.data.message === "user not found") {
-            setloginError("User not found");
-            toast.warning("User not found!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
-            });
-          } else if (res.data.message === "Invalid Credentials") {
-            setloginError("Invalid Credentials");
-            toast.error("Invalid credentials!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
-            });
-          } else {
-            setloginError("Something went wrong!");
-            toast.error("An error occurred!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
-            });
-          }
-        });
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
+    axios
+      .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data)
+      .then((res) => {
+        console.log(res.data.message);
+        if (res.data.message === "login success") {
+          localStorage.setItem("token", res.data.token);
+          setUser(res.data.user);
+          setloginError("");
+          toast.success("Logged in successfully!", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        if (err.response.data.message === "user not found") {
+          setloginError("User not found");
+          toast.warning("User not found!", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        } else if (err.response.data.message === "Invalid credentials") {
+          setloginError("Invalid Credentials");
+          toast.error("Invalid Credentials!", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        } else {
+          setloginError("Something went wrong!");
+          toast.error("An error occurred!", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        }
+      });
+    setLoading(false);
   };
 
   if (loading) {
