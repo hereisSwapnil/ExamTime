@@ -6,7 +6,6 @@ import UploadPage from "./components/UploadPage/UploadPage";
 import RequestPage from "./components/RequestPage/RequestPage";
 import { UserContextProvider } from "./Context/UserContext";
 import VerifyOtp from "./components/OtpVerificationPage/verifyOtp";
-=======
 import LeaderBoard from "./components/Leaderboard/LeaderBoard";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
