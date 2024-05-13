@@ -93,6 +93,26 @@ const loginUser = wrapAsync(async (req, res) => {
   }
 });
 
+//logout
+//logout
+const logoutUser = async (req, res) => {
+  try {
+    // Clear the token from client-side storage
+    res.clearCookie("token");
+    
+    // Send a response indicating successful logout
+    res.status(200).json({
+      message: "Logout successful",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal Server Error",
+      error: error.message,
+    });
+  }
+};
+
+
 // Get a user
 const getUser = wrapAsync(async (req, res) => {
   // Retrieve the token from the request headers
@@ -134,9 +154,30 @@ const getUser = wrapAsync(async (req, res) => {
   });
 });
 
+const getLeaderBoard=async(req,res)=>{
+  try {
+      const users=await User.find().sort({
+          coins:-1
+      }).select('-password')
+      if(!users){
+          return res.status(404).json({
+              message:"No users found"
+          })
+      }
+      res.status(200).json(users)
+  } catch (error) {
+      res.status(500).json({
+          message:"Internal server error",
+          error:error.message
+      })
+  }
+}
+
 module.exports = {
   checkUsername,
   registerUser,
   loginUser,
+  logoutUser,
   getUser,
+  getLeaderBoard
 };

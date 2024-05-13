@@ -1,11 +1,11 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import { UserContext } from "../../Context/UserContext";
 import TextLogo from "../../assets/blackLogo.png";
-import { toast, Bounce } from "react-toastify";
+import { toast, Bounce, ToastContainer } from "react-toastify";
 import { Loader } from "../Loader/Loader";
 
 const Login = () => {
@@ -14,6 +14,36 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+  useEffect(()=>{
+
+if(errors?.email?.message){
+toast.error(errors.email.message, {
+  position: "top-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: false,
+  pauseOnHover: false,
+  draggable: false,
+  progress: undefined,
+  theme: "light",
+  transition: Bounce,
+});
+}
+else if(errors?.password?.message){
+  toast.error(errors.password.message, {
+    position: "top-right",
+    autoClose: 5000,
+    hideProgressBar: false,
+    closeOnClick: false,
+    pauseOnHover: false,
+    draggable: false,
+    progress: undefined,
+    theme: "light",
+    transition: Bounce,
+  });
+  }
+
+  },[errors?.email,errors?.password])
   const [loginError, setloginError] = useState();
   const { user, setUser } = useContext(UserContext);
   const [passToggle, setPassToggle] = useState("password");
@@ -31,68 +61,73 @@ const Login = () => {
 
   const loginUser = async (data) => {
     setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      };
-      axios
-        .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data, config)
-        .then((res) => {
-          if (res.data.message === "login success") {
-            localStorage.setItem("token", res.data.token);
-            setUser(res.data.user);
-            setloginError("");
-            navigate("/");
-          } else if (res.data.message === "user not found") {
-            setloginError("User not found");
-            toast.warning("User not found!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
-            });
-          } else if (res.data.message === "Invalid Credentials") {
-            setloginError("Invalid Credentials");
-            toast.error("Invalid credentials!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
-            });
-          } else {
-            setloginError("Something went wrong!");
-            toast.error("An error occurred!", {
-              position: "top-center",
-              autoClose: 5000,
-              hideProgressBar: false,
-              closeOnClick: false,
-              pauseOnHover: false,
-              draggable: false,
-              progress: undefined,
-              theme: "light",
-              transition: Bounce,
-            });
-          }
-        });
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-    }
+    console.log(errors)
+   
+    axios
+      .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data)
+      .then((res) => {
+        console.log(res.data.message);
+        if (res.data.message === "login success") {
+          localStorage.setItem("token", res.data.token);
+          setUser(res.data.user);
+          setloginError("");
+          toast.success("Logged in successfully!", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+          navigate("/");
+        }
+      })
+      .catch((err) => {
+        if (err.response.data.message === "user not found") {
+          setloginError("User not found");
+          toast.warning("User not found!", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        } else if (err.response.data.message === "Invalid credentials") {
+          setloginError("Invalid Credentials");
+          toast.error("Invalid Credentials!", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        } else {
+          setloginError("Something went wrong!");
+          toast.error("An error occurred!", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        }
+      });
+    setLoading(false);
   };
 
   if (loading) {
@@ -102,6 +137,7 @@ const Login = () => {
   return (
     <>
       <div className="flex min-h-screen flex-1 flex-col justify-center px-6 lg:px-8">
+        <ToastContainer/>
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="text-center m-auto h-[50px]"
@@ -144,14 +180,7 @@ const Login = () => {
                     },
                   })}
                 />
-                {errors.email && (
-                  <p
-                    className="text-sm text-red-500 mt-1"
-                    dangerouslySetInnerHTML={{
-                      __html: errors.email.message,
-                    }}
-                  ></p>
-                )}
+                
               </div>
             </div>
 
@@ -171,7 +200,13 @@ const Login = () => {
                   type={passToggle}
                   autoComplete="current-password"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("password")}
+                  {...register("password", {
+                    validate: {
+                      matchPatern: (value) =>
+                      !(/^$|\s+/.test(value)) ||
+                        "please enter  password",
+                    },
+                  })}
                 />
                 <button
                   type="button"
@@ -194,9 +229,7 @@ const Login = () => {
               >
                 Sign in
               </button>
-              <p className="text-sm mt-5 text-red-500 text-center">
-                {loginError && loginError}
-              </p>
+             
             </div>
           </form>
 

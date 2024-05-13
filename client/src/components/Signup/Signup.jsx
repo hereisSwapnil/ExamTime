@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import MoonLoader from "react-spinners/MoonLoader";
@@ -12,6 +12,14 @@ import { UserContext } from "../../Context/UserContext";
 import { Loader } from "../Loader/Loader";
 
 const Signup = () => {
+  const username = {
+    required: "username is required",
+    minLength: {
+      value: 8,
+      message: "Password must have at least 8 characters",
+    },
+  };
+
   const {
     register,
     handleSubmit,
@@ -19,6 +27,75 @@ const Signup = () => {
     watch,
   } = useForm();
 
+  useEffect(() => {
+    if (errors?.email?.message) {
+      toast.error(errors.email.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (errors?.username?.message) {
+      toast.error(errors.username.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (errors?.password?.message) {
+      toast.error(errors.password.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (errors?.confirm_password?.message) {
+      toast.error(errors.confirm_password.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (usernameExists) {
+      toast.error("User name already exists", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+    console.log(errors);
+  }, [
+    errors?.email,
+    errors?.password,
+    errors?.username,
+    errors?.confirm_password,
+  ]);
   const navigate = useNavigate();
 
   const [registerError, setRegisterError] = useState();
@@ -27,7 +104,6 @@ const Signup = () => {
   const [usernameExists, setUsernameExists] = useState();
   const [loading, setLoading] = useState(false);
   const { user, setUser } = useContext(UserContext);
-
   const registerUser = async (data) => {
     setLoading(true);
     console.log(data);
@@ -44,6 +120,8 @@ const Signup = () => {
         setUser(res.data.user);
         navigate("/");
       } else if (res.status === 409) {
+        navigate("/");
+      } else if (res.data.message === "user already exists") {
         setRegisterError("User already exists");
         toast.warning("User already exists!", {
           position: "top-center",
@@ -118,14 +196,14 @@ const Signup = () => {
             src={TextLogo}
             alt="ExamTime"
           />
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Sign up to an account
           </h2>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
           <form
-            className="space-y-6"
+            className="space-y-4"
             onSubmit={handleSubmit((data) => {
               registerUser(data);
             })}
@@ -150,14 +228,6 @@ const Signup = () => {
                     },
                   })}
                 />
-                {errors.email && (
-                  <p
-                    className="text-sm text-red-500 mt-1"
-                    dangerouslySetInnerHTML={{
-                      __html: errors.email.message,
-                    }}
-                  ></p>
-                )}
               </div>
             </div>
 
@@ -178,25 +248,11 @@ const Signup = () => {
                   className="block w-full pr-5 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   {...register("username", {
                     validate: (value) =>
-                      !usernameExists || "Username is already taken",
+                      !/^$|\s+/.test(value) || "please enter username",
                   })}
                   onChange={handleUsernameChange}
                 />
-                {!checkUsernameLoading && (
-                  <p
-                    className={`text-sm ${
-                      usernameExists ? "text-red-500" : "text-green-500"
-                    }  mt-1`}
-                  >
-                    {checkUsernameLoading
-                      ? ""
-                      : usernameExists == true
-                      ? "Username taken"
-                      : usernameExists == false
-                      ? "Username available"
-                      : ""}
-                  </p>
-                )}
+
                 <span
                   className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 ${
                     checkUsernameLoading
@@ -243,7 +299,7 @@ const Signup = () => {
                         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm.test(
                           value
                         ) ||
-                        "- at least 8 characters <br />- must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number<br />- Can contain special characters",
+                        "password must contain atleast 8 characters must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number and Can contain special characters",
                     },
                   })}
                 />
@@ -259,14 +315,6 @@ const Signup = () => {
                   )}
                 </button>
               </div>
-              {errors.password && (
-                <p
-                  className="text-sm text-red-500 mt-1"
-                  dangerouslySetInnerHTML={{
-                    __html: errors.password.message,
-                  }}
-                ></p>
-              )}
             </div>
 
             <div>
@@ -294,11 +342,6 @@ const Signup = () => {
                     },
                   })}
                 />
-                {errors.confirm_password && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.confirm_password.message}
-                  </p>
-                )}
               </div>
             </div>
 
@@ -309,9 +352,7 @@ const Signup = () => {
               >
                 Sign up
               </button>
-              <p className="text-sm mt-5 text-red-500 text-center">
-                {registerError && registerError}
-              </p>
+              <p className="text-sm mt-5 text-red-500 text-center"></p>
             </div>
           </form>
 
