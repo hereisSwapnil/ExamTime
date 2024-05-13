@@ -32,5 +32,8 @@
     "pdftopic": "^1.0.1-alpha",
     "sharp": "^0.33.1",
     "unique-filename": "^3.0.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }

@@ -1,0 +1,38 @@
+version: '3'
+
+services:
+  backend:
+    container_name: server
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"  # Map container port 3000 to host port 3001
+    networks:
+      - app-network
+   
+
+  frontend:
+    container_name: client
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"  # Map container port 3000 to host port 3000
+    networks:
+      - app-network
+
+
+  mongodb:
+    container_name: mongodb
+    image: mongo
+    ports:
+      - "27017:27017"  # Map container port 27017 to host port 27017
+    networks:
+      - app-network
+
+
+  
+networks:
+  app-network:
+    driver: bridge
