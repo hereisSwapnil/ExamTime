@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import Navbar from "../Navbar/Navbar";
 import { Loader } from "../Loader/Loader";
 import { useNavigate } from "react-router";
 import { UserContext } from "../../Context/UserContext";
@@ -112,7 +111,6 @@ const UploadPage = () => {
   //   );
   // };
 
-
   // upload file function changed
 
   const uploadFile = async (file, callback) => {
@@ -123,7 +121,8 @@ const UploadPage = () => {
       "state_changed",
       (snapshot) => {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress =
+          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setFileUploadProgress(Math.trunc(progress));
       },
       (error) => {
@@ -134,7 +133,7 @@ const UploadPage = () => {
             break;
           case "storage/canceled":
             // User canceled the upload
-            break
+            break;
 
           case "storage/unknown":
             // Unknown error occurred, inspect error.serverResponse
@@ -150,7 +149,6 @@ const UploadPage = () => {
       }
     );
   };
-  
 
   // const handleFileChange = (event) => {
   //   const file = event.target.files[0];
@@ -169,7 +167,6 @@ const UploadPage = () => {
       setFileUrl(fileUrl); // Update state with the file URL if needed
     });
   };
-
 
   useEffect(() => {
     if (!user) {
@@ -217,7 +214,7 @@ const UploadPage = () => {
             subject: data.subject,
             year: data.year,
             course: data.course,
-            fileUrl:fileUrl,
+            fileUrl: fileUrl,
           },
           config
         )
@@ -235,7 +232,6 @@ const UploadPage = () => {
 
   return (
     <>
-      <Navbar />
       <div>
         <div className="flex items-center justify-center">
           <div className="mx-auto w-full max-w-[550px] bg-white">

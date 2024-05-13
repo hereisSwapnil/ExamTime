@@ -9,27 +9,28 @@ import LeaderBoard from "./components/Leaderboard/LeaderBoard";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import Notifcation from "./components/NotifcationPage/Notifcation";
-import Footer from "./components/Footer";
 import Settings from "./components/Settings/Setting";
-
-
+import Layout from "./components/LayoutDashboard";
 function App() {
   return (
     <>
       <UserContextProvider>
         <Routes>
-          <Route path="/" element={<Dashboard />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/notifications" element={<Notifcation />} />
           <Route path="/signup" element={<Signup />} />
-          <Route path="/upload" element={<UploadPage />} />
-          <Route path="/request" element={<RequestPage />} />
-          <Route path="/leaderboard" element={<LeaderBoard />} />
-          <Route path="/settings" element = {<Settings />} />
+
+          <Route path="/" element={<Layout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="/notifications" element={<Notifcation />} />
+            <Route path="/upload" element={<UploadPage />} />
+            <Route path="/request" element={<RequestPage />} />
+            <Route path="/leaderboard" element={<LeaderBoard />} />
+            <Route path="/settings" element={<Settings />} />
+          </Route>
+
         </Routes>
         <Analytics />
         <SpeedInsights />
-        <Footer/>
       </UserContextProvider>
     </>
   );
