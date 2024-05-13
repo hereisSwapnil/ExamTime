@@ -10,6 +10,7 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import Notifcation from "./components/NotifcationPage/Notifcation";
 import Footer from "./components/Footer";
+import Settings from "./components/Settings/Setting";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/request" element={<RequestPage />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
+          <Route path="/settings" element = {<Settings />} />
         </Routes>
         <Analytics />
         <SpeedInsights />
