@@ -5,7 +5,7 @@ import { Badge, Button } from "@material-tailwind/react";
 import { UserContext } from "../../Context/UserContext";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router";
-import { Link } from "react-router-dom";
+import Login from "../Login/Login.jsx";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -100,20 +100,20 @@ const Navbar = () => {
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex flex-1 items-center">
                 <div className="flex ml-[10px] flex-shrink-0 items-center">
-                  <Link to="/">
+                  <a href="/">
                     <img
                       className="h-auto w-[150px]"
                       src="https://i.postimg.cc/m2qJB5J2/logo-1.png"
                       alt="Exam Time"
                     />
-                  </Link>
+                  </a>
                 </div>
                 <div className="hidden sm:ml-6 sm:block self-center">
                   <div className="flex">
                     {navigation.map((item) => (
-                      <Link
+                      <a
                         key={item.name}
-                        to={item.href}
+                        href={item.href}
                         className={classNames(
                           item.current
                             ? "bg-gray-900 text-white flex gap-2"
@@ -137,7 +137,7 @@ const Navbar = () => {
                               d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15"
                             />
                           </svg>
-                        ) : item.name === "Leaderboard" ? (
+                        ) :item.name === "Leaderboard" ? (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -146,13 +146,10 @@ const Navbar = () => {
                             stroke="currentColor"
                             className="w-5 h-5"
                           >
-                            <path
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                              d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492c.963-.203 1.934-.377 2.916-.52M4.5 15.75v6.75c0 1.035.84 1.875 1.875 1.875h9.75c1.035 0 1.875-.84 1.875-1.875v-6.75m-12.75 0h15m-9.75 0a3 3 0 11-6 0 3 3 0 016 0z"
-                            />
-                          </svg>
-                        ) : (
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492c.963-.203 1.934-.377 2.916-.52M4.5 15.75v6.75c0 1.035.84 1.875 1.875 1.875h9.75c1.035 0 1.875-.84 1.875-1.875v-6.75m-12.75 0h15m-9.75 0a3 3 0 11-6 0 3 3 0 016 0z" />
+                          </svg> 
+
+                        ):(
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -169,7 +166,7 @@ const Navbar = () => {
                           </svg>
                         )}
                         {item.name}
-                      </Link>
+                      </a>
                     ))}
 
                     <div className="text-gray-200  mt-2 ml-2">
@@ -243,8 +240,8 @@ const Navbar = () => {
                         .map((request, index) => (
                           <Menu.Item key={index}>
                             {({ active }) => (
-                              <Link
-                                to="#"
+                              <a
+                                href="#"
                                 className={classNames(
                                   active ? "bg-gray-100" : "",
                                   "block px-4 py-2 text-sm text-gray-700 border-b-2"
@@ -254,22 +251,22 @@ const Navbar = () => {
                                 <p className="text-[13px] text-end">
                                   @{request?.author?.username}
                                 </p>
-                              </Link>
+                              </a>
                             )}
                           </Menu.Item>
                         ))}
 
                       <Menu.Item>
                         {({ active }) => (
-                          <Link
-                            to="/notifications"
+                          <a
+                            href="/notifications"
                             className={classNames(
                               active ? "underline" : "",
                               "block px-4 py-2 text-sm text-end text-blue-700"
                             )}
                           >
                             View more...
-                          </Link>
+                          </a>
                         )}
                       </Menu.Item>
                     </Menu.Items>
@@ -301,28 +298,28 @@ const Navbar = () => {
                     <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       <Menu.Item>
                         {({ active }) => (
-                          <Link
-                            to="#"
+                          <a
+                            href="#"
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
                             )}
                           >
                             Your Profile
-                          </Link>
+                          </a>
                         )}
                       </Menu.Item>
                       <Menu.Item>
                         {({ active }) => (
-                          <Link
-                            to="/settings"
+                          <a
+                            href="/settings"
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"
                             )}
                           >
                             Settings
-                          </Link>
+                          </a>
                         )}
                       </Menu.Item>
                       <Menu.Item>
