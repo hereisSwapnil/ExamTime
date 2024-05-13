@@ -306,7 +306,7 @@ const Signup = () => {
                 <button
                   type="button"
                   onClick={togglePassword}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                  className="absolute inset-y-0 right-0 mr-3 items-center text-md leading-5"
                 >
                   {passToggle === "text" ? (
                     <GoEyeClosed className="text-lg" />
