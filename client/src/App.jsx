@@ -9,6 +9,7 @@ import LeaderBoard from "./components/Leaderboard/LeaderBoard";
 import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import Notifcation from "./components/NotifcationPage/Notifcation";
+import Footer from "./components/Footer";
 
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         </Routes>
         <Analytics />
         <SpeedInsights />
+        <Footer/>
       </UserContextProvider>
     </>
   );

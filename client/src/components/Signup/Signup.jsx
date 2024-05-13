@@ -35,7 +35,7 @@ const Signup = () => {
       );
       if (res.data.message === "register success") {
         setRegisterError("");
-        
+
         navigate("/");
       } else if (res.data.message === "user already exists") {
         setRegisterError("User already exists");
