@@ -48,6 +48,7 @@ const Signup = () => {
           theme: "light",
           transition: Bounce,
         });
+        
       } else {
         setRegisterError("Something went wrong!");
         toast.error("Some error occurred!", {
