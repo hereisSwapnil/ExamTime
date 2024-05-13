@@ -258,18 +258,22 @@ const Signup = () => {
                     checkUsernameLoading
                       ? ""
                       : usernameExists == true
-                      ? "mb-[20px]"
+                      ? ""
                       : usernameExists == false
-                      ? "mb-[20px]"
+                      ? ""
                       : ""
                   }`}
                 >
                   {checkUsernameLoading ? (
                     <MoonLoader color="#000000" size={15} />
                   ) : usernameExists == true ? (
-                    <ImCross />
+                    <span className="flex justify-center items-center">
+                      <ImCross />
+                    </span>
                   ) : usernameExists == false ? (
-                    <TiTick />
+                    <span className="flex justify-center items-center">
+                      <TiTick />
+                    </span>
                   ) : (
                     ""
                   )}
