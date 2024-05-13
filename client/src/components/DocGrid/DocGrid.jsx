@@ -12,6 +12,22 @@ import { toast } from "react-toastify";
 import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { FcBookmark } from "react-icons/fc";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+  TelegramShareButton,
+  WhatsappShareButton,
+  EmailShareButton,
+} from "react-share";
+import {
+  FacebookIcon,
+  TwitterIcon,
+  LinkedinIcon,
+  TelegramIcon,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share";
 
 // const colleges = {
 //   harvard: false,
@@ -400,6 +416,33 @@ const DocGrid = () => {
                           >
                             Download
                           </a>
+                          <div className="flex flex-col justify-center items-center">
+                            <span className="text-sm mt-1 text-gray-700">
+                              OR
+                            </span>
+                            <div className="flex gap-2 pt-2 ">
+                              <div className="flex gap-2 items-center">
+                                <FacebookShareButton url={note_?.fileUrl}>
+                                  <FacebookIcon size={34} round />
+                                </FacebookShareButton>
+                                <TwitterShareButton url={note_?.fileUrl}>
+                                  <TwitterIcon size={34} round />
+                                </TwitterShareButton>
+                                <LinkedinShareButton url={note_?.fileUrl}>
+                                  <LinkedinIcon size={34} round />
+                                </LinkedinShareButton>
+                                <TelegramShareButton url={note_?.fileUrl}>
+                                  <TelegramIcon size={34} round />
+                                </TelegramShareButton>
+                                <WhatsappShareButton url={note_?.fileUrl}>
+                                  <WhatsappIcon size={34} round />
+                                </WhatsappShareButton>
+                                <EmailShareButton url={note_?.fileUrl}>
+                                  <EmailIcon size={34} round />
+                                </EmailShareButton>
+                              </div>
+                            </div>
+                          </div>
                         </section>
                       </div>
                     </div>
