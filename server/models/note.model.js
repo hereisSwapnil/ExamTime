@@ -8,6 +8,18 @@ const noteSchema = new Schema(
       required: true,
       trim: true,
     },
+    stream: {
+      type: String,
+      required: true,
+      trim: true,
+      default: "",
+    },
+    semester: {
+      type: String,
+      required: true,
+      trim: true,
+      default: "",
+    },
     description: {
       type: String,
       required: true,
