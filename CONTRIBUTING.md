@@ -1,108 +1,113 @@
-## Welcome ExamTime Contributors!
 
-This guide will walk you through the process of contributing to ExamTime.
+# Welcome ExamTime Contributors
 
-**Project Setup**
+This guide will walk you through the process of contributing to ExamTime!
 
-**Environment Variables**
+## Project Setup
 
-To run this project, you'll need to add the following environment variables to your `.env` file. Refer to the `.env.sample` file in both the server and client directories for details.
+### Environment Variables
 
-**Server**
+To run this project, you will need to add the following environment variables to your `.env` file. You can refer to the `.env.sample` file located in both the server and client directories.
 
-* `PORT`
-* `MONGODB_URI`
-* `SECRET`
-* `ORIGIN`
+#### For server
 
-**Client**
+- `PORT`
+- `MONGODB_URI`
+- `SECRET`
+- `ORIGIN`
 
-* `VITE_BASE_URL`
+#### For client
 
-**Running Locally**
+- `VITE_BASE_URL`
 
-1. **Clone the project:**
+## Run Locally
 
-   ```bash
-   git clone https://github.com/hereisSwapnil/ExamTime.git
-   ```
+### Clone the project
 
-2. **Navigate to the server directory:**
+```bash
+git clone https://github.com/hereisSwapnil/ExamTime.git
+```
 
-   ```bash
-   cd server
-   ```
+### Navigate to the server directory
 
-3. **Install server dependencies:**
+```bash
+cd server
+```
 
-   ```bash
-   npm install
-   ```
+### Install server dependencies
 
-4. **Start the server:**
+```bash
+npm install
+```
 
-   ```bash
-   npm run dev
-   ```
+### Start the server
 
-5. **Navigate to the client directory:**
+```bash
+npm run dev
+```
 
-   ```bash
-   cd ../client
-   ```
+### Navigate to the client directory
 
-6. **Install client dependencies:**
+```bash
+cd ../client
+```
 
-   ```bash
-   npm install
-   ```
+### Install client dependencies
 
-7. **Start the client:**
+```bash
+npm install
+```
 
-   ```bash
-   npm run dev
-   ```
+### Start the client
 
-**Making a Pull Request**
+```bash
+npm run dev
+```
 
-1. **Create and checkout to a new branch:**
+Now you are done with the project setup, now you can make the changes you want or assign.
 
-   ```bash
-   git checkout -b <branch_name>
-   ```
+Once you are done with the changes you wanted to add, follow the steps to make the pull request.
 
-2. **Add your changes:**
+## Create and checkout to the new branch.
 
-   ```bash
-   git add .
-   ```
+`git checkout -b <branch_name>`
 
-3. **Commit your changes with a clear message:**
+## Add the changes
 
-   ```bash
-   git commit -m "Enter your message here"
-   ```
+`git add .`
 
-4. **Push your branch to remote:**
+## Commit your change with a proper message
 
-   ```bash
-   git push origin <branch_name>
-   ```
+`git commit -m "Enter your message here"`
 
-**Contributing Guidelines**
+## Make the Pull Request
 
-* **Documentation:**
-   * Document any significant changes or additions to the codebase.
-   * Provide clear explanations of functionality, usage, and considerations.
-   * Update the `README.md` file to reflect changes and provide usage instructions (if needed).
-* **Code Reviews:**
-   * Be open to feedback and participate in code reviews.
-* **Bug Fixes and Issue Reporting:**
-   * Help identify and fix bugs.
-   * Report issues you encounter by creating a new GitHub repository issue.
-* **Feature Requests:**
-   * Suggest new features or improvements.
-* **Spread the Word:**
-   * Share your experience and the project with others. Promote it on social media, developer forums, or relevant communities.
+`git push origin <branch_name>`
 
-Thank you for your valuable contribution to ExamTime! Together, we can make a difference. 
+### Documentation 📑
+
+- Document any significant changes or additions to the codebase.
+- Provide clear and concise explanations of the functionality, usage, and any relevant considerations.
+- Update the `README.md` file to reflect the changes made and provide instructions on how to use the project (if needed).
+
+### ✅ Code Reviews
+
+- Be open to feedback and constructive criticism from other contributors.
+- Participate in code reviews by reviewing and providing feedback.
+
+### ✅ Bug Fixes and Issue Reporting
+
+- Help identify and fix bugs in the project.
+- Report any issues or bugs you encounter during your contribution by creating a new issue in the GitHub repository.
+
+### 🚀🚀Feature Requests
+
+- Suggest new features or improvements that you believe would enhance the project.
+
+### ☘️ Spread the Word
+
+- Share your experience and the project with others.
+- Spread the word about the project on social media, developer forums, or any relevant community platforms.
+
+Thank you for your valuable contribution and for being a part of the ExamTime! Together, we can make a difference. 🚀
+```
