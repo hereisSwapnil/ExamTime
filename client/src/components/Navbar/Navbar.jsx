@@ -215,16 +215,19 @@ const Navbar = () => {
               </div>
               <div className="absolute inset-y-0 right-0 flex gap-3 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <Menu as="div" className="relative ml-3">
-                  <div>
-                    <Menu.Button className="relative flex rounded-full text-gray-400 bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
-                      <span className="absolute -inset-1.5" />
-                      <span className="sr-only">View notifications</span>
-                      <Badge color="red">
-                        <BellIcon className="h-6 w-6" aria-hidden="true" />
-                      </Badge>
-                    </Menu.Button>
-                  </div>
-                  <Transition
+                    <div>
+                      {/* Change Menu.Button to a simple anchor tag */}
+                      <a href="/notifications" className="relative flex rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                      <span className="absolute -inset-1.5">
+                      <span className="text-white opacity-0 group-hover:opacity-100 transition-opacity">View notifications</span>
+                      </span>
+                        <Badge color="red">
+                          <BellIcon className="h-6 w-6" aria-hidden="true" />
+                        </Badge>
+                      </a>
+                    </div>
+                </Menu>
+                  {/* <Transition
                     as={Fragment}
                     enter="transition ease-out duration-100"
                     enterFrom="transform opacity-0 scale-95"
@@ -232,8 +235,8 @@ const Navbar = () => {
                     leave="transition ease-in duration-75"
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
-                  >
-                    <Menu.Items className="absolute w-[60vw] md:w-[30vw] right-0 z-10 mt-2 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                  > */}
+                    {/* <Menu.Items className="absolute w-[60vw] md:w-[30vw] right-0 z-10 mt-2 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       {requests
                         .slice(0, 4)
                         .reverse()
@@ -270,9 +273,8 @@ const Navbar = () => {
                         )}
                       </Menu.Item>
                     </Menu.Items>
-                  </Transition>
-                </Menu>
-
+                  </Transition> */}
+                
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>

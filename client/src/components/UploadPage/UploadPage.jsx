@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Loader } from "../Loader/Loader";
 import { useNavigate } from "react-router";
+import { useParams } from 'react-router-dom';
 import { UserContext } from "../../Context/UserContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -24,6 +25,9 @@ const UploadPage = () => {
   const [isFileSeleted, setIsFileSelected] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
   const [addSubject_, setAddSubject_] = useState("");
+
+  // Storing the request id from the route path(may or may not be present)
+  const { requestId } = useParams();
 
   const addSubject = () => {
     if (addSubject_ === "") {
@@ -141,6 +145,26 @@ const UploadPage = () => {
       });
   };
 
+  const deleteRequest = async (requestId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      };
+      // Make a DELETE request to delete the request with the given requestId
+      await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/request/delete/${requestId}`,
+        config
+      );
+      console.log(`Request with ID ${requestId} deleted successfully.`);
+    } catch (error) {
+      console.error(`Error deleting request with ID ${requestId}:`, error);
+    }
+  };
+
   const uploadNotes = async (data) => {
     try {
       if (selectedFile.length == 0) {
@@ -154,22 +178,24 @@ const UploadPage = () => {
         },
         withCredentials: true,
       };
-      axios
-        .post(
-          `${import.meta.env.VITE_BASE_URL}/note`,
-          {
-            title: data.title,
-            description: data.description,
-            subject: data.subject,
-            year: data.year,
-            course: data.course,
-            fileUrl: fileUrl,
-          },
-          config
-        )
-        .then((res) => {
-          navigate("/");
-        });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/note`,
+        {
+          title: data.title,
+          description: data.description,
+          subject: data.subject,
+          year: data.year,
+          course: data.course,
+          fileUrl: fileUrl,
+        },
+        config
+      );
+      // After successful upload
+      if (requestId) {
+        // If requestId is present, delete the associated request
+        await deleteRequest(requestId); 
+      }
+      navigate("/");
     } catch (error) {
       console.log(error);
     }
