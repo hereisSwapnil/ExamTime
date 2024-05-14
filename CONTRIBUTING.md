@@ -110,4 +110,3 @@ Once you are done with the changes you wanted to add, follow the steps to make t
 - Spread the word about the project on social media, developer forums, or any relevant community platforms.
 
 Thank you for your valuable contribution and for being a part of the ExamTime! Together, we can make a difference. 🚀
-```
