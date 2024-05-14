@@ -97,6 +97,7 @@ const Signup = () => {
     errors?.confirm_password,
   ]);
   const navigate = useNavigate();
+  const [confirmPassToggle, setconfirmPassToggle] = useState("password");
 
   const [registerError, setRegisterError] = useState();
   const [passToggle, setPassToggle] = useState("password");
@@ -155,6 +156,13 @@ const Signup = () => {
       setLoading(false);
     }
   };
+  const toggleConfirmPassword=()=>{
+    if (confirmPassToggle === "password") {
+      setconfirmPassToggle("text");
+    } else {
+      setconfirmPassToggle("password");
+    }
+  }
 
   const togglePassword = () => {
     if (passToggle === "password") {
@@ -330,7 +338,7 @@ const Signup = () => {
                 <input
                   id="confirm_password"
                   name="confirm_password"
-                  type={passToggle}
+                  type={confirmPassToggle}
                   autoComplete="current-password"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   {...register("confirm_password", {
@@ -342,6 +350,17 @@ const Signup = () => {
                     },
                   })}
                 />
+                 <button
+                  type="button"
+                  onClick={toggleConfirmPassword}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                >
+                  {confirmPassToggle === "text" ? (
+                    <GoEyeClosed className="text-lg" />
+                  ) : (
+                    <GoEye className="text-lg" />
+                  )}
+                </button>
               </div>
             </div>
 
