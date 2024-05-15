@@ -7,19 +7,62 @@ import { TiTick } from "react-icons/ti";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
-import { toast, Bounce } from "react-toastify";
+import { Loader } from "../Loader/Loader";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod";
+
+const Regex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{6,}$/;
+const passwordRegex =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+
+const signUpSchema = z
+  .object({
+    email: z
+      .string()
+      .email("Invalid email address")
+      .min(6, "Email must be at least 6 characters")
+      .max(255, "Email must not be more than 255 characters"),
+
+    username: z
+      .string()
+      .regex(
+        Regex,
+        "Username should contain at least one lowercase letter, one uppercase letter, and one special character"
+      )
+      .min(5, "Username must be at least 5 characters")
+      .max(10, "Username must not be more than 10 characters"),
+
+    password: z
+      .string()
+      .regex(
+        passwordRegex,
+        "Password must contain at least one lowercase letter, one uppercase letter, one number, one special character, and be at least 8 characters long."
+      ),
+
+    confirmPassword: z.string().nonempty("Confirm Password is required"),
+  })
+  .superRefine((data, context) => {
+    if (data.password !== data.confirmPassword) {
+      context.addIssue({
+        code: "custom",
+        path: ["confirmPassword"],
+        message: "Passwords don't match",
+      });
+    }
+  });
 
 const Signup = () => {
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
-  } = useForm();
+    setError,
+  } = useForm({
+    resolver: zodResolver(signUpSchema),
+  });
 
   const navigate = useNavigate();
 
-  const [registerError, setRegisterError] = useState();
   const [passToggle, setPassToggle] = useState("password");
   const [checkUsernameLoading, setCheckUsernameLoading] = useState(null);
   const [usernameExists, setUsernameExists] = useState();
@@ -27,46 +70,34 @@ const Signup = () => {
 
   const registerUser = async (data) => {
     setLoading(true);
+    console.log("Registering user with data:", data); // Log data being submitted
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/user/register`,
         data
       );
+      console.log("Registration response:", res.data); // Log response data
       if (res.data.message === "register success") {
-        setRegisterError("");
         navigate("/login");
       } else if (res.data.message === "user already exists") {
-        setRegisterError("User already exists");
-        toast.warning("User already exists!", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
+        setError("username", {
+          type: "manual",
+          message: "User already exists!",
         });
       } else {
-        setRegisterError("Something went wrong!");
-        toast.error("Some error occurred!", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
+        setError("form", {
+          type: "manual",
+          message: "Some error occurred!",
         });
       }
-      setLoading(false);
     } catch (error) {
-      console.error(error);
-      setLoading(false);
+      console.error("Registration error:", error);
+      setError("form", {
+        type: "manual",
+        message: "Registration error. Please try again!",
+      });
     }
+    setLoading(false);
   };
 
   const togglePassword = () => {
@@ -76,21 +107,25 @@ const Signup = () => {
       setPassToggle("password");
     }
   };
-
   const handleUsernameChange = async (event) => {
     const username = event.target.value;
     setUsernameExists(false);
 
     if (username.trim() !== "") {
       setCheckUsernameLoading(true);
-      const res = await axios.get(
-        `${import.meta.env.VITE_BASE_URL}/user/checkusername/${username}`
-      );
-      if (res.data.message === "username taken") {
-        setUsernameExists(true);
-        setCheckUsernameLoading(false);
-      } else {
-        setUsernameExists(false);
+      try {
+        const res = await axios.get(
+          `${import.meta.env.VITE_BASE_URL}/user/checkusername/${username}`
+        );
+        if (res.data.message === "username taken") {
+          setUsernameExists(true);
+        } else {
+          setUsernameExists(false);
+        }
+      } catch (error) {
+        console.error("Error checking username:", error);
+        // Handle error if the request fails
+      } finally {
         setCheckUsernameLoading(false);
       }
     }
@@ -99,7 +134,6 @@ const Signup = () => {
   if (loading) {
     return <Loader />;
   }
-
   return (
     <>
       <div className="flex min-h-screen flex-1 flex-col justify-center px-6 lg:px-8">
@@ -130,28 +164,19 @@ const Signup = () => {
               </label>
               <div className="mt-2">
                 <input
+                  id="email"
                   name="email"
                   autoComplete="username"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("email", {
-                    validate: {
-                      matchPatern: (value) =>
-                        /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi.test(value) ||
-                        "Enter a valid email address",
-                    },
-                  })}
+                  {...register("email")}
                 />
                 {errors.email && (
-                  <p
-                    className="text-sm text-red-500 mt-1"
-                    dangerouslySetInnerHTML={{
-                      __html: errors.email.message,
-                    }}
-                  ></p>
+                  <p className="text-sm text-red-500 ">
+                    {errors.email.message}
+                  </p>
                 )}
               </div>
             </div>
-
             <div>
               <div className="flex items-center justify-between">
                 <label
@@ -167,49 +192,25 @@ const Signup = () => {
                   name="username"
                   type="text"
                   className="block w-full pr-5 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("username", {
-                    validate: (value) =>
-                      !usernameExists || "Username is already taken",
-                  })}
+                  {...register("username")}
                   onChange={handleUsernameChange}
                 />
-                {!checkUsernameLoading && (
-                  <p
-                    className={`text-sm ${
-                      usernameExists ? "text-red-500" : "text-green-500"
-                    }  mt-1`}
-                  >
-                    {checkUsernameLoading
-                      ? ""
-                      : usernameExists == true
-                      ? "Username taken"
-                      : usernameExists == false
-                      ? "Username available"
-                      : ""}
-                  </p>
-                )}
-                <span
-                  className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 ${
-                    checkUsernameLoading
-                      ? ""
-                      : usernameExists == true
-                      ? "mb-[20px]"
-                      : usernameExists == false
-                      ? "mb-[20px]"
-                      : ""
-                  }`}
-                >
-                  {checkUsernameLoading ? (
+                {checkUsernameLoading && (
+                  <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
                     <MoonLoader color="#000000" size={15} />
-                  ) : usernameExists == true ? (
-                    <ImCross />
-                  ) : usernameExists == false ? (
-                    <TiTick />
-                  ) : (
-                    ""
-                  )}
-                </span>
+                  </span>
+                )}
+                {!checkUsernameLoading && (
+                  <span className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5">
+                    {usernameExists ? <ImCross /> : <TiTick />}
+                  </span>
+                )}
               </div>
+              {errors.username && (
+                <p className="text-sm text-red-500 ">
+                  {errors.username.message}
+                </p>
+              )}
             </div>
 
             <div>
@@ -222,48 +223,40 @@ const Signup = () => {
                 </label>
               </div>
               <div className="mt-2 relative">
-                <input
-                  id="password"
-                  name="password"
-                  type={passToggle}
-                  autoComplete="current-password"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("password", {
-                    validate: {
-                      matchPatern: (value) =>
-                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm.test(
-                          value
-                        ) ||
-                        "- at least 8 characters <br />- must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number<br />- Can contain special characters",
-                    },
-                  })}
-                />
-                <button
-                  type="button"
-                  onClick={togglePassword}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
-                >
-                  {passToggle === "text" ? (
-                    <GoEyeClosed className="text-lg" />
-                  ) : (
-                    <GoEye className="text-lg" />
-                  )}
-                </button>
+                <div className="flex items-center">
+                  <input
+                    id="password"
+                    name="password"
+                    type={passToggle}
+                    autoComplete="current-password"
+                    className="block w-full rounded-md border-0 py-1.5 pr-10 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                    {...register("password")}
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePassword}
+                    className="flex items-center text-sm leading-5"
+                    style={{ marginLeft: "-2.5rem" }}
+                  >
+                    {passToggle === "text" ? (
+                      <GoEyeClosed className="text-lg" />
+                    ) : (
+                      <GoEye className="text-lg" />
+                    )}
+                  </button>
+                </div>
+                {errors.password && (
+                  <p className="text-sm text-red-500 ">
+                    {errors.password.message}
+                  </p>
+                )}
               </div>
-              {errors.password && (
-                <p
-                  className="text-sm text-red-500 mt-1"
-                  dangerouslySetInnerHTML={{
-                    __html: errors.password.message,
-                  }}
-                ></p>
-              )}
             </div>
 
             <div>
               <div className="flex items-center justify-between">
                 <label
-                  htmlFor="confirm_password"
+                  htmlFor="confirmPassword"
                   className="block text-sm font-medium leading-6 text-gray-900"
                 >
                   Confirm Password
@@ -271,23 +264,16 @@ const Signup = () => {
               </div>
               <div className="mt-2">
                 <input
-                  id="confirm_password"
-                  name="confirm_password"
-                  type={passToggle}
-                  autoComplete="current-password"
+                  id="confirmPassword"
+                  name="confirmPassword"
+                  type="password"
+                  autoComplete="new-password"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("confirm_password", {
-                    required: "Enter confirm password",
-                    validate: (val) => {
-                      if (watch("password") != val) {
-                        return "Your passwords do no match";
-                      }
-                    },
-                  })}
+                  {...register("confirmPassword")}
                 />
-                {errors.confirm_password && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.confirm_password.message}
+                {errors.confirmPassword && (
+                  <p className="text-sm text-red-500 ">
+                    {errors.confirmPassword.message}
                   </p>
                 )}
               </div>
@@ -300,10 +286,10 @@ const Signup = () => {
               >
                 Sign up
               </button>
-              <p className="text-sm mt-5 text-red-500 text-center">
-                {registerError && registerError}
-              </p>
             </div>
+            {errors.form && (
+              <p className="text-sm text-red-500 ">{errors.form.message}</p>
+            )}
           </form>
 
           <p className="mt-5 text-center text-sm text-gray-500">
@@ -320,4 +306,5 @@ const Signup = () => {
     </>
   );
 };
+
 export default Signup;

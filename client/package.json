@@ -11,6 +11,7 @@
   "dependencies": {
     "@headlessui/react": "^1.7.17",
     "@heroicons/react": "^2.0.18",
+    "@hookform/resolvers": "^3.4.0",
     "@material-tailwind/react": "^2.1.7",
     "@vercel/analytics": "^1.2.2",
     "@vercel/speed-insights": "^1.0.10",
@@ -31,7 +32,8 @@
     "react-spinners": "^0.13.8",
     "react-toastify": "^10.0.4",
     "unique-filename": "^3.0.0",
-    "uuid": "^9.0.1"
+    "uuid": "^9.0.1",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@skeletonlabs/skeleton": "^2.6.0",

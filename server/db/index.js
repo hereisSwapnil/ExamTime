@@ -3,7 +3,7 @@ const mongoose = require("mongoose");
 const DB_NAME = require("../constants.js");
 
 dotenv.config({
-  path: ".env",
+  path: ".env.dev",
 });
 
 const connectDB = async () => {

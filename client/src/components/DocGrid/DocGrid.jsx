@@ -58,8 +58,11 @@ const DocGrid = () => {
       `${import.meta.env.VITE_BASE_URL}/note${search}`,
       config
     );
-    setNotes(res.data);
-    setLoading(false);
+    if (res.ok) {
+      const data = await res.json();
+      setNotes(data);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -103,8 +106,11 @@ const DocGrid = () => {
       `${import.meta.env.VITE_BASE_URL}/note/bookmarks`,
       config
     );
-    setNotes(res.data);
-    setLoading(false);
+    if (res.ok) {
+      const data = await res.json();
+      setNotes(data);
+      setLoading(false);
+    }
   };
 
   useEffect(() => {
