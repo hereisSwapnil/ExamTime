@@ -23,18 +23,42 @@ const searchNotes = wrapAsync(async (req, res) => {
 
 const addNote = wrapAsync(async (req, res) => {
   try {
-    const { title, description, subject, year, course, fileUrl } = req.body;
+    const {
+      title,
+      description,
+      thumbnail,
+      subject,
+      stream,
+      course,
+      year,
+      semester,
+      fileUrl,
+    } = req.body;
     const author = req.user._id;
-    if (!title || !description || !subject || !year || !course || !fileUrl) {
+    if (
+      !title ||
+      !description ||
+      !subject ||
+      !stream ||
+      !course ||
+      !year ||
+      !semester ||
+      !fileUrl
+    ) {
       return res.status(400).json({ message: "Missing fields" });
     }
     const note = await Note.create({
       title,
       description,
+      thumbnail:
+        thumbnail ||
+        "https://www.umass.edu/studentsuccess/sites/default/files/inline-images/cornell-note-taking-strategy.jpg",
       author,
       subject,
-      year,
+      stream,
       course,
+      year,
+      semester,
       fileUrl,
     });
     if (!note) {
@@ -52,11 +76,10 @@ const addNote = wrapAsync(async (req, res) => {
     }
     user.notes.push(note);
     //add the coins to the user 10 coins per note
-    if(user.coins){
-      user.coins+=10;
-    }
-    else{
-      user.coins=10;
+    if (user.coins) {
+      user.coins += 10;
+    } else {
+      user.coins = 10;
     }
     await user.save();
 
@@ -249,7 +272,67 @@ const getBookMarkedNotesByUser = async (req, res) => {
     });
   }
 };
+const getSpecificNotesController = async (req, res) => {
+  try {
+    const { stream, course, year, semester, subject } = req.params;
 
+    const notes = await Note.find({
+      stream: stream,
+      course: course,
+      year: parseInt(year),
+      semester: semester,
+      subject: subject,
+    }).populate("author");
+    if (notes.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No notes found for the provided criteria." });
+    }
+
+    res.status(200).json({ notes });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
+const getFormatedNote = async (req, res) => {
+  try {
+    const notes = await Note.find();
+    if (notes.length === 0) {
+      return res.status(404).json({ message: "No notes found" });
+    }
+    const formattedNotes = {};
+    notes.forEach((note) => {
+      if (!formattedNotes[note.stream]) {
+        formattedNotes[note.stream] = {};
+      }
+      if (!formattedNotes[note.stream][note.course]) {
+        formattedNotes[note.stream][note.course] = {};
+      }
+      if (!formattedNotes[note.stream][note.course][note.semester]) {
+        formattedNotes[note.stream][note.course][note.semester] = [];
+      }
+      formattedNotes[note.stream][note.course][note.semester].push({
+        id: note._id,
+        title: note.title,
+        description: note.description,
+        author: note.author,
+        subject: note.subject,
+        year: note.year,
+        fileUrl: note.fileUrl,
+        likes: note.likes,
+        likedBy: note.likedBy,
+        createdAt: note.createdAt,
+        updatedAt: note.updatedAt,
+      });
+    });
+
+    res.status(200).json({ notes: formattedNotes });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Server Error" });
+  }
+};
 module.exports = {
   searchNotes,
   addNote,
@@ -259,4 +342,6 @@ module.exports = {
   deleteNote,
   bookMarkNotes,
   getBookMarkedNotesByUser,
+  getSpecificNotesController,
+  getFormatedNote,
 };

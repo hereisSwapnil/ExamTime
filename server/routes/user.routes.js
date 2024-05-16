@@ -13,6 +13,7 @@ const {
   logoutUser,
   checkUsername,
   getUser,
+  verifyOtp,
   getLeaderBoard
 } = require("../controllers/user.controller");
 
@@ -21,6 +22,7 @@ const router = Router();
 router.get('/',verifyToken,searchNotes);
 router.post("/login", loginUser);
 router.post("/register", registerUser);
+router.post("/verifyOtp", verifyOtp);
 router.get('/logout',logoutUser);
 router.get("/checkusername/:username", checkUsername);
 router.get("/get", getUser);

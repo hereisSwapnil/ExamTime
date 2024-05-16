@@ -99,6 +99,20 @@ else if(errors?.password?.message){
             theme: "light",
             transition: Bounce,
           });
+        } else if (err.response.data.message === "Please verify email first") {
+          setloginError("Please verify email first");
+          toast.error("Please verify email first", {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+          navigate("/verifyOtp");
         } else if (err.response.data.message === "Invalid credentials") {
           setloginError("Invalid Credentials");
           toast.error("Invalid Credentials!", {

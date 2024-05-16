@@ -1,4 +1,4 @@
-import React, { useState,useEffect } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import MoonLoader from "react-spinners/MoonLoader";
@@ -8,18 +8,16 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
 import { toast, Bounce } from "react-toastify";
-import { Loader } from "../Loader/Loader.jsx";
+import { UserContext } from "../../Context/UserContext";
+import { Loader } from "../Loader/Loader";
 
 const Signup = () => {
-  const username={
-    
-    
-      required: "username is required",
-      minLength: {
-        value: 8,
-        message: "Password must have at least 8 characters"
-      }
-    
+  const username = {
+    required: "username is required",
+    minLength: {
+      value: 8,
+      message: "Password must have at least 8 characters",
+    },
   };
 
   const {
@@ -28,22 +26,21 @@ const Signup = () => {
     formState: { errors },
     watch,
   } = useForm();
-  useEffect(()=>{
 
-    if(errors?.email?.message){
-    toast.error(errors.email.message, {
-      position: "top-right",
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: false,
-      pauseOnHover: false,
-      draggable: false,
-      progress: undefined,
-      theme: "light",
-      transition: Bounce,
-    });
-    }
-    else if(errors?.username?.message){
+  useEffect(() => {
+    if (errors?.email?.message) {
+      toast.error(errors.email.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (errors?.username?.message) {
       toast.error(errors.username.message, {
         position: "top-right",
         autoClose: 5000,
@@ -55,46 +52,50 @@ const Signup = () => {
         theme: "light",
         transition: Bounce,
       });
-      } else if(errors?.password?.message){
-        toast.error(errors.password.message, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-        } else if(errors?.confirm_password?.message){
-        toast.error(errors.confirm_password.message, {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-        }
-   else if(usernameExists){
-        toast.error("User name already exists", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
-      }
-    console.log(errors)
-      },[errors?.email,errors?.password,errors?.username,errors?.confirm_password])
+    } else if (errors?.password?.message) {
+      toast.error(errors.password.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (errors?.confirm_password?.message) {
+      toast.error(errors.confirm_password.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (usernameExists) {
+      toast.error("User name already exists", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+    console.log(errors);
+  }, [
+    errors?.email,
+    errors?.password,
+    errors?.username,
+    errors?.confirm_password,
+  ]);
   const navigate = useNavigate();
 
   const [registerError, setRegisterError] = useState();
@@ -102,17 +103,23 @@ const Signup = () => {
   const [checkUsernameLoading, setCheckUsernameLoading] = useState(null);
   const [usernameExists, setUsernameExists] = useState();
   const [loading, setLoading] = useState(false);
-  
+  const { user, setUser } = useContext(UserContext);
   const registerUser = async (data) => {
     setLoading(true);
+    console.log(data);
+
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/user/register`,
         data
       );
-      if (res.data.message === "register success") {
+
+      if (res.status === 200) {
         setRegisterError("");
-        
+        localStorage.setItem("token", res.data.token);
+        setUser(res.data.user);
+        navigate("/");
+      } else if (res.status === 409) {
         navigate("/");
       } else if (res.data.message === "user already exists") {
         setRegisterError("User already exists");
@@ -128,11 +135,10 @@ const Signup = () => {
           transition: Bounce,
         });
       } else {
-        setRegisterError("Something went wrong!");
-       
+        throw new Error("Something went wrong!");
       }
-      setLoading(false);
     } catch (error) {
+      setRegisterError("Something went wrong!");
       console.error(error);
       toast.error("Some error occurred!", {
         position: "top-center",
@@ -145,6 +151,7 @@ const Signup = () => {
         theme: "light",
         transition: Bounce,
       });
+    } finally {
       setLoading(false);
     }
   };
@@ -221,7 +228,6 @@ const Signup = () => {
                     },
                   })}
                 />
-                
               </div>
             </div>
 
@@ -242,13 +248,11 @@ const Signup = () => {
                   className="block w-full pr-5 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   {...register("username", {
                     validate: (value) =>
-                      !(/^$|\s+/.test(value)) ||
-                      "please enter username"
-                    
+                      !/^$|\s+/.test(value) || "please enter username",
                   })}
                   onChange={handleUsernameChange}
                 />
-              
+
                 <span
                   className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 ${
                     checkUsernameLoading
@@ -311,7 +315,6 @@ const Signup = () => {
                   )}
                 </button>
               </div>
-             
             </div>
 
             <div>
@@ -339,7 +342,6 @@ const Signup = () => {
                     },
                   })}
                 />
-            
               </div>
             </div>
 
@@ -350,9 +352,7 @@ const Signup = () => {
               >
                 Sign up
               </button>
-              <p className="text-sm mt-5 text-red-500 text-center">
-              
-              </p>
+              <p className="text-sm mt-5 text-red-500 text-center"></p>
             </div>
           </form>
 
