@@ -1,10 +1,11 @@
-<h1 style="text-align: center;">Welcome ExamTime Contributors </h1>
+
+# Welcome ExamTime Contributors
 
 This guide will walk you through the process of contributing to ExamTime!
 
-# Project setup
+## Project Setup
 
-## Environment Variables
+### Environment Variables
 
 To run this project, you will need to add the following environment variables to your `.env` file. You can refer to the `.env.sample` file located in both the server and client directories.
 

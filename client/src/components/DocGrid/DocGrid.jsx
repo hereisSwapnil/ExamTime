@@ -223,7 +223,7 @@ const DocGrid = () => {
                   : "border-black"
               } rounded-lg p-2 `}
             >
-              <h2 className="text-2xl font-bold tracking-tight  justify-center flex text-center">
+              <h2 className="text-2xl font-bold tracking-tight  justify-center flex text-center cursor-pointer">
                 All Notes
               </h2>
             </div>
@@ -237,7 +237,7 @@ const DocGrid = () => {
                   : "border-black"
               } rounded-lg p-2 `}
             >
-              <h2 className="text-2xl font-bold tracking-tight first-center justify-center flex text-center">
+              <h2 className="text-2xl font-bold tracking-tight first-center justify-center flex text-center cursor-pointer">
                 BookMarked Notes
               </h2>
             </div>

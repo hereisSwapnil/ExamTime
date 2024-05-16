@@ -13,7 +13,6 @@ const LeaderBoardTable = () => {
       );
       if (response.status === 200) {
         setLeaderData(response.data);
-        console.log(response.data);
       }
     } catch (error) {
       console.log(error);

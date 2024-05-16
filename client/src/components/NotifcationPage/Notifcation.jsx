@@ -37,7 +37,6 @@ const Notifcation = () => {
         .get(`${import.meta.env.VITE_BASE_URL}/request`, config)
         .then((res) => {
           setRequests(res.data);
-          console.log("data", res.data);
         })
         .catch((error) => {
           toast.error("An error occurred", {
@@ -80,12 +79,12 @@ const Notifcation = () => {
                   className="block px-4 py-2 text-sm text-gray-700 border-b-2"
                 >
                   <p>{request?.description}</p>
-                  <p className="text-[13px] text-end">
-                    @{request?.author?.username}
-                  </p>
-                </div>
-              ))}
-        </div>
+                  <p className="text-[13px] text-end mt-1 text-blue-500">Requested by: @{request?.author?.username}</p>
+                  <a href={`/upload/${request?._id}`} className="mt-1 bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded">
+                  Contribute</a>
+          </div>
+          ))}
+       </div>
       </main>
     </>
   );
