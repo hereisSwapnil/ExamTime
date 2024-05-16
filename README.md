@@ -1,16 +1,34 @@
+<div align=center>
+  <h2>This Project is a part of</h2>
+  <img alt="GSSoC" src="https://raw.githubusercontent.com/GirlScriptSummerOfCode/MentorshipProgram/master/GSsoc%20Type%20Logo%20Black.png#gh-light-mode-only" width=87%>
+  <img alt="GSSoC" src="https://user-images.githubusercontent.com/63473496/213306279-338f7ce9-9a9f-4427-8c2a-3e344874498f.png#gh-dark-mode-only"/>
+</div>
+
+<br/>
+
 <div align="center">
 <h1>
+  
 <font size="10"> ExamTime</font>
 </h1>
 </div>
+#Table Of Contents
+- Introdution
+- Tech Stack
+- Environment Variables
+- Installation Guide
+- Contributing Guidelines
+- Code of Conduct
+- Licenses
+- Contributors
+
 
 <h3><font size="4">ExamTime is a platform designed to facilitate exam preparation by providing a centralized location for sharing and downloading notes in PDF format. Whether you're a student looking for study materials or someone willing to contribute by sharing your notes, ExamTime aims to make exam preparation more efficient and collaborative.
 </font>
 <br>
 <br>
 <p>
-
-
+  
 Contributing in open source increases your opportunities to work with different projects and mentors, getting to know various insights and ideas. It is a platform where contributors grow together with a construvtive and a positive attitude.
 
 [![Discord](https://img.shields.io/badge/Discord-%235865F2.svg?style=for-the-badge&logo=discord&logoColor=white)]()
@@ -25,6 +43,8 @@ Contributing in open source increases your opportunities to work with different 
 </p>
 
 </div>
+
+
 <br>
 
 <!-- tech stacks -->
