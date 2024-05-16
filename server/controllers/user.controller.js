@@ -27,8 +27,10 @@ const checkUsername = wrapAsync(async (req, res) => {
   }
 });
 
-const createToken = (_id) => {
-  return jwt.sign({ _id }, process.env.SECRET, { expiresIn: "365d" });
+const createToken = (_id, email, isverified) => {
+  return jwt.sign({ _id, email, isverified }, process.env.SECRET, {
+    expiresIn: "365d",
+  });
 };
 
 const registerUser = wrapAsync(async (req, res) => {
@@ -52,11 +54,11 @@ const registerUser = wrapAsync(async (req, res) => {
     });
 
     const registeredUser = await newUser.save();
-    await sendOTP(email);
-    return res.status(200).json({
-      message: "Check email for otp",
-      success: true,
-    });
+    // await sendOTP(email);
+    const token = createToken(registeredUser._id, email, false);
+    res
+      .status(200)
+      .json({ user: registeredUser, token, message: "Check for OTP" });
   } catch (error) {
     console.log(error.message);
     res.status(400).json({
@@ -65,21 +67,36 @@ const registerUser = wrapAsync(async (req, res) => {
     });
   }
 });
+
+const sendOTPcon = wrapAsync(async (req, res) => {
+  try {
+    console.log(req.user);
+    const email = req.user.email;
+    sendOTP(email);
+    res.status(200).json({ message: "OTP sent" });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+});
+
 const verifyOtp = wrapAsync(async (req, res) => {
   try {
-    const { otp, email } = req.body;
-    const user = await User.findOne({ email });
-    console.log(user.otp);
+    const { otp } = req.body;
+    const user = await User.findById(req.user._id);
     if (user) {
       if (user.otp == otp) {
         const updatedUser = await User.findOneAndUpdate(
-          { email: email },
+          { email: user.email },
           { $set: { isverified: true } },
-          { new: true }) ;
+          { new: true }
+        );
         return res.status(200).json({
           success: true,
-          message:"User verified successfully"
-        })
+          message: "User verified successfully",
+        });
       } else {
         return res.status(400).json({
           message: "Inavlid Otp ",
@@ -101,7 +118,6 @@ const verifyOtp = wrapAsync(async (req, res) => {
 const loginUser = wrapAsync(async (req, res) => {
   try {
     const { email, password } = req.body;
-
     const user = await User.findOne({ email });
     if (!user) {
       return res
@@ -111,8 +127,8 @@ const loginUser = wrapAsync(async (req, res) => {
     if (!user.isverified) {
       return res.status(400).json({
         message: "Please verify email first",
-        success:false
-      })
+        success: false,
+      });
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -126,7 +142,7 @@ const loginUser = wrapAsync(async (req, res) => {
         message: "login success",
       });
     } else {
-      res.status(401).json({ message: "Invalid credentials",success:false });
+      res.status(401).json({ message: "Invalid credentials", success: false });
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
@@ -139,7 +155,7 @@ const logoutUser = async (req, res) => {
   try {
     // Clear the token from client-side storage
     res.clearCookie("token");
-    
+
     // Send a response indicating successful logout
     res.status(200).json({
       message: "Logout successful",
@@ -151,7 +167,6 @@ const logoutUser = async (req, res) => {
     });
   }
 };
-
 
 // Get a user
 const getUser = wrapAsync(async (req, res) => {
@@ -194,24 +209,26 @@ const getUser = wrapAsync(async (req, res) => {
   });
 });
 
-const getLeaderBoard=async(req,res)=>{
+const getLeaderBoard = async (req, res) => {
   try {
-      const users=await User.find().sort({
-          coins:-1
-      }).select('-password')
-      if(!users){
-          return res.status(404).json({
-              message:"No users found"
-          })
-      }
-      res.status(200).json(users)
-  } catch (error) {
-      res.status(500).json({
-          message:"Internal server error",
-          error:error.message
+    const users = await User.find()
+      .sort({
+        coins: -1,
       })
+      .select("-password");
+    if (!users) {
+      return res.status(404).json({
+        message: "No users found",
+      });
+    }
+    res.status(200).json(users);
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
   }
-}
+};
 
 module.exports = {
   checkUsername,
@@ -220,5 +237,6 @@ module.exports = {
   logoutUser,
   getUser,
   verifyOtp,
-  getLeaderBoard
+  getLeaderBoard,
+  sendOTPcon,
 };
