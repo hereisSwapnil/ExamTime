@@ -196,14 +196,14 @@ const Signup = () => {
             src={TextLogo}
             alt="ExamTime"
           />
-          <h2 className="mt-5 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
             Sign up to an account
           </h2>
         </div>
 
-        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-sm">
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form
-            className="space-y-4"
+            className="space-y-6"
             onSubmit={handleSubmit((data) => {
               registerUser(data);
             })}
@@ -248,28 +248,48 @@ const Signup = () => {
                   className="block w-full pr-5 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   {...register("username", {
                     validate: (value) =>
-                      !/^$|\s+/.test(value) || "please enter username",
+                      !usernameExists || "Username is already taken",
                   })}
                   onChange={handleUsernameChange}
                 />
-
+                {!checkUsernameLoading ? (
+                  <p
+                    className={`text-sm ${
+                      usernameExists ? "text-red-500" : "text-green-500"
+                    }  `}
+                  >
+                    {checkUsernameLoading
+                      ? ""
+                      : usernameExists == true
+                      ? "Username taken"
+                      : usernameExists == false
+                      ? "Username available"
+                      : ""}
+                  </p>
+                ) : (
+                  <p className="text-sm text-gray-500 ">Checking...</p> // instead of empty space showing checking will not decrease the height
+                )}
                 <span
                   className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 ${
                     checkUsernameLoading
                       ? ""
                       : usernameExists == true
-                      ? "mb-[20px]"
+                      ? ""
                       : usernameExists == false
-                      ? "mb-[20px]"
+                      ? ""
                       : ""
                   }`}
                 >
                   {checkUsernameLoading ? (
                     <MoonLoader color="#000000" size={15} />
                   ) : usernameExists == true ? (
-                    <ImCross />
+                    <span className="flex justify-center items-center">
+                      <ImCross />
+                    </span>
                   ) : usernameExists == false ? (
-                    <TiTick />
+                    <span className="flex justify-center items-center">
+                      <TiTick />
+                    </span>
                   ) : (
                     ""
                   )}
@@ -299,14 +319,14 @@ const Signup = () => {
                         /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm.test(
                           value
                         ) ||
-                        "password must contain atleast 8 characters must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number and Can contain special characters",
+                        "- at least 8 characters <br />- must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number<br />- Can contain special characters",
                     },
                   })}
                 />
                 <button
                   type="button"
                   onClick={togglePassword}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                  className="absolute inset-y-0 right-0 mr-3 items-center text-md leading-5"
                 >
                   {passToggle === "text" ? (
                     <GoEyeClosed className="text-lg" />
