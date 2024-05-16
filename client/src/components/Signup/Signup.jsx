@@ -274,18 +274,22 @@ const Signup = () => {
                     checkUsernameLoading
                       ? ""
                       : usernameExists == true
-                      ? "mb-[20px]"
+                      ? ""
                       : usernameExists == false
-                      ? "mb-[20px]"
+                      ? ""
                       : ""
                   }`}
                 >
                   {checkUsernameLoading ? (
                     <MoonLoader color="#000000" size={15} />
                   ) : usernameExists == true ? (
-                    <ImCross />
+                    <span className="flex justify-center items-center">
+                      <ImCross />
+                    </span>
                   ) : usernameExists == false ? (
-                    <TiTick />
+                    <span className="flex justify-center items-center">
+                      <TiTick />
+                    </span>
                   ) : (
                     ""
                   )}
@@ -322,7 +326,7 @@ const Signup = () => {
                 <button
                   type="button"
                   onClick={togglePassword}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                  className="absolute inset-y-0 right-0 mr-3 items-center text-md leading-5"
                 >
                   {passToggle === "text" ? (
                     <GoEyeClosed className="text-lg" />
