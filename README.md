@@ -77,6 +77,8 @@ To run this project, you will need to add the following environment variables to
 
 ## Run Locally
 
+### Fork the repository
+
 ### Clone the project
 
 ```bash
@@ -118,6 +120,36 @@ npm install
 ```bash
 npm run dev
 ```
+
+## Start Contribution
+
+### Update existing branch 
+
+```bash
+git checkout main
+git pull origin main
+```
+
+### Create a new branch
+
+```bash
+git checkout -b feature/my-feature
+```
+
+### Make desired changes in code 
+
+### Commit changes
+
+```bash
+git add .
+git commit -m "Add feature XYZ"
+```
+### Pushing changes
+
+```bash
+git push -u origin feature/my-feature
+```
+### Now review the changes and you are all set to make your Pull Request 🥳
 
 <br>
 
