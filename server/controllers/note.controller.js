@@ -179,6 +179,43 @@ const checkIfLiked = wrapAsync(async (req, res) => {
   }
 });
 
+const deleteNote = wrapAsync(async (req, res) => {
+  try {
+    const { noteId } = req.params;
+
+  
+    const note = await Note.findById(noteId);
+    if (!note) {
+      return res.status(404).json({ error: "Note not found" });
+    }
+
+    
+    if (note.author.toString() !== req.user._id.toString()) {
+      return res.status(403).json({ error: "Unauthorized to delete this note" });
+    }
+
+    
+    await Note.findByIdAndDelete(noteId);
+
+    
+    const subject = await Subject.findById(note.subject);
+    if (subject) {
+      subject.notes = subject.notes.filter((note) => note.toString() !== noteId);
+      await subject.save();
+    }
+
+    
+    await User.updateMany(
+      { likedNotes: noteId },
+      { $pull: { likedNotes: noteId } }
+    );
+
+    return res.status(204).end(); 
+  } catch (error) {
+    console.error(error);
+    return res.status(500).json({ message: "Error deleting note", error: error.message });
+  }
+});
 const bookMarkNotes = async (req, res) => {
   const { noteId } = req.params;
   const userId = req.user._id;
@@ -302,6 +339,7 @@ module.exports = {
   likeNotes,
   unlikeNotes,
   checkIfLiked,
+  deleteNote,
   bookMarkNotes,
   getBookMarkedNotesByUser,
   getSpecificNotesController,
