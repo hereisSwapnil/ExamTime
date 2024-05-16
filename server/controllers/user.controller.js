@@ -1,8 +1,10 @@
 // const passport = require("passport");
+const { messaging } = require("firebase-admin");
 const User = require("../models/user.model.js");
 const wrapAsync = require("../utils/wrapAsync");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { sendOTP } = require("../utils/sendOTP.js");
 
 const checkUsername = wrapAsync(async (req, res) => {
   try {
@@ -50,17 +52,48 @@ const registerUser = wrapAsync(async (req, res) => {
     });
 
     const registeredUser = await newUser.save();
-
-    const token = createToken(registeredUser._id);
-    // res.cookie("token", token, { secure: true });
-    res
-      .status(200)
-      .json({ user: registeredUser, token, message: "register success" });
+    await sendOTP(email);
+    return res.status(200).json({
+      message: "Check email for otp",
+      success: true,
+    });
   } catch (error) {
     console.log(error.message);
     res.status(400).json({
       message: "Register failed",
       error: error.message,
+    });
+  }
+});
+const verifyOtp = wrapAsync(async (req, res) => {
+  try {
+    const { otp, email } = req.body;
+    const user = await User.findOne({ email });
+    console.log(user.otp);
+    if (user) {
+      if (user.otp == otp) {
+        const updatedUser = await User.findOneAndUpdate(
+          { email: email },
+          { $set: { isverified: true } },
+          { new: true }) ;
+        return res.status(200).json({
+          success: true,
+          message:"User verified successfully"
+        })
+      } else {
+        return res.status(400).json({
+          message: "Inavlid Otp ",
+          success: false,
+        });
+      }
+    } else {
+      console.log("User not found");
+    }
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
     });
   }
 });
@@ -70,9 +103,16 @@ const loginUser = wrapAsync(async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email });
-
     if (!user) {
-      return res.status(401).json({ message: "user not found" });
+      return res
+        .status(401)
+        .json({ message: "user not found", success: false });
+    }
+    if (!user.isverified) {
+      return res.status(400).json({
+        message: "Please verify email first",
+        success:false
+      })
     }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
@@ -86,7 +126,7 @@ const loginUser = wrapAsync(async (req, res) => {
         message: "login success",
       });
     } else {
-      res.status(401).json({ message: "Invalid credentials" });
+      res.status(401).json({ message: "Invalid credentials",success:false });
     }
   } catch (error) {
     res.status(500).json({ message: "Internal Server Error" });
@@ -179,5 +219,6 @@ module.exports = {
   loginUser,
   logoutUser,
   getUser,
+  verifyOtp,
   getLeaderBoard
 };

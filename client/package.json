@@ -28,6 +28,7 @@
     "react-router": "^6.21.0",
     "react-router-dom": "^6.21.1",
     "react-select-search": "^4.1.7",
+    "react-share": "^5.1.0",
     "react-spinners": "^0.13.8",
     "react-toastify": "^10.0.4",
     "unique-filename": "^3.0.0",

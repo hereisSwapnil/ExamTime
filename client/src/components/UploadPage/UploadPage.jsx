@@ -21,6 +21,7 @@ const UploadPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const [selectedFile, setSelectedFile] = useState([]);
   const [isFileSeleted, setIsFileSelected] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
@@ -67,7 +68,58 @@ const UploadPage = () => {
     }
   };
 
-  const uploadFile = async (file) => {
+  // const uploadFile = async (file) => {
+  //   const storageRef = ref(storage, "notes/" + file.name);
+  //   const uploadTask = uploadBytesResumable(storageRef, file);
+  //   setFileUploadProgress(0);
+  //   uploadTask.on(
+  //     "state_changed",
+  //     (snapshot) => {
+  //       // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+  //       const progress =
+  //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+  //       setFileUploadProgress(Math.trunc(progress));
+  //       // switch (snapshot.state) {
+  //       //   case "paused":
+  //       //     console.log("Upload is paused");
+  //       //     break;
+  //       //   case "running":
+  //       //     console.log("Upload is running");
+  //       //     break;
+  //       // }
+  //     },
+  //     (error) => {
+  //       // A full list of error codes is available at
+  //       // https://firebase.google.com/docs/storage/web/handle-errors
+  //       switch (error.code) {
+  //         case "storage/unauthorized":
+  //           // User doesn't have permission to access the object
+  //           break;
+  //         case "storage/canceled":
+  //           // User canceled the upload
+  //           break;
+
+  //         // ...
+
+  //         case "storage/unknown":
+  //           // Unknown error occurred, inspect error.serverResponse
+  //           break;
+  //       }
+  //     },
+  //     () => {
+  //       // Upload completed successfully, now we can get the download URL
+  //       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+  //         // console.log("File available at", downloadURL);
+  //         setFileUrl(downloadURL);
+  //       });
+  //     }
+  //   );
+  // };
+
+
+  // upload file function changed
+
+  const uploadFile = async (file, callback) => {
     const storageRef = ref(storage, "notes/" + file.name);
     const uploadTask = uploadBytesResumable(storageRef, file);
     setFileUploadProgress(0);
@@ -75,30 +127,18 @@ const UploadPage = () => {
       "state_changed",
       (snapshot) => {
         // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-        const progress =
-          (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setFileUploadProgress(Math.trunc(progress));
-        // switch (snapshot.state) {
-        //   case "paused":
-        //     console.log("Upload is paused");
-        //     break;
-        //   case "running":
-        //     console.log("Upload is running");
-        //     break;
-        // }
       },
       (error) => {
-        // A full list of error codes is available at
-        // https://firebase.google.com/docs/storage/web/handle-errors
+        // Handle errors
         switch (error.code) {
           case "storage/unauthorized":
             // User doesn't have permission to access the object
             break;
           case "storage/canceled":
             // User canceled the upload
-            break;
-
-          // ...
+            break
 
           case "storage/unknown":
             // Unknown error occurred, inspect error.serverResponse
@@ -108,19 +148,32 @@ const UploadPage = () => {
       () => {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          // console.log("File available at", downloadURL);
           setFileUrl(downloadURL);
+          callback(downloadURL); // Call the callback function with the file URL
         });
       }
     );
   };
+  
 
+  // const handleFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   console.log("file: ",file);
+  //   setSelectedFile(file);
+  //   setIsFileSelected(true);
+  //   uploadFile(file);
+  // };
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
     setIsFileSelected(true);
-    uploadFile(file);
+    uploadFile(file, (fileUrl) => {
+      // Callback function called with the file URL
+      // console.log("File URL:", fileUrl); // Example: Log the file URL to the console
+      setFileUrl(fileUrl); // Update state with the file URL if needed
+    });
   };
+
 
   useEffect(() => {
     if (!user) {
