@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import MoonLoader from "react-spinners/MoonLoader";
@@ -8,6 +8,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
 import { Loader } from "../Loader/Loader";
+import { UserContext } from "../../Context/UserContext";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -51,7 +52,17 @@ const signUpSchema = z
     }
   });
 
+
+import { Loader } from "../Loader/Loader";
 const Signup = () => {
+  const username = {
+    required: "username is required",
+    minLength: {
+      value: 8,
+      message: "Password must have at least 8 characters",
+    },
+  };
+
   const {
     register,
     handleSubmit,
@@ -61,24 +72,101 @@ const Signup = () => {
     resolver: zodResolver(signUpSchema),
   });
 
+  useEffect(() => {
+    if (errors?.email?.message) {
+      toast.error(errors.email.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (errors?.username?.message) {
+      toast.error(errors.username.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (errors?.password?.message) {
+      toast.error(errors.password.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (errors?.confirm_password?.message) {
+      toast.error(errors.confirm_password.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (usernameExists) {
+      toast.error("User name already exists", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+    console.log(errors);
+  }, [
+    errors?.email,
+    errors?.password,
+    errors?.username,
+    errors?.confirm_password,
+  ]);
   const navigate = useNavigate();
+  const [confirmPassToggle, setconfirmPassToggle] = useState("password");
 
   const [passToggle, setPassToggle] = useState("password");
   const [checkUsernameLoading, setCheckUsernameLoading] = useState(null);
   const [usernameExists, setUsernameExists] = useState();
   const [loading, setLoading] = useState(false);
-
+  const { user, setUser } = useContext(UserContext);
   const registerUser = async (data) => {
     setLoading(true);
-    console.log("Registering user with data:", data); // Log data being submitted
+    console.log(data);
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/user/register`,
         data
       );
-      console.log("Registration response:", res.data); // Log response data
+      console.log("Registration response:", res.data); 
       if (res.data.message === "register success") {
         navigate("/login");
+      if (res.status === 200) {
+        setRegisterError("");
+        localStorage.setItem("token", res.data.token);
+        setUser(res.data.user);
+        navigate("/");
+      } else if (res.status === 409) {
+        navigate("/");
       } else if (res.data.message === "user already exists") {
         setError("username", {
           type: "manual",
@@ -96,9 +184,34 @@ const Signup = () => {
         type: "manual",
         message: "Registration error. Please try again!",
       });
+        throw new Error("Something went wrong!");
+      }
+    } catch (error) {
+      setRegisterError("Something went wrong!");
+      console.error(error);
+      toast.error("Some error occurred!", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } finally {
+      setLoading(false);
     }
     setLoading(false);
   };
+  const toggleConfirmPassword=()=>{
+    if (confirmPassToggle === "password") {
+      setconfirmPassToggle("text");
+    } else {
+      setconfirmPassToggle("password");
+    }
+  }
 
   const togglePassword = () => {
     if (passToggle === "password") {
@@ -205,6 +318,48 @@ const Signup = () => {
                     {usernameExists ? <ImCross /> : <TiTick />}
                   </span>
                 )}
+                {!checkUsernameLoading ? (
+                  <p
+                    className={`text-sm ${
+                      usernameExists ? "text-red-500" : "text-green-500"
+                    }  `}
+                  >
+                    {checkUsernameLoading
+                      ? ""
+                      : usernameExists == true
+                      ? "Username taken"
+                      : usernameExists == false
+                      ? "Username available"
+                      : ""}
+                  </p>
+                ) : (
+                  <p className="text-sm text-gray-500 ">Checking...</p> // instead of empty space showing checking will not decrease the height
+                )}
+                <span
+                  className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 ${
+                    checkUsernameLoading
+                      ? ""
+                      : usernameExists == true
+                      ? ""
+                      : usernameExists == false
+                      ? ""
+                      : ""
+                  }`}
+                >
+                  {checkUsernameLoading ? (
+                    <MoonLoader color="#000000" size={15} />
+                  ) : usernameExists == true ? (
+                    <span className="flex justify-center items-center">
+                      <ImCross />
+                    </span>
+                  ) : usernameExists == false ? (
+                    <span className="flex justify-center items-center">
+                      <TiTick />
+                    </span>
+                  ) : (
+                    ""
+                  )}
+                </span>
               </div>
               {errors.username && (
                 <p className="text-sm text-red-500 ">
@@ -250,6 +405,33 @@ const Signup = () => {
                     {errors.password.message}
                   </p>
                 )}
+                <input
+                  id="password"
+                  name="password"
+                  type={passToggle}
+                  autoComplete="current-password"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  {...register("password", {
+                    validate: {
+                      matchPatern: (value) =>
+                        /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[a-zA-Z]).{8,}$/gm.test(
+                          value
+                        ) ||
+                        "- at least 8 characters <br />- must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number<br />- Can contain special characters",
+                    },
+                  })}
+                />
+                <button
+                  type="button"
+                  onClick={togglePassword}
+                  className="absolute inset-y-0 right-0 mr-3 items-center text-md leading-5"
+                >
+                  {passToggle === "text" ? (
+                    <GoEyeClosed className="text-lg" />
+                  ) : (
+                    <GoEye className="text-lg" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -268,6 +450,10 @@ const Signup = () => {
                   name="confirmPassword"
                   type="password"
                   autoComplete="new-password"
+                  id="confirm_password"
+                  name="confirm_password"
+                  type={confirmPassToggle}
+                  autoComplete="current-password"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   {...register("confirmPassword")}
                 />
@@ -276,6 +462,17 @@ const Signup = () => {
                     {errors.confirmPassword.message}
                   </p>
                 )}
+                 <button
+                  type="button"
+                  onClick={toggleConfirmPassword}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                >
+                  {confirmPassToggle === "text" ? (
+                    <GoEyeClosed className="text-lg" />
+                  ) : (
+                    <GoEye className="text-lg" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -286,6 +483,8 @@ const Signup = () => {
               >
                 Sign up
               </button>
+
+              <p className="text-sm mt-5 text-red-500 text-center"></p>
             </div>
             {errors.form && (
               <p className="text-sm text-red-500 ">{errors.form.message}</p>

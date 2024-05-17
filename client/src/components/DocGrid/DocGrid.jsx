@@ -12,6 +12,22 @@ import { toast } from "react-toastify";
 import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { FcBookmark } from "react-icons/fc";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  LinkedinShareButton,
+  TelegramShareButton,
+  WhatsappShareButton,
+  EmailShareButton,
+} from "react-share";
+import {
+  FacebookIcon,
+  TwitterIcon,
+  LinkedinIcon,
+  TelegramIcon,
+  WhatsappIcon,
+  EmailIcon,
+} from "react-share";
 
 // const colleges = {
 //   harvard: false,
@@ -34,6 +50,7 @@ const DocGrid = () => {
   const { search } = useLocation();
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState("");
+  const [dynamicSearch, setDynamicSearch] = useState("");
   const [activeTab, setActiveTab] = useState("All");
   const { user, setUser, getUser } = useContext(UserContext);
 
@@ -67,7 +84,7 @@ const DocGrid = () => {
 
   useEffect(() => {
     fetchNotes();
-  }, []);
+  }, [open]);
 
   const handleBookMark = (noteID) => {
     const token = localStorage.getItem("token");
@@ -135,7 +152,10 @@ const DocGrid = () => {
               className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
               placeholder="Search courses"
               value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+                setDynamicSearch(e.target.value);
+              }}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   const searchTerm = e.target.value;
@@ -174,7 +194,10 @@ const DocGrid = () => {
               className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
               placeholder="Search courses"
               value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
+              onChange={(e) => {
+                setSearchInput(e.target.value);
+                setDynamicSearch(e.target.value);
+              }}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   const searchTerm = e.target.value;
@@ -206,7 +229,7 @@ const DocGrid = () => {
                   : "border-black"
               } rounded-lg p-2 `}
             >
-              <h2 className="text-2xl font-bold tracking-tight  justify-center flex text-center">
+              <h2 className="text-2xl font-bold tracking-tight  justify-center flex text-center cursor-pointer">
                 All Notes
               </h2>
             </div>
@@ -220,7 +243,7 @@ const DocGrid = () => {
                   : "border-black"
               } rounded-lg p-2 `}
             >
-              <h2 className="text-2xl font-bold tracking-tight first-center justify-center flex text-center">
+              <h2 className="text-2xl font-bold tracking-tight first-center justify-center flex text-center cursor-pointer">
                 BookMarked Notes
               </h2>
             </div>
@@ -231,32 +254,42 @@ const DocGrid = () => {
           </h2>
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {notes.map((note, index) => (
-              <div
-                key={index}
-                className="group relative hover:cursor-pointer"
-                onClick={() => handleNoteClick(note)}
-              >
-                <div className="aspect-h-1 aspect-w-1 flex items-center w-full overflow-hidden rounded-md bg-gray-800 border border-black lg:aspect-none group-hover:opacity-50 h-80">
-                  <MyImage
-                    src={note.thumbnail}
-                    alt={note.thumbnail}
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                  />
-                </div>
-                <div className="mt-4 flex justify-between">
-                  <div className="w-full">
-                    <h3 className="text-sm text-gray-700 font-bold flex justify-between w-full">
-                      <p>{note.title}</p>{" "}
-                      {note.likes > 0 ? <p>❤️ {note.likes}</p> : ""}
-                    </h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      {note.subject?.subjectName}
-                    </p>
+            {notes
+              .filter(
+                (note) =>
+                  note.title
+                    .toLowerCase()
+                    .includes(dynamicSearch.toLowerCase()) ||
+                  note.subject.subjectName
+                    .toLowerCase()
+                    .includes(dynamicSearch.toLowerCase())
+              )
+              .map((note, index) => (
+                <div
+                  key={index}
+                  className="group relative hover:cursor-pointer"
+                  onClick={() => handleNoteClick(note)}
+                >
+                  <div className="aspect-h-1 aspect-w-1 flex items-center w-full overflow-hidden rounded-md bg-gray-800 border border-black lg:aspect-none group-hover:opacity-50 h-80">
+                    <MyImage
+                      src={note.thumbnail}
+                      alt={note.thumbnail}
+                      className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                    />
+                  </div>
+                  <div className="mt-4 flex justify-between">
+                    <div className="w-full">
+                      <h3 className="text-sm text-gray-700 font-bold flex justify-between w-full">
+                        <p>{note.title}</p>{" "}
+                        {note.likes > 0 ? <p>❤️ {note.likes}</p> : ""}
+                      </h3>
+                      <p className="mt-1 text-sm text-gray-500">
+                        {note.subject?.subjectName}
+                      </p>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))}
+              ))}
           </div>
 
           {activeTab !== "All" && notes.length === 0 ? (
@@ -389,6 +422,33 @@ const DocGrid = () => {
                           >
                             Download
                           </a>
+                          <div className="flex flex-col justify-center items-center">
+                            <span className="text-sm mt-1 text-gray-700">
+                              OR
+                            </span>
+                            <div className="flex gap-2 pt-2 ">
+                              <div className="flex gap-2 items-center">
+                                <FacebookShareButton url={note_?.fileUrl}>
+                                  <FacebookIcon size={34} round />
+                                </FacebookShareButton>
+                                <TwitterShareButton url={note_?.fileUrl}>
+                                  <TwitterIcon size={34} round />
+                                </TwitterShareButton>
+                                <LinkedinShareButton url={note_?.fileUrl}>
+                                  <LinkedinIcon size={34} round />
+                                </LinkedinShareButton>
+                                <TelegramShareButton url={note_?.fileUrl}>
+                                  <TelegramIcon size={34} round />
+                                </TelegramShareButton>
+                                <WhatsappShareButton url={note_?.fileUrl}>
+                                  <WhatsappIcon size={34} round />
+                                </WhatsappShareButton>
+                                <EmailShareButton url={note_?.fileUrl}>
+                                  <EmailIcon size={34} round />
+                                </EmailShareButton>
+                              </div>
+                            </div>
+                          </div>
                         </section>
                       </div>
                     </div>

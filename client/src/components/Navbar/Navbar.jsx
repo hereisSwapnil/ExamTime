@@ -7,6 +7,8 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
 import { toast } from "react-toastify";
 import { Bounce } from "react-toastify";
+import Login from "../Login/Login.jsx";
+import { Link } from "react-router-dom";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -102,20 +104,20 @@ const Navbar = () => {
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex flex-1 items-center">
                 <div className="flex ml-[10px] flex-shrink-0 items-center">
-                  <a href="/">
+                  <Link to="/">
                     <img
                       className="h-auto w-[150px]"
                       src="https://i.postimg.cc/m2qJB5J2/logo-1.png"
                       alt="Exam Time"
                     />
-                  </a>
+                  </Link>
                 </div>
                 <div className="hidden sm:ml-6 sm:block self-center">
                   <div className="flex">
                     {navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
-                        href={item.href}
+                        to={item.href}
                         className={classNames(
                           item.current
                             ? "bg-gray-900 text-white flex gap-2"
@@ -171,7 +173,7 @@ const Navbar = () => {
                           </svg>
                         )}
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
 
                     <div className="text-gray-200  mt-2 ml-2">
@@ -219,7 +221,7 @@ const Navbar = () => {
                 </div> */}
               </div>
               <div className="absolute inset-y-0 right-0 flex gap-3 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                <Menu as="div" className="relative ml-3">
+              <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="relative flex rounded-full text-gray-400 bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="absolute -inset-1.5" />
@@ -277,7 +279,7 @@ const Navbar = () => {
                     </Menu.Items>
                   </Transition>
                 </Menu>
-
+                
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
@@ -317,7 +319,7 @@ const Navbar = () => {
                       <Menu.Item>
                         {({ active }) => (
                           <a
-                            href="#"
+                            href="/settings"
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"

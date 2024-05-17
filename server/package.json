@@ -25,12 +25,14 @@
     "method-override": "^3.0.0",
     "mongoose": "^8.0.3",
     "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.13",
     "passport": "^0.7.0",
     "passport-local-mongoose": "^8.0.0",
-    "pdf-image": "^2.0.0",
-    "pdftopic": "^1.0.1-alpha",
     "sharp": "^0.33.1",
     "unique-filename": "^3.0.0",
     "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
   }
 }
