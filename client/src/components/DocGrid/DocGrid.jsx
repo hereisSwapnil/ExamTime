@@ -54,7 +54,7 @@ const DocGrid = () => {
   const [activeTab, setActiveTab] = useState("All");
   const { user, setUser, getUser } = useContext(UserContext);
 
-  console.log(user);
+  // console.log(user);
 
   const [notes, setNotes] = useState([]);
 
@@ -75,11 +75,16 @@ const DocGrid = () => {
       `${import.meta.env.VITE_BASE_URL}/note${search}`,
       config
     );
+
     if (res.ok) {
       const data = await res.json();
       setNotes(data);
       setLoading(false);
     }
+    console.log(res.data);
+    setNotes(res.data);
+    setLoading(false);
+
   };
 
   useEffect(() => {
@@ -101,13 +106,32 @@ const DocGrid = () => {
         config
       )
       .then((res) => {
-        console.log(res);
-        toast.success(res.data.message);
-        getUser();
+        // console.log(res);
+        toast.success(res.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       })
       .catch((err) => {
         console.log(err);
-        toast.error(err.response.data.error);
+        toast.error(err.response.data.error, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       });
   };
 
@@ -255,15 +279,21 @@ const DocGrid = () => {
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
             {notes
-              .filter(
-                (note) =>
-                  note.title
-                    .toLowerCase()
-                    .includes(dynamicSearch.toLowerCase()) ||
-                  note.subject.subjectName
-                    .toLowerCase()
-                    .includes(dynamicSearch.toLowerCase())
-              )
+              .filter((note) => {
+                if (note) {
+                  if (
+                    note &&
+                    (note?.title
+                      .toLowerCase()
+                      .includes(dynamicSearch.toLowerCase()) ||
+                      note?.subject?.subjectName
+                        .toLowerCase()
+                        .includes(dynamicSearch.toLowerCase()))
+                  ) {
+                    return note;
+                  }
+                }
+              })
               .map((note, index) => (
                 <div
                   key={index}

@@ -36,7 +36,7 @@ const RequestPage = () => {
       .post(`${import.meta.env.VITE_BASE_URL}/request`, data, config)
       .then((res) => {
         toast.success("Request made successfully!", {
-          position: "top-center",
+          position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: false,
@@ -51,7 +51,7 @@ const RequestPage = () => {
       .catch((error) => {
         console.log(error.message);
         toast.error("An error occurred", {
-          position: "top-center",
+          position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
           closeOnClick: false,

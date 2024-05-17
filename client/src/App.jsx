@@ -24,10 +24,12 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/notifications" element={<Notifcation />} />
             <Route path="/signup" element={<Signup />} />
+            <Route path="/upload/:requestId" element={<UploadPage />} />
             <Route path="/upload" element={<UploadPage />} />
             <Route path="/request" element={<RequestPage />} />
             <Route path="/leaderboard" element={<LeaderBoard />} />
             <Route path="/settings" element={<Settings />} />
+            <Route path="/verifyOtp" element={<VerifyOtp />} />
           </Routes>
           <Analytics />
           <SpeedInsights />

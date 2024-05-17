@@ -31,21 +31,10 @@ const Navbar = () => {
 
   const [requests, setRequests] = useState([]);
 
-  const handleSignout = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      };
-      await axios.get(`${import.meta.env.VITE_BASE_URL}/user/logout`, config);
-      setUser(null);
-      navigate("/login");
-    } catch (error) {
-      console.log(error);
-    }
+  const handleSignout = () => {
+    navigate("/login");
+    localStorage.removeItem("token");
+    setUser(null);
   };
 
   const getRequests = async () => {
@@ -57,6 +46,7 @@ const Navbar = () => {
         },
         withCredentials: true,
       };
+
       const response = await axios.get(
         `${import.meta.env.VITE_BASE_URL}/request`,
         config
@@ -65,6 +55,26 @@ const Navbar = () => {
         const data = await response.json();
         setRequests(data);
       }
+
+      axios
+        .get(`${import.meta.env.VITE_BASE_URL}/request`, config)
+        .then((res) => {
+          setRequests(res.data);
+        })
+        .catch((error) => {
+          toast.error("An error occurred", {
+            position: "top-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: false,
+            draggable: false,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
+          });
+        });
+
     } catch (error) {
       console.log(error);
       toast.error("An error occurred", {
@@ -89,7 +99,7 @@ const Navbar = () => {
     } else if (loc === "/upload") {
       setRequestNav(false);
       setUploadNav(true);
-    } else {
+    } else if (loc === "/leaderboard") {
       setleaderBoardNav(true);
       setRequestNav(false);
       setUploadNav(false);
@@ -221,7 +231,7 @@ const Navbar = () => {
                 </div> */}
               </div>
               <div className="absolute inset-y-0 right-0 flex gap-3 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <Menu as="div" className="relative ml-3">
+                <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="relative flex rounded-full text-gray-400 bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="absolute -inset-1.5" />
@@ -279,7 +289,7 @@ const Navbar = () => {
                     </Menu.Items>
                   </Transition>
                 </Menu>
-                
+
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>

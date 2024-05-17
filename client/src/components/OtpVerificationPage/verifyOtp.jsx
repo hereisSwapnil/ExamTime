@@ -1,33 +1,121 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios";
-import { toast } from "react-toastify";
+import { Bounce, toast } from "react-toastify";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
 import "react-toastify/dist/ReactToastify.css";
 
 const VerifyOtp = () => {
-  const [email, setEmail] = useState("");
   const [otp, setOtp] = useState("");
-  const Navigate = useNavigate();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+    }
+    axios
+      .get(`${import.meta.env.VITE_BASE_URL}/user/sendotp`, {
+        headers: {
+          authorization: `Bearer ${token}`,
+        },
+      })
+      .then((res) => {
+        toast.success("OTP sent!", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        toast.error("Failed to send OTP", {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      });
+  }, []);
 
   const handleVerification = async () => {
     try {
+      const token = localStorage.getItem("token");
       const response = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/user/verifyOtp`,
         {
-          email: email,
           otp: otp,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
-
-      // Display success toast
-
-      toast.success("OTP verification successful");
-        console.log("Verification successful:", response.data);
-        Navigate("/login");
+      toast.success("OTP verified successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+      console.log("Verification successful:", response.data);
+      localStorage.setItem("token", response.data.token);
+      navigate("/");
     } catch (error) {
-      // Display error toast
-      toast.error("Failed to verify OTP");
+      console.log(error.response.data.message);
+      if (error.response.data.message === "Invalid OTP") {
+        toast.error(error.response.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      } else if (error.response.data.message === "User not found") {
+        toast.error(error.response.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      } else {
+        toast.error(error.response.data.message, {
+          position: "top-right",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
+      }
       console.error("Error verifying OTP:", error);
     }
   };
@@ -39,13 +127,13 @@ const VerifyOtp = () => {
         <h1 className="text-2xl font-bold mb-4 text-center">
           OTP Verification
         </h1>
-        <input
+        {/* <input
           type="email"
           placeholder="Email"
           className="w-full px-4 py-2 mb-4 border rounded-md"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-        />
+        /> */}
         <input
           type="text"
           placeholder="Enter OTP"
