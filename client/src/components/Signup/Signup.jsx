@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import MoonLoader from "react-spinners/MoonLoader";
@@ -8,9 +8,18 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
 import { toast, Bounce } from "react-toastify";
-import { Loader } from "../Loader/Loader.jsx";
+import { UserContext } from "../../Context/UserContext";
+import { Loader } from "../Loader/Loader";
 
 const Signup = () => {
+  const username = {
+    required: "username is required",
+    minLength: {
+      value: 8,
+      message: "Password must have at least 8 characters",
+    },
+  };
+
   const {
     register,
     handleSubmit,
@@ -18,24 +27,100 @@ const Signup = () => {
     watch,
   } = useForm();
 
+  useEffect(() => {
+    if (errors?.email?.message) {
+      toast.error(errors.email.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (errors?.username?.message) {
+      toast.error(errors.username.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (errors?.password?.message) {
+      toast.error(errors.password.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (errors?.confirm_password?.message) {
+      toast.error(errors.confirm_password.message, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } else if (usernameExists) {
+      toast.error("User name already exists", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    }
+    console.log(errors);
+  }, [
+    errors?.email,
+    errors?.password,
+    errors?.username,
+    errors?.confirm_password,
+  ]);
   const navigate = useNavigate();
+  const [confirmPassToggle, setconfirmPassToggle] = useState("password");
 
   const [registerError, setRegisterError] = useState();
   const [passToggle, setPassToggle] = useState("password");
   const [checkUsernameLoading, setCheckUsernameLoading] = useState(null);
   const [usernameExists, setUsernameExists] = useState();
   const [loading, setLoading] = useState(false);
-
+  const { user, setUser } = useContext(UserContext);
   const registerUser = async (data) => {
     setLoading(true);
+    console.log(data);
+
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/user/register`,
         data
       );
-      if (res.data.message === "register success") {
+
+      if (res.status === 200) {
         setRegisterError("");
-        
+        localStorage.setItem("token", res.data.token);
+        setUser(res.data.user);
+        navigate("/");
+      } else if (res.status === 409) {
         navigate("/");
       } else if (res.data.message === "user already exists") {
         setRegisterError("User already exists");
@@ -51,25 +136,33 @@ const Signup = () => {
           transition: Bounce,
         });
       } else {
-        setRegisterError("Something went wrong!");
-        toast.error("Some error occurred!", {
-          position: "top-center",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: false,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: "light",
-          transition: Bounce,
-        });
+        throw new Error("Something went wrong!");
       }
-      setLoading(false);
     } catch (error) {
+      setRegisterError("Something went wrong!");
       console.error(error);
+      toast.error("Some error occurred!", {
+        position: "top-center",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
+    } finally {
       setLoading(false);
     }
   };
+  const toggleConfirmPassword=()=>{
+    if (confirmPassToggle === "password") {
+      setconfirmPassToggle("text");
+    } else {
+      setconfirmPassToggle("password");
+    }
+  }
 
   const togglePassword = () => {
     if (passToggle === "password") {
@@ -143,14 +236,6 @@ const Signup = () => {
                     },
                   })}
                 />
-                {errors.email && (
-                  <p
-                    className="text-sm text-red-500 mt-1"
-                    dangerouslySetInnerHTML={{
-                      __html: errors.email.message,
-                    }}
-                  ></p>
-                )}
               </div>
             </div>
 
@@ -175,11 +260,11 @@ const Signup = () => {
                   })}
                   onChange={handleUsernameChange}
                 />
-                {!checkUsernameLoading && (
+                {!checkUsernameLoading ? (
                   <p
                     className={`text-sm ${
                       usernameExists ? "text-red-500" : "text-green-500"
-                    }  mt-1`}
+                    }  `}
                   >
                     {checkUsernameLoading
                       ? ""
@@ -189,24 +274,30 @@ const Signup = () => {
                       ? "Username available"
                       : ""}
                   </p>
+                ) : (
+                  <p className="text-sm text-gray-500 ">Checking...</p> // instead of empty space showing checking will not decrease the height
                 )}
                 <span
                   className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 ${
                     checkUsernameLoading
                       ? ""
                       : usernameExists == true
-                      ? "mb-[20px]"
+                      ? ""
                       : usernameExists == false
-                      ? "mb-[20px]"
+                      ? ""
                       : ""
                   }`}
                 >
                   {checkUsernameLoading ? (
                     <MoonLoader color="#000000" size={15} />
                   ) : usernameExists == true ? (
-                    <ImCross />
+                    <span className="flex justify-center items-center">
+                      <ImCross />
+                    </span>
                   ) : usernameExists == false ? (
-                    <TiTick />
+                    <span className="flex justify-center items-center">
+                      <TiTick />
+                    </span>
                   ) : (
                     ""
                   )}
@@ -243,7 +334,7 @@ const Signup = () => {
                 <button
                   type="button"
                   onClick={togglePassword}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                  className="absolute inset-y-0 right-0 mr-3 items-center text-md leading-5"
                 >
                   {passToggle === "text" ? (
                     <GoEyeClosed className="text-lg" />
@@ -252,14 +343,6 @@ const Signup = () => {
                   )}
                 </button>
               </div>
-              {errors.password && (
-                <p
-                  className="text-sm text-red-500 mt-1"
-                  dangerouslySetInnerHTML={{
-                    __html: errors.password.message,
-                  }}
-                ></p>
-              )}
             </div>
 
             <div>
@@ -275,7 +358,7 @@ const Signup = () => {
                 <input
                   id="confirm_password"
                   name="confirm_password"
-                  type={passToggle}
+                  type={confirmPassToggle}
                   autoComplete="current-password"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   {...register("confirm_password", {
@@ -287,11 +370,17 @@ const Signup = () => {
                     },
                   })}
                 />
-                {errors.confirm_password && (
-                  <p className="text-sm text-red-500 mt-1">
-                    {errors.confirm_password.message}
-                  </p>
-                )}
+                 <button
+                  type="button"
+                  onClick={toggleConfirmPassword}
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                >
+                  {confirmPassToggle === "text" ? (
+                    <GoEyeClosed className="text-lg" />
+                  ) : (
+                    <GoEye className="text-lg" />
+                  )}
+                </button>
               </div>
             </div>
 
@@ -302,9 +391,7 @@ const Signup = () => {
               >
                 Sign up
               </button>
-              <p className="text-sm mt-5 text-red-500 text-center">
-                {registerError && registerError}
-              </p>
+              <p className="text-sm mt-5 text-red-500 text-center"></p>
             </div>
           </form>
 
