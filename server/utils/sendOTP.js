@@ -21,11 +21,12 @@ function generateSixDigitOTP() {
 }
 
 const sendOTP = wrapAsync(async (email) => {
+  console.log(email);
   try {
     const otp = generateSixDigitOTP();
 
     const mailOptions = {
-      from: "maileroereview@gmail.com",
+      from: "examtime.official.dev@gmail.com",
       to: email,
       subject: "Email Verification OTP",
       text: `Your OTP for email verification is: ${otp}`,

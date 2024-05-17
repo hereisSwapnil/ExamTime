@@ -28,6 +28,6 @@ router.get("/logout", logoutUser);
 router.get("/checkusername/:username", checkUsername);
 router.get("/get", getUser);
 router.get("/leaderboard", getLeaderBoard);
-router.post("/sendotp", verifyToken, sendOTPcon);
+router.get("/sendotp", verifyToken, sendOTPcon);
 
 module.exports = router;
