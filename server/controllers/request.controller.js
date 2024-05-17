@@ -38,24 +38,23 @@ const getRequests = wrapAsync(async (req, res) => {
 });
 
 const deleteRequest = wrapAsync(async (req, res) => {
-   try{
-     const requestId = req.params.requestId;
-     const deletedRequest = await Request.findByIdAndDelete(requestId);
-     if (!deletedRequest) {
-      return res.status(404).json({ message: 'Request not found' });
-     }
-     res.status(200).json({ message: 'Request deleted successfully'});
-
-   } catch {
+  try {
+    const requestId = req.params.requestId;
+    const deletedRequest = await Request.findByIdAndDelete(requestId);
+    if (!deletedRequest) {
+      return res.status(404).json({ message: "Request not found" });
+    }
+    res.status(200).json({ message: "Request deleted successfully" });
+  } catch {
     console.error(error);
     res
       .status(500)
       .json({ message: "Could not delete request", error: error.message });
-   }
+  }
 });
 
 module.exports = {
   addRequest,
   getRequests,
-  deleteRequest
+  deleteRequest,
 };
