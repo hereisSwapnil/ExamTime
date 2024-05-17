@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import MoonLoader from "react-spinners/MoonLoader";
@@ -8,18 +8,9 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
 import { toast, Bounce } from "react-toastify";
-import { UserContext } from "../../Context/UserContext";
-import { Loader } from "../Loader/Loader";
+import { Loader } from "../Loader/Loader.jsx";
 
 const Signup = () => {
-  const username = {
-    required: "username is required",
-    minLength: {
-      value: 8,
-      message: "Password must have at least 8 characters",
-    },
-  };
-
   const {
     register,
     handleSubmit,
@@ -27,104 +18,29 @@ const Signup = () => {
     watch,
   } = useForm();
 
-  useEffect(() => {
-    if (errors?.email?.message) {
-      toast.error(errors.email.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-    } else if (errors?.username?.message) {
-      toast.error(errors.username.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-    } else if (errors?.password?.message) {
-      toast.error(errors.password.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-    } else if (errors?.confirm_password?.message) {
-      toast.error(errors.confirm_password.message, {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-    } else if (usernameExists) {
-      toast.error("User name already exists", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-    }
-    console.log(errors);
-  }, [
-    errors?.email,
-    errors?.password,
-    errors?.username,
-    errors?.confirm_password,
-  ]);
   const navigate = useNavigate();
-  const [confirmPassToggle, setconfirmPassToggle] = useState("password");
 
   const [registerError, setRegisterError] = useState();
   const [passToggle, setPassToggle] = useState("password");
   const [checkUsernameLoading, setCheckUsernameLoading] = useState(null);
   const [usernameExists, setUsernameExists] = useState();
   const [loading, setLoading] = useState(false);
-  const { user, setUser } = useContext(UserContext);
+
   const registerUser = async (data) => {
     setLoading(true);
-    console.log(data);
-
     try {
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/user/register`,
         data
       );
-
-      if (res.status === 200) {
-        setRegisterError("");
-        localStorage.setItem("token", res.data.token);
-        setUser(res.data.user);
-        navigate("/");
-      } else if (res.status === 409) {
-        navigate("/");
-      } else if (res.data.message === "user already exists") {
-        setRegisterError("User already exists");
-        toast.warning("User already exists!", {
+      setRegisterError("");
+      localStorage.setItem("token", res.data.token);
+      navigate("/verifyotp");
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      if (error.response.data.message === "User already exists") {
+        toast.error(error.response.data.message, {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -136,33 +52,21 @@ const Signup = () => {
           transition: Bounce,
         });
       } else {
-        throw new Error("Something went wrong!");
+        toast.error("Something went wrong!", {
+          position: "top-center",
+          autoClose: 5000,
+          hideProgressBar: false,
+          closeOnClick: false,
+          pauseOnHover: false,
+          draggable: false,
+          progress: undefined,
+          theme: "light",
+          transition: Bounce,
+        });
       }
-    } catch (error) {
-      setRegisterError("Something went wrong!");
-      console.error(error);
-      toast.error("Some error occurred!", {
-        position: "top-center",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
-    } finally {
       setLoading(false);
     }
   };
-  const toggleConfirmPassword=()=>{
-    if (confirmPassToggle === "password") {
-      setconfirmPassToggle("text");
-    } else {
-      setconfirmPassToggle("password");
-    }
-  }
 
   const togglePassword = () => {
     if (passToggle === "password") {
@@ -236,6 +140,14 @@ const Signup = () => {
                     },
                   })}
                 />
+                {errors.email && (
+                  <p
+                    className="text-sm text-red-500 mt-1"
+                    dangerouslySetInnerHTML={{
+                      __html: errors.email.message,
+                    }}
+                  ></p>
+                )}
               </div>
             </div>
 
@@ -282,22 +194,18 @@ const Signup = () => {
                     checkUsernameLoading
                       ? ""
                       : usernameExists == true
-                      ? ""
+                      ? "mb-[20px]"
                       : usernameExists == false
-                      ? ""
+                      ? "mb-[20px]"
                       : ""
                   }`}
                 >
                   {checkUsernameLoading ? (
                     <MoonLoader color="#000000" size={15} />
                   ) : usernameExists == true ? (
-                    <span className="flex justify-center items-center">
-                      <ImCross />
-                    </span>
+                    <ImCross />
                   ) : usernameExists == false ? (
-                    <span className="flex justify-center items-center">
-                      <TiTick />
-                    </span>
+                    <TiTick />
                   ) : (
                     ""
                   )}
@@ -334,7 +242,7 @@ const Signup = () => {
                 <button
                   type="button"
                   onClick={togglePassword}
-                  className="absolute inset-y-0 right-0 mr-3 items-center text-md leading-5"
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
                 >
                   {passToggle === "text" ? (
                     <GoEyeClosed className="text-lg" />
@@ -343,6 +251,14 @@ const Signup = () => {
                   )}
                 </button>
               </div>
+              {errors.password && (
+                <p
+                  className="text-sm text-red-500 mt-1"
+                  dangerouslySetInnerHTML={{
+                    __html: errors.password.message,
+                  }}
+                ></p>
+              )}
             </div>
 
             <div>
@@ -358,7 +274,7 @@ const Signup = () => {
                 <input
                   id="confirm_password"
                   name="confirm_password"
-                  type={confirmPassToggle}
+                  type={passToggle}
                   autoComplete="current-password"
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   {...register("confirm_password", {
@@ -370,17 +286,11 @@ const Signup = () => {
                     },
                   })}
                 />
-                 <button
-                  type="button"
-                  onClick={toggleConfirmPassword}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
-                >
-                  {confirmPassToggle === "text" ? (
-                    <GoEyeClosed className="text-lg" />
-                  ) : (
-                    <GoEye className="text-lg" />
-                  )}
-                </button>
+                {errors.confirm_password && (
+                  <p className="text-sm text-red-500 mt-1">
+                    {errors.confirm_password.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -391,7 +301,9 @@ const Signup = () => {
               >
                 Sign up
               </button>
-              <p className="text-sm mt-5 text-red-500 text-center"></p>
+              <p className="text-sm mt-5 text-red-500 text-center">
+                {registerError && registerError}
+              </p>
             </div>
           </form>
 
