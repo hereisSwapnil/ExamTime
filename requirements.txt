@@ -1,0 +1,28 @@
+1. **Express.js**:
+   Express.js is a popular web application framework for Node.js, used for building robust and scalable web applications. It provides a set of features for building web servers and handling HTTP requests and responses.
+
+  
+
+   ```
+   express@^4.17.1
+   ```
+
+   This specifies that you need Express.js version 4.17.1 or later for your project.
+
+2. **Mongoose**:
+   Mongoose is an Object Data Modeling (ODM) library for MongoDB and Node.js. It provides a straightforward schema-based solution to model application data and interact with MongoDB databases.
+
+   
+
+   ```
+   mongoose@^6.2.1
+   ```
+
+   This specifies that you need Mongoose version 6.2.1 or later for your project.
+
+
+```
+# Project Dependencies
+express@^4.17.1
+mongoose@^6.2.1
+```
