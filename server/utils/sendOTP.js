@@ -25,7 +25,7 @@ const sendOTP = wrapAsync(async (email) => {
     const otp = generateSixDigitOTP();
 
     const mailOptions = {
-      from: "examtime.official.dev@gmail.com",
+      from: process.env.APP_EMAIL,
       to: email,
       subject: "Email Verification OTP",
       // text: `Your OTP for email verification is: ${otp}`,
