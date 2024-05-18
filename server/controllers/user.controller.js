@@ -124,12 +124,12 @@ const loginUser = wrapAsync(async (req, res) => {
         .status(401)
         .json({ message: "user not found", success: false });
     }
-    if (!user.isverified) {
-      return res.status(400).json({
-        message: "Please verify email first",
-        success: false,
-      });
-    }
+    // if (!user.isverified) {
+    //   return res.status(400).json({
+    //     message: "Please verify email first",
+    //     success: false,
+    //   });
+    // }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 

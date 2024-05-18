@@ -16,6 +16,8 @@ const UploadPage = () => {
   const [loading, setLoading] = useState(true);
   const [subjects, setSubjects] = useState([]);
   const [fileUploadProgress, setFileUploadProgress] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -29,6 +31,28 @@ const UploadPage = () => {
 
   // Storing the request id from the route path(may or may not be present)
   const { requestId } = useParams();
+  
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    setIsDragging(false);
+    const file = event.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') {
+      setSelectedFile(file);
+    }
+    setIsFileSelected(true);
+    uploadFile(file, (fileUrl) => {
+      setFileUrl(fileUrl); 
+    });
+  };
 
   const addSubject = () => {
     if (addSubject_ === "") {
@@ -241,6 +265,7 @@ const UploadPage = () => {
         },
         config
       );
+  
       // After successful upload
       if (requestId) {
         // If requestId is present, delete the associated request
@@ -463,11 +488,16 @@ const UploadPage = () => {
                   />
                   <label
                     htmlFor="file"
-                    className="relative flex min-h-[200px] items-center justify-center rounded-md border border-dashed border-[#e0e0e0] p-12 text-center"
+                    className={`relative flex min-h-[200px] items-center justify-center rounded-md border border-dashed border-[#e0e0e0] p-12 text-center ${
+                      isDragging ? 'border-blue-500' : ''
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
                   >
                     <div className="cursor-pointer">
                       <span className="mb-2 block text-xl font-semibold text-[#07074D]">
-                        {selectedFile.name || "Drop files here"}
+                        {selectedFile.name || 'Drop files here'}
                       </span>
                       <span className="mb-2 block text-base font-small text-[#6B7280]">
                         Or
