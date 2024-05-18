@@ -1,15 +1,14 @@
-import React from 'react'
-import Navbar from '../Navbar/Navbar'
-import LeaderBoardTable from '../LeaderBoardTable/LeaderBoardTable'
-
+import React from "react";
+import Navbar from "../Navbar/Navbar";
+import LeaderBoardTable from "../LeaderBoardTable/LeaderBoardTable";
 
 const LeaderBoard = () => {
   return (
     <div>
-        <Navbar />
-        <LeaderBoardTable />
+      <Navbar />
+      <LeaderBoardTable />
     </div>
-  )
-}
+  );
+};
 
-export default LeaderBoard
+export default LeaderBoard;

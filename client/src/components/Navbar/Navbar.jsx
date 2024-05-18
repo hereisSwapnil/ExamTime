@@ -6,6 +6,7 @@ import { UserContext } from "../../Context/UserContext";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router";
 import Login from "../Login/Login.jsx";
+import { Link } from "react-router-dom";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -28,21 +29,10 @@ const Navbar = () => {
 
   const [requests, setRequests] = useState([]);
 
-  const handleSignout = async () => {
-    try {
-      const token = localStorage.getItem("token");
-      const config = {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
-      };
-      await axios.get(`${import.meta.env.VITE_BASE_URL}/user/logout`, config);
-      setUser(null);
-      navigate("/login");
-    } catch (error) {
-      console.log(error);
-    }
+  const handleSignout = () => {
+    navigate("/login");
+    localStorage.removeItem("token");
+    setUser(null);
   };
 
   const getRequests = () => {
@@ -61,7 +51,7 @@ const Navbar = () => {
         })
         .catch((error) => {
           toast.error("An error occurred", {
-            position: "top-center",
+            position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: false,
@@ -85,7 +75,7 @@ const Navbar = () => {
     } else if (loc === "/upload") {
       setRequestNav(false);
       setUploadNav(true);
-    } else {
+    } else if (loc === "/leaderboard") {
       setleaderBoardNav(true);
       setRequestNav(false);
       setUploadNav(false);
@@ -100,20 +90,20 @@ const Navbar = () => {
             <div className="relative flex h-16 items-center justify-between">
               <div className="flex flex-1 items-center">
                 <div className="flex ml-[10px] flex-shrink-0 items-center">
-                  <a href="/">
+                  <Link to="/">
                     <img
                       className="h-auto w-[150px]"
                       src="https://i.postimg.cc/m2qJB5J2/logo-1.png"
                       alt="Exam Time"
                     />
-                  </a>
+                  </Link>
                 </div>
                 <div className="hidden sm:ml-6 sm:block self-center">
                   <div className="flex">
                     {navigation.map((item) => (
-                      <a
+                      <Link
                         key={item.name}
-                        href={item.href}
+                        to={item.href}
                         className={classNames(
                           item.current
                             ? "bg-gray-900 text-white flex gap-2"
@@ -137,7 +127,7 @@ const Navbar = () => {
                               d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15"
                             />
                           </svg>
-                        ) :item.name === "Leaderboard" ? (
+                        ) : item.name === "Leaderboard" ? (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -146,10 +136,13 @@ const Navbar = () => {
                             stroke="currentColor"
                             className="w-5 h-5"
                           >
-                            <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492c.963-.203 1.934-.377 2.916-.52M4.5 15.75v6.75c0 1.035.84 1.875 1.875 1.875h9.75c1.035 0 1.875-.84 1.875-1.875v-6.75m-12.75 0h15m-9.75 0a3 3 0 11-6 0 3 3 0 016 0z" />
-                          </svg> 
-
-                        ):(
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M16.5 18.75h-9m9 0a3 3 0 013 3h-15a3 3 0 013-3m9 0v-3.375c0-.621-.503-1.125-1.125-1.125h-.871M7.5 18.75v-3.375c0-.621.504-1.125 1.125-1.125h.872m5.007 0H9.497m5.007 0a7.454 7.454 0 01-.982-3.172M9.497 14.25a7.454 7.454 0 00.981-3.172M5.25 4.236c-.982.143-1.954.317-2.916.52A6.003 6.003 0 007.73 9.728M5.25 4.236V4.5c0 2.108.966 3.99 2.48 5.228M5.25 4.236V2.721C7.456 2.41 9.71 2.25 12 2.25c2.291 0 4.545.16 6.75.47v1.516M7.73 9.728a6.726 6.726 0 002.748 1.35m8.272-6.842V4.5c0 2.108-.966 3.99-2.48 5.228m2.48-5.492c.963-.203 1.934-.377 2.916-.52M4.5 15.75v6.75c0 1.035.84 1.875 1.875 1.875h9.75c1.035 0 1.875-.84 1.875-1.875v-6.75m-12.75 0h15m-9.75 0a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                        ) : (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -166,7 +159,7 @@ const Navbar = () => {
                           </svg>
                         )}
                         {item.name}
-                      </a>
+                      </Link>
                     ))}
 
                     <div className="text-gray-200  mt-2 ml-2">
@@ -214,7 +207,7 @@ const Navbar = () => {
                 </div> */}
               </div>
               <div className="absolute inset-y-0 right-0 flex gap-3 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-              <Menu as="div" className="relative ml-3">
+                <Menu as="div" className="relative ml-3">
                   <div>
                     <Menu.Button className="relative flex rounded-full text-gray-400 bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="absolute -inset-1.5" />
@@ -272,7 +265,7 @@ const Navbar = () => {
                     </Menu.Items>
                   </Transition>
                 </Menu>
-                
+
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative ml-3">
                   <div>
@@ -312,7 +305,7 @@ const Navbar = () => {
                       <Menu.Item>
                         {({ active }) => (
                           <a
-                            href="#"
+                            href="/settings"
                             className={classNames(
                               active ? "bg-gray-100" : "",
                               "block px-4 py-2 text-sm text-gray-700"

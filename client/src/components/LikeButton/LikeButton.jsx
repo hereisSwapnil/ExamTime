@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Heart from "react-heart";
+import { Bounce, toast } from "react-toastify";
 
 const LikeButton = ({ noteId }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -38,11 +39,23 @@ const LikeButton = ({ noteId }) => {
         },
         withCredentials: true,
       };
-      await axios.get(`${import.meta.env.VITE_BASE_URL}/note/like/${noteId}`, {
-        config,
-      });
+      await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/note/like/${noteId}`,
+        config
+      );
 
       setIsLiked(true);
+      toast.success("Note liked successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     } catch (error) {
       console.error("Error liking note:", error);
     }
@@ -63,6 +76,17 @@ const LikeButton = ({ noteId }) => {
       );
 
       setIsLiked(false);
+      toast.success("Note unliked successfully", {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: false,
+        pauseOnHover: false,
+        draggable: false,
+        progress: undefined,
+        theme: "light",
+        transition: Bounce,
+      });
     } catch (error) {
       console.error("Error unliking note:", error);
     }

@@ -9,8 +9,6 @@ const verifyToken = (req, res, next) => {
       token = authHeader.split(" ")[1];
     }
   }
-
-  console.log(token);
   if (!token) {
     return res.status(401).send("You are not authenticated");
   }
@@ -18,6 +16,7 @@ const verifyToken = (req, res, next) => {
     if (err) {
       res.status(403).send("Token is not valid");
     }
+    // if()
     console.log(data);
     req.user = data;
     next();

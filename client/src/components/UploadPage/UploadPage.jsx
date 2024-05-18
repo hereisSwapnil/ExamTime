@@ -2,7 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Loader } from "../Loader/Loader";
 import { useNavigate } from "react-router";
-import { useParams } from 'react-router-dom';
+import { useParams } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -17,12 +17,12 @@ const UploadPage = () => {
   const [subjects, setSubjects] = useState([]);
   const [fileUploadProgress, setFileUploadProgress] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
-  
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const [selectedFile, setSelectedFile] = useState([]);
   const [isFileSeleted, setIsFileSelected] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
@@ -30,7 +30,7 @@ const UploadPage = () => {
 
   // Storing the request id from the route path(may or may not be present)
   const { requestId } = useParams();
-
+  
   const handleDragOver = (event) => {
     event.preventDefault();
     setIsDragging(true);
@@ -52,6 +52,8 @@ const UploadPage = () => {
       setFileUrl(fileUrl); 
     });
   };
+
+ 
 
   const addSubject = () => {
     if (addSubject_ === "") {
@@ -75,7 +77,7 @@ const UploadPage = () => {
           getSubjects();
         });
       toast.success("Subject added successfully", {
-        position: "top-center",
+        position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: false,
@@ -91,7 +93,7 @@ const UploadPage = () => {
     }
   };
 
-  const uploadFile = async (file) => {
+  const uploadFile = async (file, callback) => {
     const storageRef = ref(storage, "notes/" + file.name);
     const uploadTask = uploadBytesResumable(storageRef, file);
     setFileUploadProgress(0);
@@ -102,18 +104,9 @@ const UploadPage = () => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setFileUploadProgress(Math.trunc(progress));
-        // switch (snapshot.state) {
-        //   case "paused":
-        //     console.log("Upload is paused");
-        //     break;
-        //   case "running":
-        //     console.log("Upload is running");
-        //     break;
-        // }
       },
       (error) => {
-        // A full list of error codes is available at
-        // https://firebase.google.com/docs/storage/web/handle-errors
+        // Handle errors
         switch (error.code) {
           case "storage/unauthorized":
             // User doesn't have permission to access the object
@@ -121,8 +114,6 @@ const UploadPage = () => {
           case "storage/canceled":
             // User canceled the upload
             break;
-
-          // ...
 
           case "storage/unknown":
             // Unknown error occurred, inspect error.serverResponse
@@ -132,18 +123,29 @@ const UploadPage = () => {
       () => {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          // console.log("File available at", downloadURL);
           setFileUrl(downloadURL);
+          callback(downloadURL); // Call the callback function with the file URL
         });
       }
     );
   };
 
+  // const handleFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   console.log("file: ",file);
+  //   setSelectedFile(file);
+  //   setIsFileSelected(true);
+  //   uploadFile(file);
+  // };
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
     setIsFileSelected(true);
-    uploadFile(file);
+    uploadFile(file, (fileUrl) => {
+      // Callback function called with the file URL
+      // console.log("File URL:", fileUrl); // Example: Log the file URL to the console
+      setFileUrl(fileUrl); // Update state with the file URL if needed
+    });
   };
 
   useEffect(() => {
@@ -214,10 +216,11 @@ const UploadPage = () => {
         },
         config
       );
+  
       // After successful upload
       if (requestId) {
         // If requestId is present, delete the associated request
-        await deleteRequest(requestId); 
+        await deleteRequest(requestId);
       }
       navigate("/");
     } catch (error) {
@@ -445,7 +448,7 @@ const UploadPage = () => {
                   >
                     <div className="cursor-pointer">
                       <span className="mb-2 block text-xl font-semibold text-[#07074D]">
-                        {selectedFile.name || "Drop files here"}
+                        {selectedFile.name || 'Drop files here'}
                       </span>
                       <span className="mb-2 block text-base font-small text-[#6B7280]">
                         Or
