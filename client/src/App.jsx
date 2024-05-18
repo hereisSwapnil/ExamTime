@@ -13,6 +13,9 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import Notifcation from "./components/NotifcationPage/Notifcation";
 import Footer from "./components/Footer";
 import Settings from "./components/Settings/Setting";
+import QuestionPage from "./components/QuestionPage/QuestionPage";
+import QuestionNotifcation from "./components/QuestionPage/QuestionNotification";
+import AnswerPage from "./components/QuestionPage/AnswerPage";
 
 function App() {
   return (
@@ -23,10 +26,13 @@ function App() {
             <Route path="/" element={<Dashboard />} />
             <Route path="/login" element={<Login />} />
             <Route path="/notifications" element={<Notifcation />} />
+            <Route path="/questionNotifications" element={<QuestionNotifcation />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/upload/:requestId" element={<UploadPage />} />
             <Route path="/upload" element={<UploadPage />} />
+            <Route path="/answer/:requestId" element={<AnswerPage />} />
             <Route path="/request" element={<RequestPage />} />
+            <Route path="/question" element={<QuestionPage />} />
             <Route path="/leaderboard" element={<LeaderBoard />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/verifyOtp" element={<VerifyOtp />} />

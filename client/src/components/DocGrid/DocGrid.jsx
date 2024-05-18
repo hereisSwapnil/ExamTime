@@ -12,6 +12,7 @@ import { toast } from "react-toastify";
 import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { FcBookmark } from "react-icons/fc";
+import { Link } from "react-router-dom";
 
 // const colleges = {
 //   harvard: false,
@@ -162,6 +163,7 @@ const DocGrid = () => {
     <>
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-4">
+        <div className="flex gap-6 mb-2">
           <div className="flex rounded-md overflow-hidden w-full">
             <input
               type="text"
@@ -188,7 +190,15 @@ const DocGrid = () => {
             >
               Go
             </button>
-          </div>
+            </div>
+            <Link to="./questionNotifications">
+            <button
+              className="rounded-md mt-3 mb-10 pl-4 bg-indigo-600 text-white px-6 text-lg font-semibold py-4"
+            >
+              Doubts
+            </button>
+            </Link>
+            </div>
           <div className="flex gap-2 mb-2">
             <div
               onClick={() => {
