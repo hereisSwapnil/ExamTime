@@ -189,18 +189,18 @@ const DocGrid = () => {
               Go
             </button>
           </div>
-          <div className="flex gap-2 mb-2">
+          <div className="flex gap-2 mb-2  ">
             <div
               onClick={() => {
                 setActiveTab("All");
               }}
-              className={`flex-1 border-2 ${
+              className={`flex-1 border-2 cursor-pointer hover:bg-indigo-950 transition delay-75 ${
                 activeTab === "All"
                   ? "bg-indigo-600 text-white"
                   : "border-black"
               } rounded-lg p-2 `}
             >
-              <h2 className="text-2xl font-bold tracking-tight  justify-center flex text-center">
+              <h2 className="text-2xl font-bold tracking-tight justify-center flex text-center">
                 All Notes
               </h2>
             </div>
@@ -208,9 +208,9 @@ const DocGrid = () => {
               onClick={() => {
                 setActiveTab("BookMarked");
               }}
-              className={`flex-1 border-2 ${
+              className={`flex-1 border-2 cursor-pointer hover:bg-indigo-950 hover:text-white transition delay-75 ${
                 activeTab === "BookMarked"
-                  ? "bg-indigo-600 text-white"
+                  ? "bg-indigo-600 text-white "
                   : "border-black"
               } rounded-lg p-2 `}
             >
