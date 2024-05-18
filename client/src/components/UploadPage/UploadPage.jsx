@@ -433,13 +433,15 @@ const UploadPage = () => {
                     className="sr-only cursor-pointer"
                     multiple={false}
                     accept="application/pdf"
-                    onDragOver={handleDragOver}
-                    onDragLeave={handleDragLeave}
-                    onDragDrop={handleDrop}
                   />
                   <label
                     htmlFor="file"
-                    className="relative flex min-h-[200px] items-center justify-center rounded-md border border-dashed border-[#e0e0e0] p-12 text-center"
+                    className={`relative flex min-h-[200px] items-center justify-center rounded-md border border-dashed border-[#e0e0e0] p-12 text-center ${
+                      isDragging ? 'border-blue-500' : ''
+                    }`}
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDrop={handleDrop}
                   >
                     <div className="cursor-pointer">
                       <span className="mb-2 block text-xl font-semibold text-[#07074D]">
