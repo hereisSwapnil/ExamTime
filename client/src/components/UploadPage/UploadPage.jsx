@@ -16,6 +16,8 @@ const UploadPage = () => {
   const [loading, setLoading] = useState(true);
   const [subjects, setSubjects] = useState([]);
   const [fileUploadProgress, setFileUploadProgress] = useState(0);
+  const [isDragging, setIsDragging] = useState(false);
+  
   const {
     register,
     handleSubmit,
@@ -28,6 +30,28 @@ const UploadPage = () => {
 
   // Storing the request id from the route path(may or may not be present)
   const { requestId } = useParams();
+
+  const handleDragOver = (event) => {
+    event.preventDefault();
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (event) => {
+    event.preventDefault();
+    setIsDragging(false);
+    const file = event.dataTransfer.files[0];
+    if (file && file.type === 'application/pdf') {
+      setSelectedFile(file);
+    }
+    setIsFileSelected(true);
+    uploadFile(file, (fileUrl) => {
+      setFileUrl(fileUrl); 
+    });
+  };
 
   const addSubject = () => {
     if (addSubject_ === "") {
@@ -409,6 +433,9 @@ const UploadPage = () => {
                     className="sr-only cursor-pointer"
                     multiple={false}
                     accept="application/pdf"
+                    onDragOver={handleDragOver}
+                    onDragLeave={handleDragLeave}
+                    onDragDrop={handleDrop}
                   />
                   <label
                     htmlFor="file"
