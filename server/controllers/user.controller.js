@@ -70,8 +70,8 @@ const registerUser = wrapAsync(async (req, res) => {
 
 const sendOTPcon = wrapAsync(async (req, res) => {
   try {
-    console.log(req.user);
-    const email = req.user.email;
+    const user = await User.findById(req.user._id);
+    const email = user.email;
     sendOTP(email);
     res.status(200).json({ message: "OTP sent" });
   } catch (error) {
@@ -86,6 +86,7 @@ const verifyOtp = wrapAsync(async (req, res) => {
   try {
     const { otp } = req.body;
     const user = await User.findById(req.user._id);
+    console.log(user.email);
     if (user) {
       if (user.otp == otp) {
         const updatedUser = await User.findOneAndUpdate(
@@ -93,18 +94,24 @@ const verifyOtp = wrapAsync(async (req, res) => {
           { $set: { isverified: true } },
           { new: true }
         );
+        const token = createToken(updatedUser._id, user.email, true);
         return res.status(200).json({
           success: true,
           message: "User verified successfully",
+          token,
         });
       } else {
         return res.status(400).json({
-          message: "Inavlid Otp ",
+          message: "Invalid OTP ",
           success: false,
         });
       }
     } else {
       console.log("User not found");
+      return res.status(404).json({
+        message: "User not found",
+        success: false,
+      });
     }
   } catch (error) {
     console.log(error);
@@ -124,18 +131,19 @@ const loginUser = wrapAsync(async (req, res) => {
         .status(401)
         .json({ message: "user not found", success: false });
     }
-    // if (!user.isverified) {
-    //   return res.status(400).json({
-    //     message: "Please verify email first",
-    //     success: false,
-    //   });
-    // }
 
     const passwordMatch = await bcrypt.compare(password, user.password);
 
     if (passwordMatch) {
-      const token = createToken(user._id);
+      const token = createToken(user._id, user.email, user.isverified);
       // res.cookie("token", token, { secure: true });
+      if (!user.isverified) {
+        return res.status(400).json({
+          message: "Please verify email first",
+          token,
+          success: false,
+        });
+      }
       res.status(200).json({
         user,
         token,
