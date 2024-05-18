@@ -235,19 +235,20 @@ const UploadPage = () => {
   return (
     <>
       <Navbar />
-      <div>
         <div className="flex items-center justify-center">
-          <div className="mx-auto w-full max-w-[550px] bg-white">
+          <div className="mx-auto bg-white">
             <form
               className="py-6 px-9"
               onSubmit={handleSubmit((data) => {
                 uploadNotes(data);
               })}
             >
+            <div className="flex flex-col lg:flex-row gap-6">
+              <div>
               <div className="mb-5">
                 <label
                   htmlFor="title"
-                  className="mb-3 block text-base font-small text-[#07074D]"
+                  className="mb-3 block text-base font-semibold text-[#07074D]"
                 >
                   Title
                 </label>
@@ -278,7 +279,7 @@ const UploadPage = () => {
               <div className="mb-5">
                 <label
                   htmlFor="description"
-                  className="mb-3 block text-base font-small text-[#07074D]"
+                  className="mb-3 block text-base font-semibold text-[#07074D]"
                 >
                   Description
                 </label>
@@ -287,7 +288,7 @@ const UploadPage = () => {
                   name="description"
                   id="description"
                   placeholder="Handwritten COA notes with all units complete"
-                  rows={10}
+                  rows={3}
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   {...register("description", {
                     required: "Description is required.",
@@ -310,7 +311,7 @@ const UploadPage = () => {
               <div className="mb-5">
                 <label
                   htmlFor="subject"
-                  className="mb-3 block text-base font-small text-[#07074D]"
+                  className="mb-3 block text-base font-semibold text-[#07074D]"
                 >
                   Subject
                 </label>
@@ -356,21 +357,21 @@ const UploadPage = () => {
                     value={addSubject_}
                     onChange={(e) => setAddSubject_(e.target.value)}
                     placeholder="Add a subject..."
-                    className="rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                    className="rounded-md border border-[#e0e0e0] bg-white py-2 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   ></input>
                   <div
-                    className="hover:shadow-form rounded-md cursor-pointer bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
+                    className="hover:shadow-form rounded-md cursor-pointer bg-[#6A64F1] py-2 px-8 text-center text-base font-semibold text-white outline-none"
                     onClick={addSubject}
                   >
                     Add Subject
                   </div>
                 </div>
               </div>
-
+              <div className="flex gap-2">
               <div className="mb-5">
                 <label
                   htmlFor="course"
-                  className="mb-3 block text-base font-small text-[#07074D]"
+                  className="mb-3 block text-base font-semibold text-[#07074D]"
                 >
                   Course
                 </label>
@@ -378,7 +379,7 @@ const UploadPage = () => {
                   type="text"
                   name="course"
                   id="course"
-                  placeholder="Btech."
+                  placeholder="BTech IT"
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   {...register("course", {
                     required:
@@ -398,7 +399,7 @@ const UploadPage = () => {
               <div className="mb-5">
                 <label
                   htmlFor="year"
-                  className="mb-3 block text-base font-small text-[#07074D]"
+                  className="mb-3 block text-base font-semibold text-[#07074D]"
                 >
                   Year
                 </label>
@@ -421,8 +422,11 @@ const UploadPage = () => {
                   ></p>
                 )}
               </div>
+              </div>
+              </div>
 
-              <div className="mb-6 pt-4 cursor-pointer">
+              <div>
+              <div className="mb-6 pt-4 cursor-pointer lg:w-96">
                 <label className="mb-5 block text-xl font-semibold text-[#07074D]">
                   Upload File
                 </label>
@@ -440,7 +444,7 @@ const UploadPage = () => {
                   <label
                     htmlFor="file"
                     className={`relative flex min-h-[200px] items-center justify-center rounded-md border border-dashed border-[#e0e0e0] p-12 text-center ${
-                      isDragging ? 'border-blue-500' : ''
+                      isDragging && 'border-2 border-green-500'
                     }`}
                     onDragOver={handleDragOver}
                     onDragLeave={handleDragLeave}
@@ -448,7 +452,7 @@ const UploadPage = () => {
                   >
                     <div className="cursor-pointer">
                       <span className="mb-2 block text-xl font-semibold text-[#07074D]">
-                        {selectedFile.name || 'Drop files here'}
+                        {selectedFile.name || 'Drop File here'}
                       </span>
                       <span className="mb-2 block text-base font-small text-[#6B7280]">
                         Or
@@ -533,10 +537,12 @@ const UploadPage = () => {
                   Upload Notes
                 </button>
               </div>
+              </div>
+              </div>
             </form>
           </div>
         </div>
-      </div>
+      
     </>
   );
 };
