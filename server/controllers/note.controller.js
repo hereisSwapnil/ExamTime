@@ -23,28 +23,10 @@ const searchNotes = wrapAsync(async (req, res) => {
 
 const addNote = wrapAsync(async (req, res) => {
   try {
-    const {
-      title,
-      description,
-      thumbnail,
-      subject,
-      stream,
-      course,
-      year,
-      semester,
-      fileUrl,
-    } = req.body;
+    const { title, description, thumbnail, subject, course, year, fileUrl } =
+      req.body;
     const author = req.user._id;
-    if (
-      !title ||
-      !description ||
-      !subject ||
-      !stream ||
-      !course ||
-      !year ||
-      !semester ||
-      !fileUrl
-    ) {
+    if (!title || !description || !subject || !course || !year || !fileUrl) {
       return res.status(400).json({ message: "Missing fields" });
     }
     const note = await Note.create({
@@ -55,10 +37,8 @@ const addNote = wrapAsync(async (req, res) => {
         "https://www.umass.edu/studentsuccess/sites/default/files/inline-images/cornell-note-taking-strategy.jpg",
       author,
       subject,
-      stream,
       course,
       year,
-      semester,
       fileUrl,
     });
     if (!note) {
@@ -75,7 +55,6 @@ const addNote = wrapAsync(async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
     user.notes.push(note);
-    //add the coins to the user 10 coins per note
     if (user.coins) {
       user.coins += 10;
     } else {
@@ -98,7 +77,7 @@ const likeNotes = wrapAsync(async (req, res) => {
 
   try {
     const note = await Note.findById(noteId);
-
+    console.log(note);
     if (!note) {
       return res.status(404).json({ error: "Note not found" });
     }

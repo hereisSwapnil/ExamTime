@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Loader } from "../Loader/Loader";
 import { useNavigate } from "react-router";
+import { useParams } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -25,6 +26,9 @@ const UploadPage = () => {
   const [fileUrl, setFileUrl] = useState("");
   const [addSubject_, setAddSubject_] = useState("");
 
+  // Storing the request id from the route path(may or may not be present)
+  const { requestId } = useParams();
+
   const addSubject = () => {
     if (addSubject_ === "") {
       return;
@@ -47,7 +51,7 @@ const UploadPage = () => {
           getSubjects();
         });
       toast.success("Subject added successfully", {
-        position: "top-center",
+        position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: false,
@@ -62,56 +66,6 @@ const UploadPage = () => {
       console.log(error);
     }
   };
-
-  // const uploadFile = async (file) => {
-  //   const storageRef = ref(storage, "notes/" + file.name);
-  //   const uploadTask = uploadBytesResumable(storageRef, file);
-  //   setFileUploadProgress(0);
-  //   uploadTask.on(
-  //     "state_changed",
-  //     (snapshot) => {
-  //       // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-  //       const progress =
-  //         (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-  //       setFileUploadProgress(Math.trunc(progress));
-  //       // switch (snapshot.state) {
-  //       //   case "paused":
-  //       //     console.log("Upload is paused");
-  //       //     break;
-  //       //   case "running":
-  //       //     console.log("Upload is running");
-  //       //     break;
-  //       // }
-  //     },
-  //     (error) => {
-  //       // A full list of error codes is available at
-  //       // https://firebase.google.com/docs/storage/web/handle-errors
-  //       switch (error.code) {
-  //         case "storage/unauthorized":
-  //           // User doesn't have permission to access the object
-  //           break;
-  //         case "storage/canceled":
-  //           // User canceled the upload
-  //           break;
-
-  //         // ...
-
-  //         case "storage/unknown":
-  //           // Unknown error occurred, inspect error.serverResponse
-  //           break;
-  //       }
-  //     },
-  //     () => {
-  //       // Upload completed successfully, now we can get the download URL
-  //       getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-  //         // console.log("File available at", downloadURL);
-  //         setFileUrl(downloadURL);
-  //       });
-  //     }
-  //   );
-  // };
-
-  // upload file function changed
 
   const uploadFile = async (file, callback) => {
     const storageRef = ref(storage, "notes/" + file.name);
@@ -191,6 +145,26 @@ const UploadPage = () => {
       });
   };
 
+  const deleteRequest = async (requestId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      };
+      // Make a DELETE request to delete the request with the given requestId
+      await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/request/delete/${requestId}`,
+        config
+      );
+      console.log(`Request with ID ${requestId} deleted successfully.`);
+    } catch (error) {
+      console.error(`Error deleting request with ID ${requestId}:`, error);
+    }
+  };
+
   const uploadNotes = async (data) => {
     try {
       if (selectedFile.length == 0) {
@@ -204,23 +178,24 @@ const UploadPage = () => {
         },
         withCredentials: true,
       };
-
-      axios
-        .post(
-          `${import.meta.env.VITE_BASE_URL}/note`,
-          {
-            title: data.title,
-            description: data.description,
-            subject: data.subject,
-            year: data.year,
-            course: data.course,
-            fileUrl: fileUrl,
-          },
-          config
-        )
-        .then((res) => {
-          navigate("/");
-        });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/note`,
+        {
+          title: data.title,
+          description: data.description,
+          subject: data.subject,
+          year: data.year,
+          course: data.course,
+          fileUrl: fileUrl,
+        },
+        config
+      );
+      // After successful upload
+      if (requestId) {
+        // If requestId is present, delete the associated request
+        await deleteRequest(requestId);
+      }
+      navigate("/");
     } catch (error) {
       console.log(error);
     }

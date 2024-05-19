@@ -13,7 +13,6 @@ const LeaderBoardTable = () => {
       );
       if (response.status === 200) {
         setLeaderData(response.data);
-        console.log(response.data);
       }
     } catch (error) {
       console.log(error);
@@ -55,7 +54,7 @@ const LeaderBoardTable = () => {
       </span>
       <button
         className={`mx-1 px-3 py-1 rounded-md ${
-          currentPage === totalPages ? "bg-blue-500 text-white" : "bg-gray-300"
+          currentPage === totalPages ? "bg-black text-white" : "bg-gray-300"
         }`}
         onClick={() => setCurrentPage(currentPage + 1)}
         disabled={currentPage === totalPages}
@@ -64,7 +63,7 @@ const LeaderBoardTable = () => {
       </button>
       <button
         className={`mx-1 px-3 py-1 rounded-md ${
-          currentPage === totalPages ? "bg-blue-500 text-white" : "bg-gray-300"
+          currentPage === totalPages ? "bg-black text-white" : "bg-gray-300"
         }`}
         onClick={() => setCurrentPage(totalPages)}
         disabled={currentPage === totalPages}

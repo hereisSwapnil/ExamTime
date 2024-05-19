@@ -14,36 +14,7 @@ const Login = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
-  useEffect(()=>{
 
-if(errors?.email?.message){
-toast.error(errors.email.message, {
-  position: "top-right",
-  autoClose: 5000,
-  hideProgressBar: false,
-  closeOnClick: false,
-  pauseOnHover: false,
-  draggable: false,
-  progress: undefined,
-  theme: "light",
-  transition: Bounce,
-});
-}
-else if(errors?.password?.message){
-  toast.error(errors.password.message, {
-    position: "top-right",
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: false,
-    pauseOnHover: false,
-    draggable: false,
-    progress: undefined,
-    theme: "light",
-    transition: Bounce,
-  });
-  }
-
-  },[errors?.email,errors?.password])
   const [loginError, setloginError] = useState();
   const { user, setUser } = useContext(UserContext);
   const [passToggle, setPassToggle] = useState("password");
@@ -61,8 +32,6 @@ else if(errors?.password?.message){
 
   const loginUser = async (data) => {
     setLoading(true);
-    console.log(errors)
-   
     axios
       .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data)
       .then((res) => {
@@ -71,8 +40,11 @@ else if(errors?.password?.message){
           localStorage.setItem("token", res.data.token);
           setUser(res.data.user);
           setloginError("");
+          setTimeout(() => {
+            navigate("/");
+          }, 1000);
           toast.success("Logged in successfully!", {
-            position: "top-center",
+            position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: false,
@@ -82,14 +54,13 @@ else if(errors?.password?.message){
             theme: "light",
             transition: Bounce,
           });
-          navigate("/");
         }
       })
       .catch((err) => {
         if (err.response.data.message === "user not found") {
           setloginError("User not found");
           toast.warning("User not found!", {
-            position: "top-center",
+            position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: false,
@@ -99,10 +70,16 @@ else if(errors?.password?.message){
             theme: "light",
             transition: Bounce,
           });
+          setLoading(false);
+        } else if (err.response.data.message === "Please verify email first") {
+          setloginError("Please verify email first");
+          localStorage.setItem("token", err.response.data.token);
+          setLoading(false);
+          navigate("/verifyotp");
         } else if (err.response.data.message === "Invalid credentials") {
           setloginError("Invalid Credentials");
           toast.error("Invalid Credentials!", {
-            position: "top-center",
+            position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: false,
@@ -112,10 +89,11 @@ else if(errors?.password?.message){
             theme: "light",
             transition: Bounce,
           });
+          setLoading(false);
         } else {
           setloginError("Something went wrong!");
           toast.error("An error occurred!", {
-            position: "top-center",
+            position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
             closeOnClick: false,
@@ -125,9 +103,9 @@ else if(errors?.password?.message){
             theme: "light",
             transition: Bounce,
           });
+          setLoading(false);
         }
       });
-    setLoading(false);
   };
 
   if (loading) {
@@ -137,7 +115,7 @@ else if(errors?.password?.message){
   return (
     <>
       <div className="flex min-h-screen flex-1 flex-col justify-center px-6 lg:px-8">
-        <ToastContainer/>
+        <ToastContainer />
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
             className="text-center m-auto h-[50px]"
@@ -180,7 +158,6 @@ else if(errors?.password?.message){
                     },
                   })}
                 />
-                
               </div>
             </div>
 
@@ -203,8 +180,7 @@ else if(errors?.password?.message){
                   {...register("password", {
                     validate: {
                       matchPatern: (value) =>
-                      !(/^$|\s+/.test(value)) ||
-                        "please enter  password",
+                        !/^$|\s+/.test(value) || "please enter  password",
                     },
                   })}
                 />
@@ -229,7 +205,6 @@ else if(errors?.password?.message){
               >
                 Sign in
               </button>
-             
             </div>
           </form>
 
