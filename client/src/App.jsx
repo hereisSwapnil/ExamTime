@@ -13,6 +13,7 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import Notifcation from "./components/NotifcationPage/Notifcation";
 import Footer from "./components/Footer";
 import Settings from "./components/Settings/Setting";
+import OpenNote from './components/OpenNote/OpenNote';
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="/leaderboard" element={<LeaderBoard />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/verifyOtp" element={<VerifyOtp />} />
+            <Route path="/open-note" element={<OpenNote />} />
           </Routes>
           <Analytics />
           <SpeedInsights />

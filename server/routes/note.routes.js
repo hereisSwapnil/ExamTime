@@ -10,6 +10,7 @@ const {
   getBookMarkedNotesByUser,
   getSpecificNotesController,
   getFormatedNote,
+  getNoteByID
 } = require("../controllers/note.controller.js");
 const verifyToken = require("../middlewares/verifyToken.js");
 
@@ -30,5 +31,6 @@ router.get("/unlike/:noteId", verifyToken, unlikeNotes);
 router.get("/checklike/:noteId", verifyToken, checkIfLiked);
 router.post("/bookmark/:noteId", verifyToken, bookMarkNotes);
 router.get("/bookmarks", verifyToken, getBookMarkedNotesByUser);
+router.get("/:id",getNoteByID)
 
 module.exports = router;
