@@ -8,6 +8,7 @@ import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
 import { toast, Bounce } from "react-toastify";
+import { Loader } from "../Loader/Loader.jsx";
 
 const Signup = () => {
   const {
@@ -32,12 +33,14 @@ const Signup = () => {
         `${import.meta.env.VITE_BASE_URL}/user/register`,
         data
       );
-      if (res.data.message === "register success") {
-        setRegisterError("");
-        navigate("/login");
-      } else if (res.data.message === "user already exists") {
-        setRegisterError("User already exists");
-        toast.warning("User already exists!", {
+      setRegisterError("");
+      localStorage.setItem("token", res.data.token);
+      navigate("/verifyotp");
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      if (error.response.data.message === "User already exists") {
+        toast.error(error.response.data.message, {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -49,8 +52,7 @@ const Signup = () => {
           transition: Bounce,
         });
       } else {
-        setRegisterError("Something went wrong!");
-        toast.error("Some error occurred!", {
+        toast.error("Something went wrong!", {
           position: "top-center",
           autoClose: 5000,
           hideProgressBar: false,
@@ -62,9 +64,6 @@ const Signup = () => {
           transition: Bounce,
         });
       }
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
       setLoading(false);
     }
   };
@@ -173,11 +172,11 @@ const Signup = () => {
                   })}
                   onChange={handleUsernameChange}
                 />
-                {!checkUsernameLoading && (
+                {!checkUsernameLoading ? (
                   <p
                     className={`text-sm ${
                       usernameExists ? "text-red-500" : "text-green-500"
-                    }  mt-1`}
+                    }  `}
                   >
                     {checkUsernameLoading
                       ? ""
@@ -187,6 +186,8 @@ const Signup = () => {
                       ? "Username available"
                       : ""}
                   </p>
+                ) : (
+                  <p className="text-sm text-gray-500 ">Checking...</p> // instead of empty space showing checking will not decrease the height
                 )}
                 <span
                   className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 ${

@@ -2,6 +2,7 @@ import React, { useContext, useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
 import { Loader } from "../Loader/Loader";
 import { useNavigate } from "react-router";
+import { useParams } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -20,10 +21,14 @@ const UploadPage = () => {
     handleSubmit,
     formState: { errors },
   } = useForm();
+
   const [selectedFile, setSelectedFile] = useState([]);
   const [isFileSeleted, setIsFileSelected] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
   const [addSubject_, setAddSubject_] = useState("");
+
+  // Storing the request id from the route path(may or may not be present)
+  const { requestId } = useParams();
 
   const addSubject = () => {
     if (addSubject_ === "") {
@@ -47,7 +52,7 @@ const UploadPage = () => {
           getSubjects();
         });
       toast.success("Subject added successfully", {
-        position: "top-center",
+        position: "top-right",
         autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: false,
@@ -63,7 +68,7 @@ const UploadPage = () => {
     }
   };
 
-  const uploadFile = async (file) => {
+  const uploadFile = async (file, callback) => {
     const storageRef = ref(storage, "notes/" + file.name);
     const uploadTask = uploadBytesResumable(storageRef, file);
     setFileUploadProgress(0);
@@ -74,18 +79,9 @@ const UploadPage = () => {
         const progress =
           (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
         setFileUploadProgress(Math.trunc(progress));
-        // switch (snapshot.state) {
-        //   case "paused":
-        //     console.log("Upload is paused");
-        //     break;
-        //   case "running":
-        //     console.log("Upload is running");
-        //     break;
-        // }
       },
       (error) => {
-        // A full list of error codes is available at
-        // https://firebase.google.com/docs/storage/web/handle-errors
+        // Handle errors
         switch (error.code) {
           case "storage/unauthorized":
             // User doesn't have permission to access the object
@@ -93,8 +89,6 @@ const UploadPage = () => {
           case "storage/canceled":
             // User canceled the upload
             break;
-
-          // ...
 
           case "storage/unknown":
             // Unknown error occurred, inspect error.serverResponse
@@ -104,18 +98,29 @@ const UploadPage = () => {
       () => {
         // Upload completed successfully, now we can get the download URL
         getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
-          // console.log("File available at", downloadURL);
           setFileUrl(downloadURL);
+          callback(downloadURL); // Call the callback function with the file URL
         });
       }
     );
   };
 
+  // const handleFileChange = (event) => {
+  //   const file = event.target.files[0];
+  //   console.log("file: ",file);
+  //   setSelectedFile(file);
+  //   setIsFileSelected(true);
+  //   uploadFile(file);
+  // };
   const handleFileChange = (event) => {
     const file = event.target.files[0];
     setSelectedFile(file);
     setIsFileSelected(true);
-    uploadFile(file);
+    uploadFile(file, (fileUrl) => {
+      // Callback function called with the file URL
+      // console.log("File URL:", fileUrl); // Example: Log the file URL to the console
+      setFileUrl(fileUrl); // Update state with the file URL if needed
+    });
   };
 
   useEffect(() => {
@@ -141,6 +146,26 @@ const UploadPage = () => {
       });
   };
 
+  const deleteRequest = async (requestId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      };
+      // Make a DELETE request to delete the request with the given requestId
+      await axios.delete(
+        `${import.meta.env.VITE_BASE_URL}/request/delete/${requestId}`,
+        config
+      );
+      console.log(`Request with ID ${requestId} deleted successfully.`);
+    } catch (error) {
+      console.error(`Error deleting request with ID ${requestId}:`, error);
+    }
+  };
+
   const uploadNotes = async (data) => {
     try {
       if (selectedFile.length == 0) {
@@ -154,22 +179,24 @@ const UploadPage = () => {
         },
         withCredentials: true,
       };
-      axios
-        .post(
-          `${import.meta.env.VITE_BASE_URL}/note`,
-          {
-            title: data.title,
-            description: data.description,
-            subject: data.subject,
-            year: data.year,
-            course: data.course,
-            fileUrl: fileUrl,
-          },
-          config
-        )
-        .then((res) => {
-          navigate("/");
-        });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/note`,
+        {
+          title: data.title,
+          description: data.description,
+          subject: data.subject,
+          year: data.year,
+          course: data.course,
+          fileUrl: fileUrl,
+        },
+        config
+      );
+      // After successful upload
+      if (requestId) {
+        // If requestId is present, delete the associated request
+        await deleteRequest(requestId);
+      }
+      navigate("/");
     } catch (error) {
       console.log(error);
     }

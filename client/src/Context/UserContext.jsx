@@ -20,8 +20,10 @@ export const UserContextProvider = ({ children }) => {
         `${import.meta.env.VITE_BASE_URL}/user/get`,
         config
       );
-      // console.log(res.data);
-      setUser(res.data);
+      console.log(res.data);
+      if (res.data.isverified === true) {
+        setUser(res.data);
+      }
     } catch (error) {
       console.log(error);
     } finally {
@@ -37,7 +39,7 @@ export const UserContextProvider = ({ children }) => {
   }
 
   return (
-    <UserContext.Provider value={{ user, setUser }}>
+    <UserContext.Provider value={{ user, setUser, getUser }}>
       {children}
     </UserContext.Provider>
   );
