@@ -4,7 +4,7 @@ import { toast, Bounce } from "react-toastify"
 
 
 
-const ShareButton = ({ noteID }) => {
+const CopyButton = ({ noteID }) => {
 
   const handleCopy = () => {
     navigator.clipboard.writeText(`http://localhost:5173/open-note?id=${noteID}`)
@@ -27,4 +27,4 @@ const ShareButton = ({ noteID }) => {
   )
 }
 
-export default ShareButton;
+export default CopyButton;

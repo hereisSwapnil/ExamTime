@@ -2,7 +2,7 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import axios from 'axios';
 import LikeButton from '../LikeButton/LikeButton';
-import ShareButton from '../ShareButton/ShareButton';
+import CopyButton from '../CopyButton/CopyButton';
 import { FcBookmark } from 'react-icons/fc';
 import { CiBookmark } from 'react-icons/ci';
 import { UserContext } from "../../Context/UserContext";
@@ -114,7 +114,7 @@ const OpenNote = () => {
                     }
 
                     <div >
-                      <ShareButton noteID={note._id} />
+                      <CopyButton noteID={note._id} />
                     </div>
                   </div>
                 </section>

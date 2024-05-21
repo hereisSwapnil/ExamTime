@@ -12,7 +12,7 @@ import { toast } from "react-toastify";
 import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { FcBookmark } from "react-icons/fc";
-import ShareButton from "../ShareButton/ShareButton";
+import CopyButton from "../CopyButton/CopyButton";
 
 
 // const colleges = {
@@ -362,7 +362,7 @@ const DocGrid = () => {
                               )}
                             </div>
                             <div >
-                              <ShareButton noteID={note_._id}/>
+                              <CopyButton noteID={note_._id}/>
                             </div>
                           </div>
                         </section>
