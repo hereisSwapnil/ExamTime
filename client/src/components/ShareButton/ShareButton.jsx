@@ -1,15 +1,28 @@
 import React from 'react'
-import ShareLogo from '../../assets/share.svg';
+import { IoIosLink } from "react-icons/io";
+import { toast, Bounce } from "react-toastify"
 
-const ShareButton = ({noteID}) => {
 
-  const handleShare=()=>{
+
+const ShareButton = ({ noteID }) => {
+
+  const handleCopy = () => {
     navigator.clipboard.writeText(`http://localhost:5173/open-note?id=${noteID}`)
+    toast.success("Copied Link", {
+      autoClose: 1500,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    })
   }
 
   return (
-    <div className='cursor-pointer' onClick={handleShare}>
-      <img src={ShareLogo} width="22px" alt="share" />
+    <div className='cursor-pointer' onClick={handleCopy}>
+      <IoIosLink size="25" />
     </div>
   )
 }

@@ -288,8 +288,6 @@ const getNoteByID = async(req,res)=>{
     const note=await Note.findOne({_id:id})
     .populate("author");
 
-    console.log("hjvjh"+note);
-
     if (!note) {
       console.log("not fnd");
       return res
