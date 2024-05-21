@@ -179,7 +179,7 @@ const DocGrid = () => {
               }}
             />
             <button
-              className="rounded-md mt-3 mb-10 rounded-l-none pl-4 bg-indigo-600 text-white px-6 text-lg font-semibold py-4 rounded-r-md"
+              className="rounded-md mt-3 mb-10 rounded-l-none pl-4 bg-indigo-600 text-white px-6 text-lg font-semibold py-4 rounded-r-md hover:bg-indigo-500"
               onClick={() => {
                 window.location.href = `?search=${encodeURIComponent(
                   searchInput
@@ -196,11 +196,11 @@ const DocGrid = () => {
               }}
               className={`flex-1 border-2 ${
                 activeTab === "All"
-                  ? "bg-indigo-600 text-white"
-                  : "border-black"
-              } rounded-lg p-2 `}
+                  ? "bg-indigo-600 text-white "
+                  : "border-black hover:bg-slate-200"
+              } rounded-lg p-2 hover:bg-indigo-500 cursor-pointer `}
             >
-              <h2 className="text-2xl font-bold tracking-tight  justify-center flex text-center">
+              <h2 className="text-2xl font-bold tracking-tight justify-center flex text-center">
                 All Notes
               </h2>
             </div>
@@ -210,9 +210,9 @@ const DocGrid = () => {
               }}
               className={`flex-1 border-2 ${
                 activeTab === "BookMarked"
-                  ? "bg-indigo-600 text-white"
-                  : "border-black"
-              } rounded-lg p-2 `}
+                  ? "bg-indigo-600 text-white "
+                  : "border-black hover:bg-slate-200"
+              } rounded-lg p-2 hover:bg-indigo-500 cursor-pointer `}
             >
               <h2 className="text-2xl font-bold tracking-tight first-center justify-center flex text-center">
                 BookMarked Notes
@@ -311,7 +311,7 @@ const DocGrid = () => {
                           aria-labelledby="information-heading"
                           className="mt-2 gap-4 flex flex-col"
                         >
-                          <h2 className="text-2xl font-bold text-gray-900 sm:pr-12">
+                          <h2 className="text-</h2>2xl font-bold text-gray-900 sm:pr-12">
                             {note_.title}
                           </h2>
                           <h3 id="information-heading" className="sr-only">
