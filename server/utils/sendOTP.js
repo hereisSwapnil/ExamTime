@@ -50,8 +50,6 @@ const sendOTP = wrapAsync(async (email, tosetPassword = false) => {
     if (tosetPassword) {
       const resetPassword = await ResetPassword({ email, otp });
       await resetPassword.save();
-      console.log("OTP sent for password reset: ", otp);
-      console.log(resetPassword);
     }else{
       await User.updateOne({ email: email }, { $set: { otp: otp } });
     }

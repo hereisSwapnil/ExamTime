@@ -274,12 +274,11 @@ const vefifyPasswordOtp = async (req, res) => {
         message: "Invalid attempt, please try again",
       });
     }
-    console.log(user);
+  
     if (user.otp == otp) {
-      await ResetPassword.findOneAndUpdate(
-        { email: email },
-        { $set: { isverified: true } }
-      );
+      user.isVerified = true;
+      const updated = await user.save();
+      console.log(updated);
       await User.updateOne({ email: email }, { $set: { otp: otp } });
       return res.status(200).json({
         message: "OTP verified successfully",
