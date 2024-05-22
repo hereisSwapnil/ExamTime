@@ -5,7 +5,7 @@ const wrapAsync = require("../utils/wrapAsync");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sendOTP } = require("../utils/sendOTP.js");
-
+const ResetPassword = require("../models/resetPasswordModel.js");
 const checkUsername = wrapAsync(async (req, res) => {
   try {
     let username = req.params.username;
@@ -238,6 +238,99 @@ const getLeaderBoard = async (req, res) => {
   }
 };
 
+///forget password then verify password otp then update password
+//user/forget-password
+const forgetPassword = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    //sent true becuase we are sending otp for password reset
+    await sendOTP(email,true);
+    return res.status(200).json({
+      message: "OTP sent successfully",
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+//verification of otp
+//user/vefify-password-otp
+const vefifyPasswordOtp = async (req, res) => {
+  try {
+    const { email, otp } = req.body;
+    const user = await ResetPassword.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        message: "Invalid attempt, please try again",
+      });
+    }
+    console.log(user);
+    if (user.otp == otp) {
+      await ResetPassword.findOneAndUpdate(
+        { email: email },
+        { $set: { isverified: true } }
+      );
+      await User.updateOne({ email: email }, { $set: { otp: otp } });
+      return res.status(200).json({
+        message: "OTP verified successfully",
+      });
+    } else {
+      return res.status(400).json({
+        message: "Invalid OTP",
+      });
+    }
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
+
+// update password
+//user/update-password
+const updatePassword = async (req, res) => {
+  try {
+    const { newPassword, email } = req.body;
+    const user = await ResetPassword.findOne({ email });
+    if (!user) {
+      return res.status(404).json({
+        message: "Invalid attempt, please try again",
+      });
+    }
+    console.log(user.isVerified);
+    if (user.isVerified == false) {
+      return res.status(400).json({
+        message: "OTP not verified",
+      });
+    }
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    const updatedUser = await User.findOneAndUpdate(
+      { email: email },
+      { $set: { password: hashedPassword } },
+      { new: true }
+    );
+    return res.status(200).json({
+      message: "Password updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    res.status(500).json({
+      message: "Internal server error",
+      error: error.message,
+    });
+  }
+};
 module.exports = {
   checkUsername,
   registerUser,
@@ -247,4 +340,7 @@ module.exports = {
   verifyOtp,
   getLeaderBoard,
   sendOTPcon,
+  forgetPassword,
+  updatePassword,
+  vefifyPasswordOtp,
 };
