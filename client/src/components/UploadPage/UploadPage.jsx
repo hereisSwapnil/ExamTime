@@ -6,9 +6,13 @@ import { useParams } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
-import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import { ref, uploadBytesResumable, getDownloadURL, getBlob } from "firebase/storage";
 import storage from "../../firebase/firebase";
 import { toast, Bounce } from "react-toastify";
+import { pdfjs } from 'react-pdf';
+import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
+
+pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 const UploadPage = () => {
   const { user, setUser } = useContext(UserContext);
@@ -25,6 +29,7 @@ const UploadPage = () => {
   const [selectedFile, setSelectedFile] = useState([]);
   const [isFileSeleted, setIsFileSelected] = useState(false);
   const [fileUrl, setFileUrl] = useState("");
+  const [thumbnailURL, setThumbnailURL] = useState("");
   const [addSubject_, setAddSubject_] = useState("");
 
   // Storing the request id from the route path(may or may not be present)
@@ -68,6 +73,31 @@ const UploadPage = () => {
     }
   };
 
+  const createThumbnailFromPDF = async (pdf) => {
+    const fileReader = new FileReader();
+    fileReader.onload = async (e) => {
+      const typedarray = new Uint8Array(e.target.result);
+        const pdf = await pdfjs.getDocument({ data: typedarray }).promise;
+        const page = await pdf.getPage(1);
+        const viewport = page.getViewport({ scale: 1.5 });
+
+        const canvas = document.createElement('canvas');
+        const context = canvas.getContext('2d');
+        canvas.height = viewport.height;
+        canvas.width = viewport.width;
+
+        const renderContext = {
+          canvasContext: context,
+          viewport: viewport,
+        };
+        await page.render(renderContext).promise;
+
+        const thumbnailDataUrl = canvas.toDataURL('image/png');
+        setThumbnailURL(thumbnailDataUrl);
+    };
+    fileReader.readAsArrayBuffer(pdf);
+  };
+
   const uploadFile = async (file, callback) => {
     const storageRef = ref(storage, "notes/" + file.name);
     const uploadTask = uploadBytesResumable(storageRef, file);
@@ -95,13 +125,18 @@ const UploadPage = () => {
             break;
         }
       },
-      () => {
-        // Upload completed successfully, now we can get the download URL
-        getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+      async () => {
+        try {
+          const blob = await getBlob(uploadTask.snapshot.ref);
+          await createThumbnailFromPDF(blob);
+          const downloadURL = await getDownloadURL(uploadTask.snapshot.ref);
           setFileUrl(downloadURL);
-          callback(downloadURL); // Call the callback function with the file URL
-        });
+          callback(downloadURL);
+        } catch (error) {
+          console.error("Error creating thumbnail or getting download URL:", error);
+        }
       }
+      
     );
   };
 
@@ -188,6 +223,7 @@ const UploadPage = () => {
           year: data.year,
           course: data.course,
           fileUrl: fileUrl,
+          thumbnail: thumbnailURL,
         },
         config
       );
