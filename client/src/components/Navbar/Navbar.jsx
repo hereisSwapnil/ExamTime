@@ -7,7 +7,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router";
 import Login from "../Login/Login.jsx";
 import { Link } from "react-router-dom";
-
+import { IoIosStats } from "react-icons/io";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
@@ -18,12 +18,14 @@ const Navbar = () => {
   const [uploadNav, setUploadNav] = useState(false);
   const [requestNav, setRequestNav] = useState(false);
   const [leaderBoardNav, setleaderBoardNav] = useState(false);
+  const [statisticsNav, setStatisticsNav] = useState(false);
   const [searchInput, setSearchInput] = useState("");
 
   const navigation = [
     { name: "Upload Notes", href: "/upload", current: uploadNav },
     { name: "Request Notes", href: "/request", current: requestNav },
     { name: "Leaderboard", href: "/leaderboard", current: leaderBoardNav },
+    {name : "Statistics", href: "/statistics", current:statisticsNav}
   ];
   const navigate = useNavigate();
 
@@ -77,6 +79,11 @@ const Navbar = () => {
       setUploadNav(true);
     } else if (loc === "/leaderboard") {
       setleaderBoardNav(true);
+      setRequestNav(false);
+      setUploadNav(false);
+    }
+    else if (loc === "/statistics"){
+      setStatisticsNav(true);
       setRequestNav(false);
       setUploadNav(false);
     }

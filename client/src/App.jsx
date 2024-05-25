@@ -12,7 +12,8 @@ import { Analytics } from "@vercel/analytics/react";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 import Notifcation from "./components/NotifcationPage/Notifcation";
 import Footer from "./components/Footer";
-import Settings from "./components/Settings/Setting";
+import Settings from "./components/Settings/Setting";import Statistics from "./components/Statistics/Statistics";
+
 
 function App() {
   return (
@@ -30,7 +31,8 @@ function App() {
             <Route path="/leaderboard" element={<LeaderBoard />} />
             <Route path="/settings" element={<Settings />} />
             <Route path="/verifyOtp" element={<VerifyOtp />} />
-          </Routes>
+            <Route path="/statistics" element={<Statistics />} />
+        </Routes>
           <Analytics />
           <SpeedInsights />
         </div>

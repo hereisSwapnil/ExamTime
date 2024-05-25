@@ -236,7 +236,26 @@ const getLeaderBoard = async (req, res) => {
       error: error.message,
     });
   }
-};
+}
+
+const getUsers=async(req,res)=>{
+  try {
+      const users=await User.find().select('-password')
+      if(!users){
+          return res.status(404).json({
+              message:"No users found"
+          })
+      }
+      res.status(200).json(users)
+  } catch (error) {
+      res.status(500).json({
+          message:"Internal server error",
+          error:error.message
+      })
+  }
+}
+
+
 
 module.exports = {
   checkUsername,
@@ -247,4 +266,5 @@ module.exports = {
   verifyOtp,
   getLeaderBoard,
   sendOTPcon,
+  getUsers
 };
