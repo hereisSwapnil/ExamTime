@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import Navbar from "../Navbar/Navbar";
 import { Loader } from "../Loader/Loader";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
@@ -208,7 +207,6 @@ const UploadPage = () => {
 
   return (
     <>
-      <Navbar />
       <div>
         <div className="flex items-center justify-center">
           <div className="mx-auto w-full max-w-[550px] bg-white">

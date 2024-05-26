@@ -1,5 +1,4 @@
 import React, { useContext, useState, useEffect } from "react";
-import Navbar from "../Navbar/Navbar";
 import { Loader } from "../Loader/Loader";
 import { useNavigate } from "react-router";
 import { UserContext } from "../../Context/UserContext";
@@ -70,7 +69,6 @@ const RequestPage = () => {
 
   return (
     <>
-      <Navbar />
       <div>
         <div className="flex items-center justify-center">
           <div className="mx-auto w-full max-w-[550px] bg-white">

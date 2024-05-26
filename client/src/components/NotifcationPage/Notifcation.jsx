@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../Context/UserContext.jsx";
 import { useNavigate } from "react-router-dom";
 import { Loader } from "../Loader/Loader.jsx";
-import Navbar from "../Navbar/Navbar.jsx";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Menu } from "@headlessui/react";
@@ -66,7 +65,6 @@ const Notifcation = () => {
 
   return (
     <>
-      <Navbar />
       <main className="max-w-screen-sm mx-auto m-2 p-4">
         <h1 className="text-2xl font-semibold">Notifications</h1>
         <div className="mt-4">
