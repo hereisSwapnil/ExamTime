@@ -20,7 +20,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/verifyxOtp" element={<VerifyOtp />} />
+            <Route path="/verifyotp" element={<VerifyOtp />} />
             
             <Route path="/" element={<MasterPage/>}>
               <Route index element={<Dashboard />}/>
