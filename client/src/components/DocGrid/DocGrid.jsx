@@ -13,6 +13,8 @@ import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { FcBookmark } from "react-icons/fc";
 import { FaHeart } from "react-icons/fa";
+import lang from "../../utils/langaugeConstant";
+import { useSelector } from "react-redux";
 
 // const colleges = {
 //   harvard: false,
@@ -37,6 +39,7 @@ const DocGrid = () => {
   const [searchInput, setSearchInput] = useState("");
   const [activeTab, setActiveTab] = useState("All");
   const { user, setUser, getUser } = useContext(UserContext);
+  const langKey=useSelector((store)=>store.config.lang)
 
   console.log(user);
 
@@ -128,7 +131,7 @@ const DocGrid = () => {
             <input
               type="text"
               className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
-              placeholder="Search courses"
+              placeholder={lang[langKey].Searchcourses}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyPress={(e) => {
@@ -148,11 +151,11 @@ const DocGrid = () => {
                 )}`;
               }}
             >
-              Go
+              {lang[langKey].Go}
             </button>
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            No Results Found
+            {lang[langKey].NoResultsFound}
           </h2>
         </div>
       </div>
@@ -167,7 +170,7 @@ const DocGrid = () => {
             <input
               type="text"
               className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
-              placeholder="Search courses"
+              placeholder={lang[langKey].Searchcourses}
               value={searchInput}
               onChange={(e) => setSearchInput(e.target.value)}
               onKeyPress={(e) => {
@@ -187,7 +190,7 @@ const DocGrid = () => {
                 )}`;
               }}
             >
-              Go
+              {lang[langKey].Go}
             </button>
           </div>
           <div className="flex gap-2 mb-2">
@@ -202,7 +205,7 @@ const DocGrid = () => {
               } rounded-lg p-2 `}
             >
               <h2 className="text-2xl font-bold tracking-tight  justify-center flex text-center">
-                All Notes
+                {lang[langKey].AllNotes}
               </h2>
             </div>
             <div
@@ -216,13 +219,13 @@ const DocGrid = () => {
               } rounded-lg p-2 `}
             >
               <h2 className="text-2xl font-bold tracking-tight first-center justify-center flex text-center">
-                BookMarked Notes
+                {lang[langKey].BookMarkedNotes}
               </h2>
             </div>
           </div>
 
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            Find Your Notes Here
+            {lang[langKey].FindYourNotesHere}
           </h2>
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
@@ -267,7 +270,7 @@ const DocGrid = () => {
 
           {activeTab !== "All" && notes.length === 0 ? (
             <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-              No BookMarked Notes
+             {lang[langKey].NoBookMarkedNotes}
             </h2>
           ) : (
             ""
@@ -327,31 +330,31 @@ const DocGrid = () => {
                             {note_.title}
                           </h2>
                           <h3 id="information-heading" className="sr-only">
-                            Product information
+                            {lang[langKey].Productinformation}
                           </h3>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">Subject:</span>{" "}
+                            <span className="font-bold mr-2">{lang[langKey].Subject}:</span>{" "}
                             {note_.subject?.subjectName}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">Description:</span>{" "}
+                            <span className="font-bold mr-2">{lang[langKey].Description}:</span>{" "}
                             {note_.description}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">Year:</span>{" "}
+                            <span className="font-bold mr-2">{lang[langKey].Year}:</span>{" "}
                             {note_.year}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">Course:</span>{" "}
+                            <span className="font-bold mr-2">{lang[langKey].Course}:</span>{" "}
                             {note_.course}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">Likes:</span>{" "}
+                            <span className="font-bold mr-2">{lang[langKey].Likes}:</span>{" "}
                             {note_.likes}
                           </p>
                           <div className="flex gap-2 ">
@@ -376,10 +379,10 @@ const DocGrid = () => {
 
                         <section aria-labelledby="options-heading" className="">
                           <h3 id="options-heading" className="sr-only">
-                            Product options
+                            {lang[langKey].Productoptions}
                           </h3>
                           <p className="text-sm mt-8 text-gray-700">
-                            Uploaded by{" "}
+                            Uploaded by {" "}
                             <a
                               href="#"
                               className="hover:underline hover:text-gray-900"
@@ -394,7 +397,7 @@ const DocGrid = () => {
                             target="_blank"
                             rel="noreferrer"
                           >
-                            Download
+                            {lang[langKey].Download}
                           </a>
                         </section>
                       </div>

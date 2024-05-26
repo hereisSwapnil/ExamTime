@@ -5,11 +5,14 @@ import { UserContext } from "../../Context/UserContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast, Bounce } from "react-toastify";
+import { useSelector } from "react-redux";
+import lang from "../../utils/langaugeConstant";
 
 const RequestPage = () => {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const langKey=useSelector((store)=>store.config.lang)
   const {
     register,
     handleSubmit,
@@ -79,20 +82,20 @@ const RequestPage = () => {
               })}
             >
               <h2 className="text-xl md:text-2xl mb-[50px] font-bold tracking-tight text-gray-900">
-                Request notes here...
+                {lang[langKey].Requestnoteshere}...
               </h2>
               <div className="mb-5">
                 <label
                   htmlFor="description"
                   className="mb-3 block text-base font-small text-[#07074D]"
                 >
-                  Description
+                  {lang[langKey].Description}
                 </label>
                 <textarea
                   type="text"
                   name="description"
                   id="description"
-                  placeholder="I am in need of COA notes for Btech. 2nd year..."
+                  placeholder={lang[langKey].RequestPlaceholder}
                   rows={10}
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   {...register("description", {
@@ -115,7 +118,7 @@ const RequestPage = () => {
 
               <div>
                 <button className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
-                  Request
+                  {lang[langKey].Request}
                 </button>
               </div>
             </form>
