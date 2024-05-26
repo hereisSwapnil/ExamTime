@@ -12,7 +12,10 @@ import { SpeedInsights } from "@vercel/speed-insights/react";
 import Notifcation from "./components/NotifcationPage/Notifcation";
 import Footer from "./components/Footer";
 import Settings from "./components/Settings/Setting";
-
+import About from "./components/About/About";
+import Privacy from "./components/Privacy/Privacy";
+import Licensing from "./components/Licensing/Licensing";
+import Contact from "./components/Contact/Contact";
 
 function App() {
   return (
@@ -25,13 +28,17 @@ function App() {
           <Route path="/signup" element={<Signup />} />
           <Route path="/upload" element={<UploadPage />} />
           <Route path="/request" element={<RequestPage />} />
-          <Route path="/verifyOtp" element={<VerifyOtp/>} />
+          <Route path="/verifyOtp" element={<VerifyOtp />} />
           <Route path="/leaderboard" element={<LeaderBoard />} />
-          <Route path="/settings" element = {<Settings />} />
+          <Route path="/settings" element={<Settings />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/privacy" element={<Privacy />} />
+          <Route path="/licensing" element={<Licensing />} />
+          <Route path="/contact" element={<Contact />} />
         </Routes>
         <Analytics />
         <SpeedInsights />
-        <Footer/>
+        <Footer />
       </UserContextProvider>
     </>
   );
