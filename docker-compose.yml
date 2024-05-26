@@ -1,38 +1,92 @@
-version: '3'
+# version: '3'
 
-services:
-  backend:
-    container_name: server
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    ports:
-      - "8080:8080"  # Map container port 3000 to host port 3001
-    networks:
-      - app-network
+# services:
+#   backend:
+#     container_name: server
+#     build:
+#       context: ./server
+#       dockerfile: Dockerfile
+#     ports:
+#       - "8080:8080"  # Map container port 3000 to host port 3001
+#     networks:
+#       - app-network
    
 
-  frontend:
-    container_name: client
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"  # Map container port 3000 to host port 3000
-    networks:
-      - app-network
+#   frontend:
+#     container_name: client
+#     build:
+#       context: ./client
+#       dockerfile: Dockerfile
+#     ports:
+#       - "3000:3000"  # Map container port 3000 to host port 3000
+#     networks:
+#       - app-network
 
 
-  mongodb:
-    container_name: mongodb
-    image: mongo
-    ports:
-      - "27017:27017"  # Map container port 27017 to host port 27017
-    networks:
-      - app-network
+#   mongodb:
+#     container_name: mongodb
+#     image: mongo
+#     ports:
+#       - "27017:27017"  # Map container port 27017 to host port 27017
+#     networks:
+#       - app-network
 
 
   
+# networks:
+#   app-network:
+#     driver: bridge
+
+version: '3'
+services:
+  frontend:
+    build:
+      context: './client'
+      dockerfile: Dockerfile
+    ports:
+      - 3000:3000
+    container_name: react-container
+    command: npm start
+    networks:
+      - mern-stack-network
+    volumes:
+      - ./client:/app
+      - /app/node_modules
+    depends_on:
+      - backend
+  backend:
+    build:
+      context: './server'
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    container_name: express-container
+    command: /app/node_modules/.bin/nodemon server.jsntainer
+
+    networks:
+      - mern-stack-network
+    volumes:
+      - ./server:/app
+      - /app/node_modules
+    depends_on:
+      - mongo
+    env_file: ./server/.env
+    environment:
+      - NODE_ENV=development
+  mongo:
+    image: mongo
+    ports:
+      - 27017:27017
+    container_name: mongo-container
+    networks:
+      - mern-stack-network
+    volumes:
+      - mongoData:/data/db
+    
 networks:
-  app-network:
+  mern-stack-network:
+volumes:
+  mongoData:
+  node_modules:
+  web_root:
     driver: bridge
