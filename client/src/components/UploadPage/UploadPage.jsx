@@ -259,15 +259,15 @@ const UploadPage = () => {
   return (
     <>
       <div>
-        <div className="flex items-center justify-center">
-          <div className="mx-auto w-full max-w-[550px] bg-white">
+        <div className="grid w-full grid-col-[minmax(0,1000px)] lg:justify-center">
+          <div className=" w-full bg-white">
             <form
-              className="py-6 px-9"
+              className="sm:py-6 sm:px-9 sm:p-4 px-5 pb-5 sm:mt-0 mt-5 gap-5 grid justify-center items-start  lg:grid-cols-[repeat(3,minmax(300px,1fr))] grid-cols-1"
               onSubmit={handleSubmit((data) => {
                 uploadNotes(data);
               })}
             >
-              <div className="mb-5">
+              <div className="order-1">
                 <label
                   htmlFor="title"
                   className="mb-3 block text-base font-small text-[#07074D]"
@@ -298,7 +298,7 @@ const UploadPage = () => {
                 )}
               </div>
 
-              <div className="mb-5">
+              <div className="sm:w-full order-2">
                 <label
                   htmlFor="description"
                   className="mb-3 block text-base font-small text-[#07074D]"
@@ -310,7 +310,7 @@ const UploadPage = () => {
                   name="description"
                   id="description"
                   placeholder="Handwritten COA notes with all units complete"
-                  rows={10}
+                  rows={5}
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   {...register("description", {
                     required: "Description is required.",
@@ -330,7 +330,7 @@ const UploadPage = () => {
                 )}
               </div>
 
-              <div className="mb-5">
+              <div className="order-3">
                 <label
                   htmlFor="subject"
                   className="mb-3 block text-base font-small text-[#07074D]"
@@ -364,14 +364,17 @@ const UploadPage = () => {
                 )}
               </div>
 
-              <div className="mb-5 mt-10">
+              <div className="order-4">
                 <label
                   htmlFor="subject"
-                  className="mb-1 block text-base text-[14px] text-red-500"
+                  className="mb-3 block text-base text-[14px] text-black"
                 >
                   Didn't find the subject add your own
                 </label>
-                <div className="flex flex-col md:flex-row justify-center gap-5">
+                <div
+                  className="w-full flex lg:flex-row
+                 flex-col gap-3"
+                >
                   <input
                     type="text"
                     name="subject"
@@ -379,10 +382,10 @@ const UploadPage = () => {
                     value={addSubject_}
                     onChange={(e) => setAddSubject_(e.target.value)}
                     placeholder="Add a subject..."
-                    className="rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                    className="rounded-md w-full border border-[#e0e0e0] bg-white py-3 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   ></input>
                   <div
-                    className="hover:shadow-form rounded-md cursor-pointer bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
+                    className="hover:shadow-form w-auto rounded-md cursor-pointer bg-[#6A64F1] py-3 text-center text-base font-semibold text-white outline-none"
                     onClick={addSubject}
                   >
                     Add Subject
@@ -390,7 +393,7 @@ const UploadPage = () => {
                 </div>
               </div>
 
-              <div className="mb-5">
+              <div className="mb-5  order-5">
                 <label
                   htmlFor="course"
                   className="mb-3 block text-base font-small text-[#07074D]"
@@ -418,7 +421,7 @@ const UploadPage = () => {
                 )}
               </div>
 
-              <div className="mb-5">
+              <div className="mb-5 order-6">
                 <label
                   htmlFor="year"
                   className="mb-3 block text-base font-small text-[#07074D]"
@@ -445,7 +448,7 @@ const UploadPage = () => {
                 )}
               </div>
 
-              <div className="mb-6 pt-4 cursor-pointer">
+              <div className="mb-3 cursor-pointer order-7">
                 <label className="mb-5 block text-xl font-semibold text-[#07074D]">
                   Upload File
                 </label>
@@ -478,13 +481,13 @@ const UploadPage = () => {
                   </label>
                 </div>
 
-                {selectedFile && isFileSeleted ? (
+                {/* {selectedFile && isFileSeleted ? (
                   ""
                 ) : (
                   <p className="text-sm text-red-500 mt-1">
                     Please select a file to upload <br /> Allowed format - .pdf
                   </p>
-                )}
+                )} */}
 
                 {selectedFile.name && (
                   <div className="mb-5 rounded-md bg-[#F5F7FB] py-4 px-8">
@@ -546,7 +549,7 @@ const UploadPage = () => {
                 )}
               </div>
 
-              <div>
+              <div className=" order-8">
                 <button className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
                   Upload Notes
                 </button>
