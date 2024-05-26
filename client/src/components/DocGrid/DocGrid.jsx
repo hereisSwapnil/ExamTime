@@ -13,7 +13,7 @@ import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { FcBookmark } from "react-icons/fc";
 import CopyButton from "../CopyButton/CopyButton";
-
+import { FaHeart } from "react-icons/fa";
 
 // const colleges = {
 //   harvard: false,
@@ -233,22 +233,33 @@ const DocGrid = () => {
                 className="group relative hover:cursor-pointer"
                 onClick={() => handleNoteClick(note)}
               >
-                <div className="aspect-h-1 aspect-w-1 flex items-center w-full overflow-hidden rounded-md bg-gray-800 border border-black lg:aspect-none group-hover:opacity-50 h-80">
-                  <MyImage
-                    src={note.thumbnail}
-                    alt={note.thumbnail}
-                    className="h-full w-full object-cover object-center lg:h-full lg:w-full"
-                  />
-                </div>
-                <div className="mt-4 flex justify-between">
-                  <div className="w-full">
-                    <h3 className="text-sm text-gray-700 font-bold flex justify-between w-full">
-                      <p>{note.title}</p>{" "}
-                      {note.likes > 0 ? <p>❤️ {note.likes}</p> : ""}
+                <div className="text-center shadow-xl rounded-lg bg-white py-2 px-2 bg-slate-100">
+                  <div className="aspect-h-1 aspect-w-1 flex items-center w-full overflow-hidden bg-gray-800 lg:aspect-none group-hover:opacity-50 lg:h-80">
+                    <MyImage
+                      src={note.thumbnail}
+                      alt={note.thumbnail}
+                      className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                    />
+                  </div>
+                  <div className="mt-2">
+                    <h3 className="text-lg text-gray-800 font-bold">
+                      <p>{note.title}</p>
                     </h3>
-                    <p className="mt-1 text-sm text-gray-500">
-                      {note.subject?.subjectName}
+                    <p className="mt-1 pb-2 text-base text-gray-700">
+                      {note.subject.subjectName}
                     </p>
+                  </div>
+                  <div className="mt-auto flex justify-center items-center">
+                    {note.likes > 0 ? (
+                      <p className="flex items-center">
+                        <FaHeart className="text-red-500 mr-1" />
+                        {note.likes}
+                      </p>
+                    ) : (
+                      <p className="flex items-center">
+                        <FaHeart className="text-red-500 mr-1" />0
+                      </p>
+                    )}
                   </div>
                 </div>
               </div>
@@ -301,7 +312,7 @@ const DocGrid = () => {
                     </button>
 
                     <div className="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
-                      <div className="aspect-h-3 aspect-w-2 overflow-hidden rounded-lg bg-gray-100 sm:col-span-4 lg:col-span-5">
+                      <div className="aspect-h-3 aspect-w-2 overflow-hidden rounded-lg bg-gray-200 sm:col-span-4 lg:col-span-5">
                         <img
                           src={note_.thumbnail}
                           alt={note_.thumbnail}
@@ -385,6 +396,7 @@ const DocGrid = () => {
                             className="mt-6 flex w-full cursor-pointer items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             href={note_?.fileUrl}
                             target="_blank"
+                            rel="noreferrer"
                           >
                             Download
                           </a>

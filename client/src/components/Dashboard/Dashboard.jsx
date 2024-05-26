@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-import Navbar from "../Navbar/Navbar";
 import DocGrid from "../DocGrid/DocGrid";
 import { UserContext } from "../../Context/UserContext.jsx";
 import { useNavigate } from "react-router-dom";
@@ -50,7 +49,6 @@ const Dashboard = () => {
 
   return (
     <>
-      <Navbar />
       <DocGrid />
     </>
   );
