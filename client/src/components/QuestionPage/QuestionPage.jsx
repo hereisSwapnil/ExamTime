@@ -1,18 +1,16 @@
 import React, { useContext, useState, useEffect } from "react";
+import Navbar from "../Navbar/Navbar";
 import { Loader } from "../Loader/Loader";
 import { useNavigate } from "react-router";
 import { UserContext } from "../../Context/UserContext";
 import { useForm } from "react-hook-form";
 import axios from "axios";
 import { toast, Bounce } from "react-toastify";
-import { useSelector } from "react-redux";
-import lang from "../../utils/langaugeConstant";
 
-const RequestPage = () => {
+const QuestionPage = () => {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
-  const langKey=useSelector((store)=>store.config.lang)
   const {
     register,
     handleSubmit,
@@ -26,7 +24,7 @@ const RequestPage = () => {
     setLoading(false);
   }, [user, navigate]);
 
-  const addRequest = async (data) => {
+  const askQuestion = async (data) => {
     const token = localStorage.getItem("token");
     const config = {
       headers: {
@@ -35,9 +33,9 @@ const RequestPage = () => {
       withCredentials: true,
     };
     axios
-      .post(`${import.meta.env.VITE_BASE_URL}/request`, data, config)
+      .post(`${import.meta.env.VITE_BASE_URL}/question`, data, config)
       .then((res) => {
-        toast.success("Request made successfully!", {
+        toast.success("Question submitted successfully!", {
           position: "top-right",
           autoClose: 5000,
           hideProgressBar: false,
@@ -48,7 +46,7 @@ const RequestPage = () => {
           theme: "light",
           transition: Bounce,
         });
-        navigate("/");
+        navigate("/questionNotifications");
       })
       .catch((error) => {
         console.log(error.message);
@@ -72,32 +70,40 @@ const RequestPage = () => {
 
   return (
     <>
+      <Navbar />
       <div>
         <div className="flex items-center justify-center">
           <div className="mx-auto w-full max-w-[550px] bg-white">
             <form
               className="py-6 px-9"
               onSubmit={handleSubmit((data) => {
-                addRequest(data);
+                askQuestion(data);
               })}
             >
               <h2 className="text-xl md:text-2xl mb-[50px] font-bold tracking-tight text-gray-900">
-                {lang[langKey].Requestnoteshere}...
+                Ask Your Questions/Doubts here...
               </h2>
               <div className="mb-5">
-                <label
-                  htmlFor="description"
-                  className="mb-3 block text-base font-small text-[#07074D]"
-                >
-                  {lang[langKey].Description}
-                </label>
+                <div className="flex items-center justify-between rounded-md border-[1px] h-[90px] border-black p-8 px-12">
+          <img
+            src={user?.userPhoto}
+            alt={`profile-${user?.username}`}
+            className="aspect-square w-[65px] rounded-full object-cover"
+          />
+          <div className="space-y-1">
+            <p className="text-lg font-semibold text-black">
+              {user?.username}
+            </p>
+            <p className="text-sm text-black">{user?.email}</p>
+          </div>
+      </div>
                 <textarea
                   type="text"
                   name="description"
                   id="description"
-                  placeholder={lang[langKey].RequestPlaceholder}
+                  placeholder="Ask a study question and get an answer in seconds...."
                   rows={10}
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white my-4 py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   {...register("description", {
                     required: "Description is required.",
                     maxLength: {
@@ -118,7 +124,7 @@ const RequestPage = () => {
 
               <div>
                 <button className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
-                  {lang[langKey].Request}
+                  Click to ask
                 </button>
               </div>
             </form>
@@ -128,4 +134,4 @@ const RequestPage = () => {
     </>
   );
 };
-export default RequestPage;
+export default QuestionPage;
