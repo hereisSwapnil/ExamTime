@@ -1,4 +1,4 @@
-const Router = require("express");
+const express = require("express");
 const {
   searchNotes,
   addNote,
@@ -24,13 +24,13 @@ const {
 
 } = require("../controllers/user.controller");
 
-const router = Router();
+const router = express.Router();
 
 router.get("/", verifyToken, searchNotes);
 router.post("/login", loginUser);
 router.post("/register", registerUser);
 router.post("/verifyOtp", verifyToken, verifyOtp);
-router.get("/logout", logoutUser);
+router.get("/logout", verifyToken,logoutUser);
 router.get("/checkusername/:username", checkUsername);
 router.get("/get", getUser);
 router.get("/leaderboard", getLeaderBoard);
@@ -38,5 +38,6 @@ router.get("/sendotp", verifyToken, sendOTPcon);
 router.post("/forget-password", forgetPassword);
 router.post("/vefify-password-otp",vefifyPasswordOtp);
 router.post("/update-password", updatePassword);
+
 
 module.exports = router;

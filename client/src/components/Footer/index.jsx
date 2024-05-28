@@ -56,16 +56,30 @@ const Footer = () => {
               </a>
             </li>
             <li>
+
+              <a href="/contact" className="hover:underline me-4 md:me-6">
+                Contact
+
               <a href="/contact" className="hover:underline">
                 {lang[langKey].Contact}
+
+              </a>
+            </li>
+            <li>
+              <a href="/feedback" className="hover:underline">
+                Feedback
               </a>
             </li>
           </ul>
         </div>
-        <hr class="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
-        <span class="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
+        <hr className="my-6 border-gray-200 sm:mx-auto dark:border-gray-700 lg:my-8" />
+        <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400">
           © {new Date().getFullYear()}
+
+          <a href="https://flowbite.com/" className="hover:underline">
+
           <Link to="/" class="hover:underline">
+
             ExamTime
           </Link>
           . All Rights Reserved.

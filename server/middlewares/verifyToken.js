@@ -3,9 +3,11 @@ const jwt = require("jsonwebtoken");
 const verifyToken = (req, res, next) => {
   let token = req.cookies.token;
 
-  if (!token) {
+  if (!token) {      
     const authHeader = req.headers.authorization;
+    console.log(authHeader)
     if (authHeader && authHeader.startsWith("Bearer ")) {
+      
       token = authHeader.split(" ")[1];
     }
   }
@@ -17,8 +19,7 @@ const verifyToken = (req, res, next) => {
       res.status(403).send("Token is not valid");
     }
     // if()
-    console.log(data);
-    req.user = data;
+   req.data= data;
     next();
   });
 };

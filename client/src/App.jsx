@@ -16,6 +16,7 @@ import QuestionPage from "./components/QuestionPage/QuestionPage";
 import QuestionNotifcation from "./components/QuestionPage/QuestionNotification";
 import AnswerPage from "./components/QuestionPage/AnswerPage";
 import MasterPage from "./MasterPage";
+import Feedback from "./components/feedback/Feedback";
 
 function App() {
   return (
@@ -36,6 +37,8 @@ function App() {
               <Route path="/request" element={<RequestPage />} />
               <Route path="/leaderboard" element={<LeaderBoard />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/feedback" element={<Feedback />} />
+              
             </Route>
           </Routes>
           <Analytics />
