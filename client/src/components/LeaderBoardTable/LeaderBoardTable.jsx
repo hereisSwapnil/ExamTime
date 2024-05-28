@@ -1,10 +1,13 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import lang from "../../utils/langaugeConstant";
+import { useSelector } from "react-redux";
 
 const LeaderBoardTable = () => {
   const [leaderData, setLeaderData] = useState([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(10);
+  const langKey=useSelector((store)=>store.config.lang)
 
   const fetchLeaderData = async () => {
     try {
@@ -38,7 +41,7 @@ const LeaderBoardTable = () => {
         onClick={() => setCurrentPage(1)}
         disabled={currentPage === 1}
       >
-        First
+        {lang[langKey].First}
       </button>
       <button
         className={`mx-1 px-3 py-1 rounded-md ${
@@ -47,10 +50,10 @@ const LeaderBoardTable = () => {
         onClick={() => setCurrentPage(currentPage - 1)}
         disabled={currentPage === 1}
       >
-        Prev
+        {lang[langKey].Prev}
       </button>
       <span className="mx-2">
-        Page {currentPage} of {totalPages}
+        {lang[langKey].Page} {currentPage} {lang[langKey].of} {totalPages}
       </span>
       <button
         className={`mx-1 px-3 py-1 rounded-md ${
@@ -59,7 +62,7 @@ const LeaderBoardTable = () => {
         onClick={() => setCurrentPage(currentPage + 1)}
         disabled={currentPage === totalPages}
       >
-        Next
+        {lang[langKey].Next}
       </button>
       <button
         className={`mx-1 px-3 py-1 rounded-md ${
@@ -68,23 +71,23 @@ const LeaderBoardTable = () => {
         onClick={() => setCurrentPage(totalPages)}
         disabled={currentPage === totalPages}
       >
-        Last
+        {lang[langKey].Last}
       </button>
     </div>
   );
 
   return (
     <div className="container mx-auto py-8">
-      <h1 className="text-3xl font-bold mb-6">Leaderboard</h1>
+      <h1 className="text-3xl font-bold mb-6">{lang[langKey].Leaderboard}</h1>
       <div className="overflow-x-auto">
         <table className="w-full table-auto border-collapse">
           <thead>
             <tr className="bg-gray-800 text-white">
-              <th className="px-4 py-2">Rank</th>
-              <th className="px-4 py-2">Profile Photo</th>
-              <th className="px-4 py-2">Username</th>
-              <th className="px-4 py-2">Coins</th>
-              <th className="px-4 py-2">Notes</th>
+              <th className="px-4 py-2">{lang[langKey].Rank}</th>
+              <th className="px-4 py-2">{lang[langKey].ProfilePhoto}</th>
+              <th className="px-4 py-2">{lang[langKey].Username}</th>
+              <th className="px-4 py-2">{lang[langKey].Coins}</th>
+              <th className="px-4 py-2">{lang[langKey].Notes}</th>
             </tr>
           </thead>
           <tbody>
