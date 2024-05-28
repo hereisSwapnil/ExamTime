@@ -163,7 +163,7 @@ const Navbar = () => {
                     ))}
 
                     <div className="text-gray-200  mt-2 ml-2">
-                      Coins:{user.coins}
+                      Coins:{user ? user.coins : null}
                     </div>
                   </div>
                 </div>

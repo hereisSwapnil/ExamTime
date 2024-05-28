@@ -13,6 +13,7 @@ import LeaderBoard from "./components/Leaderboard/LeaderBoard";
 import Notifcation from "./components/NotifcationPage/Notifcation";
 import Settings from "./components/Settings/Setting";
 import MasterPage from "./MasterPage";
+import Feedback from "./components/feedback/Feedback";
 
 function App() {
   return (
@@ -20,7 +21,7 @@ function App() {
           <Routes>
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
-            <Route path="/verifyxOtp" element={<VerifyOtp />} />
+            <Route path="/verifyOtp" element={<VerifyOtp />} />
             
             <Route path="/" element={<MasterPage/>}>
               <Route index element={<Dashboard />}/>
@@ -30,6 +31,8 @@ function App() {
               <Route path="/request" element={<RequestPage />} />
               <Route path="/leaderboard" element={<LeaderBoard />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/feedback" element={<Feedback />} />
+              
             </Route>
           </Routes>
           <Analytics />

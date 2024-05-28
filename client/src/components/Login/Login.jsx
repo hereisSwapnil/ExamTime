@@ -9,6 +9,7 @@ import { toast, Bounce, ToastContainer } from "react-toastify";
 import { Loader } from "../Loader/Loader";
 
 const Login = () => {
+  
   const {
     register,
     handleSubmit,
@@ -36,8 +37,10 @@ const Login = () => {
       .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data)
       .then((res) => {
         console.log(res.data.message);
+        console.log("client cheking")
         if (res.data.message === "login success") {
           localStorage.setItem("token", res.data.token);
+          console.log(res.data.token)
           setUser(res.data.user);
           setloginError("");
           setTimeout(() => {

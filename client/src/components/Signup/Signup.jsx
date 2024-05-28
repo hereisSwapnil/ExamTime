@@ -98,6 +98,11 @@ const Signup = () => {
   if (loading) {
     return <Loader />;
   }
+  const isAdminEmail = (email) => {
+    // Define your admin email here
+    const adminEmail = "admin@example.com";
+    return email === adminEmail;
+  };
 
   return (
     <>
@@ -117,6 +122,8 @@ const Signup = () => {
           <form
             className="space-y-6"
             onSubmit={handleSubmit((data) => {
+              // Add logic to set the role based on the email
+              data.role = isAdminEmail(data.email) ? "admin" : "user";
               registerUser(data);
             })}
           >

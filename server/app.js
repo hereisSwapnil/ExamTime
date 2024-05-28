@@ -18,12 +18,14 @@ const userRoutes = require("./routes/user.routes.js");
 const noteRoutes = require("./routes/note.routes.js");
 const subjectRoutes = require("./routes/subject.routes.js");
 const requestRoutes = require("./routes/request.routes.js");
+const feedbackroutes = require("./routes/feedback.routes.js");
 
 // routes declare
 app.use("/user", userRoutes);
 app.use("/note", noteRoutes);
 app.use("/subject", subjectRoutes);
 app.use("/request", requestRoutes);
+app.use("/feedback", feedbackroutes);
 
 app.get("/", (req, res) => {
   res.send("Yupp The server is runnng 🎉 !");

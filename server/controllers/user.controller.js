@@ -35,8 +35,8 @@ const createToken = (_id, email, isverified) => {
 
 const registerUser = wrapAsync(async (req, res) => {
   try {
-    const { username, password, email } = req.body;
-    const existingUser = await User.findOne({ email });
+    const { username, password, email} = req.body;
+    const existingUser = await User.findOne({ email:email });
     if (existingUser) {
       return res.status(400).json({
         message: "User already exists",
@@ -56,11 +56,12 @@ const registerUser = wrapAsync(async (req, res) => {
     const registeredUser = await newUser.save();
     // await sendOTP(email);
     const token = createToken(registeredUser._id, email, false);
+    console.log("hello hello",token)
     res
       .status(200)
       .json({ user: registeredUser, token, message: "Check for OTP" });
   } catch (error) {
-    console.log(error.message);
+    console.log(error.message); 
     res.status(400).json({
       message: "Register failed",
       error: error.message,
@@ -182,7 +183,9 @@ const getUser = wrapAsync(async (req, res) => {
   const token =
     req.cookies.token ||
     (req.headers.authorization && req.headers.authorization.split(" ")[1]);
+    console.log("jjjj")
   console.log(token);
+  console.log("jsksjdhslh")
   if (!token) {
     return res.status(401).json({
       message: "Unauthorized",
@@ -200,7 +203,7 @@ const getUser = wrapAsync(async (req, res) => {
     try {
       // Assuming you have a User model with findById method
       const user = await User.findById(decoded._id).select("-password");
-      console.log(user);
+      console.log(" user.controller user checking",user.otp);
       if (!user) {
         return res.status(404).json({
           message: "User not found",
@@ -208,6 +211,7 @@ const getUser = wrapAsync(async (req, res) => {
       }
 
       res.status(200).json(user);
+      console.log("userfound")
     } catch (error) {
       res.status(500).json({
         message: "Internal server error",
