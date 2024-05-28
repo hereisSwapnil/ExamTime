@@ -15,6 +15,8 @@ import storage from "../../firebase/firebase";
 import { toast, Bounce } from "react-toastify";
 import { pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
+import lang from "../../utils/langaugeConstant";
+import { useSelector } from "react-redux";
 
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
@@ -24,6 +26,8 @@ const UploadPage = () => {
   const [loading, setLoading] = useState(true);
   const [subjects, setSubjects] = useState([]);
   const [fileUploadProgress, setFileUploadProgress] = useState(0);
+  const langKey=useSelector((store)=>store.config.lang)
+
   const {
     register,
     handleSubmit,
@@ -272,13 +276,13 @@ const UploadPage = () => {
                   htmlFor="title"
                   className="mb-3 block text-base font-small text-[#07074D]"
                 >
-                  Title
+                  {lang[langKey].Title}
                 </label>
                 <input
                   type="text"
                   name="title"
                   id="title"
-                  placeholder="COA Notes Btech. 2nd Year"
+                  placeholder={lang[langKey].uploadPlaceholder}
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   {...register("title", {
                     required: "Title is required.",
@@ -303,13 +307,13 @@ const UploadPage = () => {
                   htmlFor="description"
                   className="mb-3 block text-base font-small text-[#07074D]"
                 >
-                  Description
+                  {lang[langKey].Description}
                 </label>
                 <textarea
                   type="text"
                   name="description"
                   id="description"
-                  placeholder="Handwritten COA notes with all units complete"
+                  placeholder={lang[langKey].uploadDescPlace}
                   rows={10}
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   {...register("description", {
@@ -335,13 +339,13 @@ const UploadPage = () => {
                   htmlFor="subject"
                   className="mb-3 block text-base font-small text-[#07074D]"
                 >
-                  Subject
+                  {lang[langKey].Subject}
                 </label>
                 <select
                   type="text"
                   name="subject"
                   id="subject"
-                  placeholder="COA Notes Btech. 2nd Year"
+                  placeholder={lang[langKey].uploadPlaceholder}
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   {...register("subject", {
                     required: "Please select a subject.",
@@ -369,7 +373,7 @@ const UploadPage = () => {
                   htmlFor="subject"
                   className="mb-1 block text-base text-[14px] text-red-500"
                 >
-                  Didn't find the subject add your own
+                  {lang[langKey].noSubUp}
                 </label>
                 <div className="flex flex-col md:flex-row justify-center gap-5">
                   <input
@@ -378,14 +382,14 @@ const UploadPage = () => {
                     id="subject"
                     value={addSubject_}
                     onChange={(e) => setAddSubject_(e.target.value)}
-                    placeholder="Add a subject..."
+                    placeholder={lang[langKey].AddSubject}
                     className="rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   ></input>
                   <div
                     className="hover:shadow-form rounded-md cursor-pointer bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
                     onClick={addSubject}
                   >
-                    Add Subject
+                    {lang[langKey].AddSubject}
                   </div>
                 </div>
               </div>
@@ -395,7 +399,7 @@ const UploadPage = () => {
                   htmlFor="course"
                   className="mb-3 block text-base font-small text-[#07074D]"
                 >
-                  Course
+                  {lang[langKey].Course}
                 </label>
                 <input
                   type="text"
@@ -423,13 +427,13 @@ const UploadPage = () => {
                   htmlFor="year"
                   className="mb-3 block text-base font-small text-[#07074D]"
                 >
-                  Year
+                  {lang[langKey].Year}
                 </label>
                 <input
                   type="number"
                   name="year"
                   id="year"
-                  placeholder="Year"
+                  placeholder={lang[langKey].Year}
                   className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
                   {...register("year", {
                     required: "Enter a year of college these notes are for.",
@@ -447,7 +451,7 @@ const UploadPage = () => {
 
               <div className="mb-6 pt-4 cursor-pointer">
                 <label className="mb-5 block text-xl font-semibold text-[#07074D]">
-                  Upload File
+                  {lang[langKey].UploadFile}
                 </label>
 
                 <div className="mb-8 cursor-pointer">
@@ -482,7 +486,7 @@ const UploadPage = () => {
                   ""
                 ) : (
                   <p className="text-sm text-red-500 mt-1">
-                    Please select a file to upload <br /> Allowed format - .pdf
+                    {lang[langKey].selectfile} <br /> {lang[langKey].Allowedformat} - .pdf
                   </p>
                 )}
 
@@ -548,7 +552,7 @@ const UploadPage = () => {
 
               <div>
                 <button className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
-                  Upload Notes
+                  {lang[langKey].UploadNotes}
                 </button>
               </div>
             </form>

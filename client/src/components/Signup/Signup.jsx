@@ -38,7 +38,6 @@ const Signup = () => {
       navigate("/verifyotp");
       setLoading(false);
     } catch (error) {
-      console.error(error);
       if (error.response.data.message === "User already exists") {
         toast.error(error.response.data.message, {
           position: "top-center",

@@ -1,6 +1,11 @@
 import React from "react";
+import lang from "../../utils/langaugeConstant";
+import { useSelector } from "react-redux";
 
 const Footer = () => {
+
+  const langKey=useSelector((store)=>store.config.lang)
+
   return (
     <footer className="bg-white dark:bg-gray-900">
       <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
@@ -15,7 +20,7 @@ const Footer = () => {
           <ul className="flex flex-wrap items-center mb-6 text-sm font-medium text-gray-500 sm:mb-0 dark:text-gray-400">
             <li>
               <a href="/about" className="hover:underline me-4 md:me-6">
-                About
+                {lang[langKey].About}
               </a>
             </li>
             <li>
@@ -23,17 +28,22 @@ const Footer = () => {
                 href="/privacy-policy"
                 className="hover:underline me-4 md:me-6"
               >
-                Privacy Policy
+                {lang[langKey].PrivacyPolicy}
               </a>
             </li>
             <li>
               <a href="/licensing" className="hover:underline me-4 md:me-6">
-                Licensing
+                {lang[langKey].Licensing}
               </a>
             </li>
             <li>
+
               <a href="/contact" className="hover:underline me-4 md:me-6">
                 Contact
+
+              <a href="/contact" className="hover:underline">
+                {lang[langKey].Contact}
+
               </a>
             </li>
             <li>
