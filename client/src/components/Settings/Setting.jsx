@@ -1,16 +1,28 @@
 import React, { useState } from 'react';
+import { SUPPORTED_LANGUAGE } from '../../utils/constants';
+import {useDispatch, useSelector} from "react-redux"
+import lang from '../../utils/langaugeConstant';
+import { changeLanguage } from '../../utils/configSlice';
 
 const Settings = () => {
+
+  const langKey=useSelector((store)=>store.config.lang)
+
+  const dispatch=useDispatch()
+
   const [settings, setSettings] = useState({
     theme: 'light',
     email: '',
     password: '',
-    language: 'English',
     notifications: true,
     privacy: 'Public',
     accessibility: 'Default',
     security: 'Standard',
   });
+
+  const handleLanguageChange=(e)=>{
+    dispatch(changeLanguage(e.target.value))
+  }
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -75,11 +87,11 @@ const Settings = () => {
 
   return (
     <div className={`settings-container ${settings.theme}-theme`} style={containerStyle}>
-      <h1 style={titleStyle}>Settings</h1>
+      <h1 style={titleStyle}>{lang[langKey].setting}</h1>
       <form>
         {/* Theme Selector */}
         <div className="setting-item" style={itemStyle}>
-          <label htmlFor="theme" style={labelStyle}>Theme:</label>
+          <label htmlFor="theme" style={labelStyle}>{lang[langKey].theme}:</label>
           <select name="theme" id="theme" value={settings.theme} onChange={handleInputChange} style={selectStyle}>
             <option value="light">Light</option>
             <option value="dark">Dark</option>
@@ -88,38 +100,41 @@ const Settings = () => {
 
         {/* Email Address */}
         <div className="setting-item" style={itemStyle}>
-          <label htmlFor="email" style={labelStyle}>Email Address:</label>
+          <label htmlFor="email" style={labelStyle}>{lang[langKey].EmailAddress}:</label>
           <input type="email" name="email" id="email" value={settings.email} onChange={handleInputChange} />
         </div>
 
         {/* Password */}
         <div className="setting-item" style={itemStyle}>
-          <label htmlFor="password" style={labelStyle}>Password:</label>
+          <label htmlFor="password" style={labelStyle}>{lang[langKey].Password}:</label>
           <input type="password" name="password" id="password" value={settings.password} onChange={handleInputChange} />
         </div>
 
         {/* Language */}
         <div className="setting-item" style={itemStyle}>
-          <label htmlFor="language" style={labelStyle}>Language:</label>
-          <select name="language" id="language" value={settings.language} onChange={handleInputChange}>
-            <option value="English">English</option>
-            <option value="Hindi">Hindi</option>
+          <label htmlFor="language" style={labelStyle}>{lang[langKey].Language}:</label>
+          <select name="language" id="language" value={settings.language} onChange={handleLanguageChange}>
+          {
+          SUPPORTED_LANGUAGE.map((lang)=>(
+            <option key={lang.identifier} value={lang.identifier}>{lang.name}</option>
+          ))
+        }
             {/* Add more languages */}
           </select>
         </div>
 
         {/* Notifications */}
         <div className="setting-item">
-          <label htmlFor="notifications">Notifications:</label>
+          <label htmlFor="notifications">{lang[langKey].Notifications}:</label>
           <input type="checkbox" name="notifications" id="notifications" checked={settings.notifications} onChange={handleToggleChange} />
         </div>
 
         {/* Privacy */}
         <div className="setting-item">
-          <label htmlFor="privacy">Profile Privacy:</label>
+          <label htmlFor="privacy">{lang[langKey].ProfilePrivacy}:</label>
           <select name="privacy" id="privacy" value={settings.privacy} onChange={handleInputChange}>
-            <option value="Public">Public</option>
-            <option value="Private">Private</option>
+            <option value="Public">{lang[langKey].Public}</option>
+            <option value="Private">{lang[langKey].Private}</option>
           </select>
         </div>
 

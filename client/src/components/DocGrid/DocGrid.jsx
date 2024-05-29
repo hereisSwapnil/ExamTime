@@ -12,22 +12,10 @@ import { toast } from "react-toastify";
 import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { FcBookmark } from "react-icons/fc";
-import {
-  FacebookShareButton,
-  TwitterShareButton,
-  LinkedinShareButton,
-  TelegramShareButton,
-  WhatsappShareButton,
-  EmailShareButton,
-} from "react-share";
-import {
-  FacebookIcon,
-  TwitterIcon,
-  LinkedinIcon,
-  TelegramIcon,
-  WhatsappIcon,
-  EmailIcon,
-} from "react-share";
+import { Link } from "react-router-dom";
+import { FaHeart } from "react-icons/fa";
+import lang from "../../utils/langaugeConstant";
+import { useSelector } from "react-redux";
 
 // const colleges = {
 //   harvard: false,
@@ -50,9 +38,9 @@ const DocGrid = () => {
   const { search } = useLocation();
   const [loading, setLoading] = useState(true);
   const [searchInput, setSearchInput] = useState("");
-  const [dynamicSearch, setDynamicSearch] = useState("");
   const [activeTab, setActiveTab] = useState("All");
   const { user, setUser, getUser } = useContext(UserContext);
+  const langKey=useSelector((store)=>store.config.lang)
 
   console.log(user);
 
@@ -81,7 +69,7 @@ const DocGrid = () => {
 
   useEffect(() => {
     fetchNotes();
-  }, [open]);
+  }, []);
 
   const handleBookMark = (noteID) => {
     const token = localStorage.getItem("token");
@@ -144,12 +132,9 @@ const DocGrid = () => {
             <input
               type="text"
               className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
-              placeholder="Search courses"
+              placeholder={lang[langKey].Searchcourses}
               value={searchInput}
-              onChange={(e) => {
-                setSearchInput(e.target.value);
-                setDynamicSearch(e.target.value);
-              }}
+              onChange={(e) => setSearchInput(e.target.value)}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   const searchTerm = e.target.value;
@@ -167,11 +152,11 @@ const DocGrid = () => {
                 )}`;
               }}
             >
-              Go
+              {lang[langKey].Go}
             </button>
           </div>
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            No Results Found
+            {lang[langKey].NoResultsFound}
           </h2>
         </div>
       </div>
@@ -182,16 +167,14 @@ const DocGrid = () => {
     <>
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-4">
+        <div className="flex gap-6 mb-2">
           <div className="flex rounded-md overflow-hidden w-full">
             <input
               type="text"
               className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
-              placeholder="Search courses"
+              placeholder={lang[langKey].Searchcourses}
               value={searchInput}
-              onChange={(e) => {
-                setSearchInput(e.target.value);
-                setDynamicSearch(e.target.value);
-              }}
+              onChange={(e) => setSearchInput(e.target.value)}
               onKeyPress={(e) => {
                 if (e.key === "Enter") {
                   const searchTerm = e.target.value;
@@ -209,9 +192,17 @@ const DocGrid = () => {
                 )}`;
               }}
             >
-              Go
+              {lang[langKey].Go}
             </button>
-          </div>
+            </div>
+            <Link to="./questionNotifications">
+            <button
+              className="rounded-md mt-3 mb-10 pl-4 bg-indigo-600 text-white px-6 text-lg font-semibold py-4"
+            >
+              Doubts
+            </button>
+            </Link>
+            </div>
           <div className="flex gap-2 mb-2">
             <div
               onClick={() => {
@@ -224,7 +215,7 @@ const DocGrid = () => {
               } rounded-lg p-2 `}
             >
               <h2 className="text-2xl font-bold tracking-tight  justify-center flex text-center">
-                All Notes
+                {lang[langKey].AllNotes}
               </h2>
             </div>
             <div
@@ -238,57 +229,58 @@ const DocGrid = () => {
               } rounded-lg p-2 `}
             >
               <h2 className="text-2xl font-bold tracking-tight first-center justify-center flex text-center">
-                BookMarked Notes
+                {lang[langKey].BookMarkedNotes}
               </h2>
             </div>
           </div>
 
           <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-            Find Your Notes Here
+            {lang[langKey].FindYourNotesHere}
           </h2>
 
           <div className="mt-6 grid grid-cols-1 gap-x-6 gap-y-10 sm:grid-cols-2 lg:grid-cols-4 xl:gap-x-8">
-            {notes
-              .filter(
-                (note) =>
-                  note.title
-                    .toLowerCase()
-                    .includes(dynamicSearch.toLowerCase()) ||
-                  note.subject.subjectName
-                    .toLowerCase()
-                    .includes(dynamicSearch.toLowerCase())
-              )
-              .map((note, index) => (
-                <div
-                  key={index}
-                  className="group relative hover:cursor-pointer"
-                  onClick={() => handleNoteClick(note)}
-                >
-                  <div className="aspect-h-1 aspect-w-1 flex items-center w-full overflow-hidden rounded-md bg-gray-800 border border-black lg:aspect-none group-hover:opacity-50 h-80">
+            {notes.map((note, index) => (
+              <div
+                key={index}
+                className="group relative hover:cursor-pointer"
+                onClick={() => handleNoteClick(note)}
+              >
+                <div className="text-center shadow-xl rounded-lg bg-white py-2 px-2 bg-slate-100">
+                  <div className="aspect-h-1 aspect-w-1 flex items-center w-full overflow-hidden bg-gray-800 lg:aspect-none group-hover:opacity-50 lg:h-80">
                     <MyImage
                       src={note.thumbnail}
                       alt={note.thumbnail}
                       className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                     />
                   </div>
-                  <div className="mt-4 flex justify-between">
-                    <div className="w-full">
-                      <h3 className="text-sm text-gray-700 font-bold flex justify-between w-full">
-                        <p>{note.title}</p>{" "}
-                        {note.likes > 0 ? <p>❤️ {note.likes}</p> : ""}
-                      </h3>
-                      <p className="mt-1 text-sm text-gray-500">
-                        {note.subject?.subjectName}
+                  <div className="mt-2">
+                    <h3 className="text-lg text-gray-800 font-bold">
+                      <p>{note.title}</p>
+                    </h3>
+                    <p className="mt-1 pb-2 text-base text-gray-700">
+                      {note.subject.subjectName}
+                    </p>
+                  </div>
+                  <div className="mt-auto flex justify-center items-center">
+                    {note.likes > 0 ? (
+                      <p className="flex items-center">
+                        <FaHeart className="text-red-500 mr-1" />
+                        {note.likes}
                       </p>
-                    </div>
+                    ) : (
+                      <p className="flex items-center">
+                        <FaHeart className="text-red-500 mr-1" />0
+                      </p>
+                    )}
                   </div>
                 </div>
-              ))}
+              </div>
+            ))}
           </div>
 
           {activeTab !== "All" && notes.length === 0 ? (
             <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-              No BookMarked Notes
+             {lang[langKey].NoBookMarkedNotes}
             </h2>
           ) : (
             ""
@@ -332,7 +324,7 @@ const DocGrid = () => {
                     </button>
 
                     <div className="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
-                      <div className="aspect-h-3 aspect-w-2 overflow-hidden rounded-lg bg-gray-100 sm:col-span-4 lg:col-span-5">
+                      <div className="aspect-h-3 aspect-w-2 overflow-hidden rounded-lg bg-gray-200 sm:col-span-4 lg:col-span-5">
                         <img
                           src={note_.thumbnail}
                           alt={note_.thumbnail}
@@ -348,31 +340,31 @@ const DocGrid = () => {
                             {note_.title}
                           </h2>
                           <h3 id="information-heading" className="sr-only">
-                            Product information
+                            {lang[langKey].Productinformation}
                           </h3>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">Subject:</span>{" "}
+                            <span className="font-bold mr-2">{lang[langKey].Subject}:</span>{" "}
                             {note_.subject?.subjectName}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">Description:</span>{" "}
+                            <span className="font-bold mr-2">{lang[langKey].Description}:</span>{" "}
                             {note_.description}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">Year:</span>{" "}
+                            <span className="font-bold mr-2">{lang[langKey].Year}:</span>{" "}
                             {note_.year}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">Course:</span>{" "}
+                            <span className="font-bold mr-2">{lang[langKey].Course}:</span>{" "}
                             {note_.course}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">Likes:</span>{" "}
+                            <span className="font-bold mr-2">{lang[langKey].Likes}:</span>{" "}
                             {note_.likes}
                           </p>
                           <div className="flex gap-2 ">
@@ -397,10 +389,10 @@ const DocGrid = () => {
 
                         <section aria-labelledby="options-heading" className="">
                           <h3 id="options-heading" className="sr-only">
-                            Product options
+                            {lang[langKey].Productoptions}
                           </h3>
                           <p className="text-sm mt-8 text-gray-700">
-                            Uploaded by{" "}
+                            Uploaded by {" "}
                             <a
                               href="#"
                               className="hover:underline hover:text-gray-900"
@@ -413,36 +405,10 @@ const DocGrid = () => {
                             className="mt-6 flex w-full cursor-pointer items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             href={note_?.fileUrl}
                             target="_blank"
+                            rel="noreferrer"
                           >
-                            Download
+                            {lang[langKey].Download}
                           </a>
-                          <div className="flex flex-col justify-center items-center">
-                            <span className="text-sm mt-1 text-gray-700">
-                              OR
-                            </span>
-                            <div className="flex gap-2 pt-2 ">
-                              <div className="flex gap-2 items-center">
-                                <FacebookShareButton url={note_?.fileUrl}>
-                                  <FacebookIcon size={34} round />
-                                </FacebookShareButton>
-                                <TwitterShareButton url={note_?.fileUrl}>
-                                  <TwitterIcon size={34} round />
-                                </TwitterShareButton>
-                                <LinkedinShareButton url={note_?.fileUrl}>
-                                  <LinkedinIcon size={34} round />
-                                </LinkedinShareButton>
-                                <TelegramShareButton url={note_?.fileUrl}>
-                                  <TelegramIcon size={34} round />
-                                </TelegramShareButton>
-                                <WhatsappShareButton url={note_?.fileUrl}>
-                                  <WhatsappIcon size={34} round />
-                                </WhatsappShareButton>
-                                <EmailShareButton url={note_?.fileUrl}>
-                                  <EmailIcon size={34} round />
-                                </EmailShareButton>
-                              </div>
-                            </div>
-                          </div>
                         </section>
                       </div>
                     </div>
