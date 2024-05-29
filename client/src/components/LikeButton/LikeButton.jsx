@@ -1,8 +1,8 @@
-// LikeButton.js
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Heart from "react-heart";
 import { Bounce, toast } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
 
 const LikeButton = ({ noteId }) => {
   const [isLiked, setIsLiked] = useState(false);
@@ -53,7 +53,7 @@ const LikeButton = ({ noteId }) => {
         pauseOnHover: false,
         draggable: false,
         progress: undefined,
-        theme: "light",
+        theme: document.documentElement.classList.contains('dark') ? "dark" : "light",
         transition: Bounce,
       });
     } catch (error) {
@@ -84,7 +84,7 @@ const LikeButton = ({ noteId }) => {
         pauseOnHover: false,
         draggable: false,
         progress: undefined,
-        theme: "light",
+        theme: document.documentElement.classList.contains('dark') ? "dark" : "light",
         transition: Bounce,
       });
     } catch (error) {

@@ -1,32 +1,41 @@
-import React, { useState } from 'react';
-import { SUPPORTED_LANGUAGE } from '../../utils/constants';
-import {useDispatch, useSelector} from "react-redux"
-import lang from '../../utils/langaugeConstant';
-import { changeLanguage } from '../../utils/configSlice';
+import React, { useState } from "react";
+import { SUPPORTED_LANGUAGE } from "../../utils/constants";
+import { useDispatch, useSelector } from "react-redux";
+import lang from "../../utils/langaugeConstant";
+import { changeLanguage } from "../../utils/configSlice";
+import { useTheme } from "../../Context/ThemeContext";
 
 const Settings = () => {
-
-  const langKey=useSelector((store)=>store.config.lang)
-
-  const dispatch=useDispatch()
+  const langKey = useSelector((store) => store.config.lang);
+  const dispatch = useDispatch();
+  const {toggleTheme} = useTheme();
 
   const [settings, setSettings] = useState({
-    theme: 'light',
-    email: '',
-    password: '',
+    theme: "light",
+    email: "",
+    password: "",
     notifications: true,
-    privacy: 'Public',
-    accessibility: 'Default',
-    security: 'Standard',
+    privacy: "Public",
+    accessibility: "Default",
+    security: "Standard",
   });
 
-  const handleLanguageChange=(e)=>{
-    dispatch(changeLanguage(e.target.value))
+  const handleLanguageChange = (e) => {
+    dispatch(changeLanguage(e.target.value));
+  };
+
+  const handleThemeChange = (e) => {
+    toggleTheme();
+    const { name, value } = event.target;
+    setSettings((prevSettings) => ({
+      ...prevSettings,
+      [name]: value,
+    }));
   }
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
-    setSettings(prevSettings => ({
+    setSettings((prevSettings) => ({
       ...prevSettings,
       [name]: value,
     }));
@@ -34,118 +43,119 @@ const Settings = () => {
 
   const handleToggleChange = (event) => {
     const { name, checked } = event.target;
-    setSettings(prevSettings => ({
+    setSettings((prevSettings) => ({
       ...prevSettings,
       [name]: checked,
     }));
   };
 
-  // Add more handler functions as needed
-
-  const containerStyle = {
-    maxWidth: '600px',
-    margin: '0 auto',
-    padding: '20px',
-    paddingBottom: '60px', // Adjust this value so the content doesn't overlap with the footer
-    border: '1px solid #ccc',
-    borderRadius: '8px',
-    backgroundColor: settings.theme === 'light' ? '#f9f9f9' : '#333',
-    color: settings.theme === 'light' ? '#333' : '#f9f9f9',
-    marginBottom: '100px', // This should be at least as tall as your footer to prevent overlap
-  };
-
-  const titleStyle = {
-    textAlign: 'center',
-  };
-
-  const itemStyle = {
-    marginBottom: '20px',
-  };
-
-  const labelStyle = {
-    display: 'block',
-    marginBottom: '5px',
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '10px',
-    border: '1px solid #ddd',
-    borderRadius: '4px',
-  };
-
-  const selectStyle = {
-    ...inputStyle,
-  };
-
-  const checkboxStyle = {
-    marginRight: '10px',
-  };
-
-  // Add more styles as needed
-
-
   return (
-    <div className={`settings-container ${settings.theme}-theme`} style={containerStyle}>
-      <h1 style={titleStyle}>{lang[langKey].setting}</h1>
+    <div className="dark:bg-gray-900 p-10">
+    <div className="max-w-2xl mx-auto p-20 border-1 border-gray-300 rounded-lg bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-100 mb-100">
+      <h1 className="text-center">{lang[langKey].setting}</h1>
       <form>
         {/* Theme Selector */}
-        <div className="setting-item" style={itemStyle}>
-          <label htmlFor="theme" style={labelStyle}>{lang[langKey].theme}:</label>
-          <select name="theme" id="theme" value={settings.theme} onChange={handleInputChange} style={selectStyle}>
+        <div className="mb-4">
+          <label htmlFor="theme" className="block mb-1">
+            {lang[langKey].theme}:
+          </label>
+          <select
+            name="theme"
+            id="theme"
+            value={settings.theme}
+            onChange={handleThemeChange}
+            className="w-full p-2 border border-gray-300 rounded-md dark:text-gray-100 dark:bg-gray-700"
+          >
             <option value="light">Light</option>
             <option value="dark">Dark</option>
           </select>
         </div>
 
         {/* Email Address */}
-        <div className="setting-item" style={itemStyle}>
-          <label htmlFor="email" style={labelStyle}>{lang[langKey].EmailAddress}:</label>
-          <input type="email" name="email" id="email" value={settings.email} onChange={handleInputChange} />
+        <div className="mb-4">
+          <label htmlFor="email" className="block mb-1">
+            {lang[langKey].EmailAddress}:
+          </label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            value={settings.email}
+            onChange={handleInputChange}
+            className="w-full p-2 border border-gray-300 rounded-md dark:text-gray-100 dark:bg-gray-700"
+          />
         </div>
 
         {/* Password */}
-        <div className="setting-item" style={itemStyle}>
-          <label htmlFor="password" style={labelStyle}>{lang[langKey].Password}:</label>
-          <input type="password" name="password" id="password" value={settings.password} onChange={handleInputChange} />
+        <div className="mb-4">
+          <label htmlFor="password" className="block mb-1">
+            {lang[langKey].Password}:
+          </label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            value={settings.password}
+            onChange={handleInputChange}
+            className="w-full p-2 border border-gray-300 rounded-md dark:text-gray-100 dark:bg-gray-700"
+          />
         </div>
 
         {/* Language */}
-        <div className="setting-item" style={itemStyle}>
-          <label htmlFor="language" style={labelStyle}>{lang[langKey].Language}:</label>
-          <select name="language" id="language" value={settings.language} onChange={handleLanguageChange}>
-          {
-          SUPPORTED_LANGUAGE.map((lang)=>(
-            <option key={lang.identifier} value={lang.identifier}>{lang.name}</option>
-          ))
-        }
-            {/* Add more languages */}
+        <div className="mb-4">
+          <label htmlFor="language" className="block mb-1">
+            {lang[langKey].Language}:
+          </label>
+          <select
+            name="language"
+            id="language"
+            value={settings.language}
+            onChange={handleLanguageChange}
+            className="w-full p-2 border border-gray-300 rounded-md dark:text-gray-100 dark:bg-gray-700"
+          >
+            {SUPPORTED_LANGUAGE.map((lang) => (
+              <option key={lang.identifier} value={lang.identifier}>
+                {lang.name}
+              </option>
+            ))}
           </select>
         </div>
 
         {/* Notifications */}
-        <div className="setting-item">
-          <label htmlFor="notifications">{lang[langKey].Notifications}:</label>
-          <input type="checkbox" name="notifications" id="notifications" checked={settings.notifications} onChange={handleToggleChange} />
+        <div className="mb-4">
+          <label htmlFor="notifications" className="block mb-1">
+            {lang[langKey].Notifications}:
+          </label>
+          <input
+            type="checkbox"
+            name="notifications"
+            id="notifications"
+            checked={settings.notifications}
+            onChange={handleToggleChange}
+            className="mr-2 dark:text-gray-100"
+          />
         </div>
 
         {/* Privacy */}
-        <div className="setting-item">
-          <label htmlFor="privacy">{lang[langKey].ProfilePrivacy}:</label>
-          <select name="privacy" id="privacy" value={settings.privacy} onChange={handleInputChange}>
+        <div className="mb-4">
+          <label htmlFor="privacy" className="block mb-1">
+            {lang[langKey].ProfilePrivacy}:
+          </label>
+          <select
+            name="privacy"
+            id="privacy"
+            value={settings.privacy}
+            onChange={handleInputChange}
+            className="w-full p-2 border border-gray-300 rounded-md dark:text-gray-100 dark:bg-gray-700"
+          >
             <option value="Public">{lang[langKey].Public}</option>
             <option value="Private">{lang[langKey].Private}</option>
           </select>
         </div>
-
-        {/* Accessibility */}
-        {/* <div className="setting-item">
-          <label htmlFor="accessibility">Accessibility:</label>
-          <select name="accessibility" id="accessibility" value={settings.accessibility} onChange={handleInputChange}>
-          </select>
-        </div> */}
-        </form>
-        </div>
-)}
+      </form>
+    </div>
+    </div>
+  );
+};
 
 export default Settings;

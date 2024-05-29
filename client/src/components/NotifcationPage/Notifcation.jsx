@@ -11,11 +11,11 @@ import lang from "../../utils/langaugeConstant.js";
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
+
 const Notifcation = () => {
   const { user, setUser } = useContext(UserContext);
   const [requests, setRequests] = useState([]);
-  const langKey=useSelector((store)=>store.config.lang)
-
+  const langKey = useSelector((store) => store.config.lang);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
@@ -67,8 +67,8 @@ const Notifcation = () => {
   }
 
   return (
-    <>
-      <main className="max-w-screen-sm mx-auto m-2 p-4">
+    <div className="dark:bg-gray-900 p-2">
+      <main className="max-w-screen-sm mx-auto p-4 dark:text-gray-100">
         <h1 className="text-2xl font-semibold">{lang[langKey].Notifications}</h1>
         <div className="mt-4">
           {requests &&
@@ -78,15 +78,15 @@ const Notifcation = () => {
               .map((request, index) => (
                 <div
                   key={index}
-                  className="block px-4 py-2 text-sm text-gray-700 border-b-2"
+                  className="block px-4 py-2 text-sm text-gray-700 border-b-2 dark:text-gray-100 dark:border-gray-700"
                 >
                   <p>{request?.description}</p>
-                  <p className="text-[13px] text-end mt-1 text-blue-500">
+                  <p className="text-[13px] text-end mt-1 text-blue-500 dark:text-blue-400">
                     Requested by: @{request?.author?.username}
                   </p>
                   <a
                     href={`/upload/${request?._id}`}
-                    className="mt-1 bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                    className="mt-1 bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded dark:bg-gray-700 dark:hover:bg-gray-600"
                   >
                     {lang[langKey].Contribute}
                   </a>
@@ -94,7 +94,8 @@ const Notifcation = () => {
               ))}
         </div>
       </main>
-    </>
+    </div>
   );
 };
+
 export default Notifcation;
