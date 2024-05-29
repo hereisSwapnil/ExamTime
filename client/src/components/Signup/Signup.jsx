@@ -68,11 +68,7 @@ const Signup = () => {
   };
 
   const togglePassword = () => {
-    if (passToggle === "password") {
-      setPassToggle("text");
-    } else {
-      setPassToggle("password");
-    }
+    setPassToggle((prevState) => (prevState === "password" ? "text" : "password"));
   };
 
   const handleUsernameChange = async (event) => {
@@ -100,14 +96,14 @@ const Signup = () => {
 
   return (
     <>
-      <div className="flex min-h-screen flex-1 flex-col justify-center px-6 lg:px-8">
+      <div className="flex min-h-screen flex-1 flex-col justify-center px-6 lg:px-8 dark:bg-gray-900">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           <img
-            className="text-center m-auto h-[50px]"
+            className="text-center m-auto h-[50px] dark:invert"
             src={TextLogo}
             alt="ExamTime"
           />
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
+          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900 dark:text-gray-100">
             Sign up to an account
           </h2>
         </div>
@@ -122,7 +118,7 @@ const Signup = () => {
             <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium leading-6 text-gray-900"
+                className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
               >
                 Email address
               </label>
@@ -130,7 +126,7 @@ const Signup = () => {
                 <input
                   name="email"
                   autoComplete="username"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-700 dark:text-gray-100 dark:placeholder:text-gray-400 dark:ring-gray-600 dark:focus:ring-indigo-500"
                   {...register("email", {
                     validate: {
                       matchPatern: (value) =>
@@ -154,7 +150,7 @@ const Signup = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="username"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
                 >
                   Username
                 </label>
@@ -164,7 +160,7 @@ const Signup = () => {
                   id="username"
                   name="username"
                   type="text"
-                  className="block w-full pr-5 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full pr-5 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-700 dark:text-gray-100 dark:placeholder:text-gray-400 dark:ring-gray-600 dark:focus:ring-indigo-500"
                   {...register("username", {
                     validate: (value) =>
                       !usernameExists || "Username is already taken",
@@ -175,38 +171,24 @@ const Signup = () => {
                   <p
                     className={`text-sm ${
                       usernameExists ? "text-red-500" : "text-green-500"
-                    }  `}
+                    }`}
                   >
-                    {checkUsernameLoading
-                      ? ""
-                      : usernameExists == true
+                    {usernameExists
                       ? "Username taken"
-                      : usernameExists == false
-                      ? "Username available"
-                      : ""}
+                      : "Username available"}
                   </p>
                 ) : (
-                  <p className="text-sm text-gray-500 ">Checking...</p> // instead of empty space showing checking will not decrease the height
+                  <p className="text-sm text-gray-500">Checking...</p>
                 )}
                 <span
-                  className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5 ${
-                    checkUsernameLoading
-                      ? ""
-                      : usernameExists == true
-                      ? "mb-[20px]"
-                      : usernameExists == false
-                      ? "mb-[20px]"
-                      : ""
-                  }`}
+                  className={`absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5`}
                 >
                   {checkUsernameLoading ? (
                     <MoonLoader color="#000000" size={15} />
-                  ) : usernameExists == true ? (
-                    <ImCross />
-                  ) : usernameExists == false ? (
-                    <TiTick />
+                  ) : usernameExists ? (
+                    <ImCross class="dark:text-white"/>
                   ) : (
-                    ""
+                    <TiTick class="dark:text-white"/>
                   )}
                 </span>
               </div>
@@ -216,7 +198,7 @@ const Signup = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
                 >
                   Password
                 </label>
@@ -227,7 +209,7 @@ const Signup = () => {
                   name="password"
                   type={passToggle}
                   autoComplete="current-password"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-700 dark:text-gray-100 dark:placeholder:text-gray-400 dark:ring-gray-600 dark:focus:ring-indigo-500"
                   {...register("password", {
                     validate: {
                       matchPatern: (value) =>
@@ -244,9 +226,9 @@ const Signup = () => {
                   className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
                 >
                   {passToggle === "text" ? (
-                    <GoEyeClosed className="text-lg" />
+                    <GoEyeClosed className="text-lg text-gray-700 dark:text-gray-100" />
                   ) : (
-                    <GoEye className="text-lg" />
+                    <GoEye className="text-lg text-gray-700 dark:text-gray-100" />
                   )}
                 </button>
               </div>
@@ -264,7 +246,7 @@ const Signup = () => {
               <div className="flex items-center justify-between">
                 <label
                   htmlFor="confirm_password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
+                  className="block text-sm font-medium leading-6 text-gray-900 dark:text-gray-100"
                 >
                   Confirm Password
                 </label>
@@ -275,12 +257,12 @@ const Signup = () => {
                   name="confirm_password"
                   type={passToggle}
                   autoComplete="current-password"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 dark:bg-gray-700 dark:text-gray-100 dark:placeholder:text-gray-400 dark:ring-gray-600 dark:focus:ring-indigo-500"
                   {...register("confirm_password", {
                     required: "Enter confirm password",
                     validate: (val) => {
-                      if (watch("password") != val) {
-                        return "Your passwords do no match";
+                      if (watch("password") !== val) {
+                        return "Your passwords do not match";
                       }
                     },
                   })}
@@ -296,7 +278,7 @@ const Signup = () => {
             <div>
               <button
                 type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 dark:bg-indigo-500 dark:hover:bg-indigo-400"
               >
                 Sign up
               </button>
@@ -306,11 +288,11 @@ const Signup = () => {
             </div>
           </form>
 
-          <p className="mt-5 text-center text-sm text-gray-500">
+          <p className="mt-5 text-center text-sm text-gray-500 dark:text-gray-400">
             Already have an account?{" "}
             <a
               href="/login"
-              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300"
             >
               Sign In
             </a>
@@ -320,4 +302,5 @@ const Signup = () => {
     </>
   );
 };
+
 export default Signup;
