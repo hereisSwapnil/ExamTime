@@ -70,40 +70,41 @@ const QuestionPage = () => {
 
   return (
     <>
-      <Navbar />
       <div>
-        <div className="flex items-center justify-center">
-          <div className="mx-auto w-full max-w-[550px] bg-white">
+        <div className="flex items-center justify-center dark:bg-gray-900">
+          <div className="mx-auto w-full max-w-[550px] bg-white dark:bg-gray-800">
             <form
               className="py-6 px-9"
               onSubmit={handleSubmit((data) => {
                 askQuestion(data);
               })}
             >
-              <h2 className="text-xl md:text-2xl mb-[50px] font-bold tracking-tight text-gray-900">
+              <h2 className="text-xl md:text-2xl mb-[50px] font-bold tracking-tight text-gray-900 dark:text-gray-100">
                 Ask Your Questions/Doubts here...
               </h2>
               <div className="mb-5">
-                <div className="flex items-center justify-between rounded-md border-[1px] h-[90px] border-black p-8 px-12">
-          <img
-            src={user?.userPhoto}
-            alt={`profile-${user?.username}`}
-            className="aspect-square w-[65px] rounded-full object-cover"
-          />
-          <div className="space-y-1">
-            <p className="text-lg font-semibold text-black">
-              {user?.username}
-            </p>
-            <p className="text-sm text-black">{user?.email}</p>
-          </div>
-      </div>
+                <div className="flex items-center justify-between rounded-md border-[1px] h-[90px] border-black dark:border-gray-600 p-8 px-12 dark:bg-gray-700">
+                  <img
+                    src={user?.userPhoto}
+                    alt={`profile-${user?.username}`}
+                    className="aspect-square w-[65px] rounded-full object-cover"
+                  />
+                  <div className="space-y-1">
+                    <p className="text-lg font-semibold text-black dark:text-gray-100">
+                      {user?.username}
+                    </p>
+                    <p className="text-sm text-black dark:text-gray-200">
+                      {user?.email}
+                    </p>
+                  </div>
+                </div>
                 <textarea
                   type="text"
                   name="description"
                   id="description"
                   placeholder="Ask a study question and get an answer in seconds...."
                   rows={10}
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white my-4 py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
+                  className="w-full rounded-md border border-[#e0e0e0] bg-white my-4 py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600 dark:placeholder-gray-400"
                   {...register("description", {
                     required: "Description is required.",
                     maxLength: {
@@ -121,9 +122,8 @@ const QuestionPage = () => {
                   ></p>
                 )}
               </div>
-
               <div>
-                <button className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
+                <button className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none dark:bg-[#5b55e2] dark:hover:bg-[#524dc9]">
                   Click to ask
                 </button>
               </div>

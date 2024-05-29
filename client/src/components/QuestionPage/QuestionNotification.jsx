@@ -65,10 +65,11 @@ const QuestionNotifcation = () => {
   }
 
   return (
-    <>
-      <Navbar />
-      <main className="max-w-screen-sm mx-auto m-2 p-4">
-        <h1 className="text-2xl font-semibold">Questions...</h1>
+    <div className="p-2 dark:bg-gray-900">
+      <main className="max-w-screen-sm mx-auto  p-4 ">
+        <h1 className="text-2xl font-semibold dark:text-gray-100">
+          Questions...
+        </h1>
         <div className="mt-4">
           {questions &&
             questions
@@ -77,15 +78,15 @@ const QuestionNotifcation = () => {
               .map((question, index) => (
                 <div
                   key={index}
-                  className="block px-4 py-2 text-sm text-gray-700 border-b-2"
+                  className="block px-4 py-2 text-sm text-gray-700 border-b-2 dark:text-gray-300 dark:border-gray-600"
                 >
                   <p>{question?.description}</p>
-                  <p className="text-[13px] text-end mt-1 text-blue-500">
+                  <p className="text-[13px] text-end mt-1 text-blue-500 dark:text-blue-400">
                     Asked by: @{question?.author?.username}
                   </p>
                   <a
                     href={`/answer/${question?._id}`}
-                    className="mt-1 bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded"
+                    className="mt-1 bg-gray-800 hover:bg-gray-600 text-white font-bold py-2 px-4 rounded dark:bg-gray-700 dark:hover:bg-gray-500"
                   >
                     Ans
                   </a>
@@ -93,7 +94,7 @@ const QuestionNotifcation = () => {
               ))}
         </div>
       </main>
-    </>
+    </div>
   );
 };
 export default QuestionNotifcation;
