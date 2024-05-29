@@ -7,7 +7,7 @@ const Footer = () => {
   const langKey=useSelector((store)=>store.config.lang)
 
   return (
-    <footer className="bg-white dark:bg-gray-900">
+    <footer className="bg-white dark:bg-gray-800">
       <div className="w-full max-w-screen-xl mx-auto p-4 md:py-8">
         <div className="sm:flex sm:items-center sm:justify-between">
           <a href="/">
