@@ -121,32 +121,32 @@ const VerifyOtp = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen">
-      <img className="h-12 mb-8" src={TextLogo} alt="ExamTime" />
-      <div className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-md">
-        <h1 className="text-2xl font-bold mb-4 text-center">
+    <div className="flex flex-col items-center justify-center h-screen dark:bg-gray-900">
+      <img className="h-12 mb-8 dark:invert" src={TextLogo} alt="ExamTime" />
+      <div className="max-w-md mx-auto p-8 bg-white rounded-lg shadow-md dark:bg-gray-800">
+        <h1 className="text-2xl font-bold mb-4 text-center dark:text-gray-100">
           OTP Verification
         </h1>
         {/* <input
-          type="email"
-          placeholder="Email"
-          className="w-full px-4 py-2 mb-4 border rounded-md"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
-        /> */}
+      type="email"
+      placeholder="Email"
+      className="w-full px-4 py-2 mb-4 border rounded-md"
+      value={email}
+      onChange={(e) => setEmail(e.target.value)}
+    /> */}
         <input
           type="text"
           placeholder="Enter OTP"
           maxLength="6"
           pattern="\d{6}"
           title="Enter 6-digit OTP"
-          className="w-full px-4 py-2 mb-4 border rounded-md"
+          className="w-full px-4 py-2 mb-4 border rounded-md dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600"
           value={otp}
           onChange={(e) => setOtp(e.target.value)}
         />
         <button
           onClick={handleVerification}
-          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600"
+          className="w-full bg-blue-500 text-white py-2 rounded-md hover:bg-blue-600 dark:bg-blue-600 dark:hover:bg-blue-500"
         >
           Verify OTP
         </button>
