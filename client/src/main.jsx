@@ -5,11 +5,14 @@ import App from "./App";
 import "./index.css";
 import { ToastContainer, Bounce } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { Provider } from "react-redux";
+import appStore from "./utils/appStore";
 
 const root = document.getElementById("root");
 const rootInstance = createRoot(root);
 
 rootInstance.render(
+  <Provider store={appStore}>
   <BrowserRouter>
     <ToastContainer
       position="top-center"
@@ -26,4 +29,5 @@ rootInstance.render(
     />
     <App />
   </BrowserRouter>
+  </Provider>
 );

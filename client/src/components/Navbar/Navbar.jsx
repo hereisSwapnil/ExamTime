@@ -17,12 +17,14 @@ const Navbar = () => {
   const loc = useLocation().pathname;
   const [uploadNav, setUploadNav] = useState(false);
   const [requestNav, setRequestNav] = useState(false);
+  const [questionNav, setQuestionNav] = useState(false);
   const [leaderBoardNav, setleaderBoardNav] = useState(false);
   const [searchInput, setSearchInput] = useState("");
 
   const navigation = [
     { name: "Upload Notes", href: "/upload", current: uploadNav },
     { name: "Request Notes", href: "/request", current: requestNav },
+    { name: "Ask a Question", href: "/question", current: questionNav },
     { name: "Leaderboard", href: "/leaderboard", current: leaderBoardNav },
   ];
   const navigate = useNavigate();
@@ -75,6 +77,10 @@ const Navbar = () => {
     } else if (loc === "/upload") {
       setRequestNav(false);
       setUploadNav(true);
+    } else if (loc === "/question") {
+      setRequestNav(false);
+      setUploadNav(false);
+      setQuestionNav(true)
     } else if (loc === "/leaderboard") {
       setleaderBoardNav(true);
       setRequestNav(false);
@@ -127,7 +133,12 @@ const Navbar = () => {
                               d="M9 8.25H7.5a2.25 2.25 0 00-2.25 2.25v9a2.25 2.25 0 002.25 2.25h9a2.25 2.25 0 002.25-2.25v-9a2.25 2.25 0 00-2.25-2.25H15m0-3l-3-3m0 0l-3 3m3-3V15"
                             />
                           </svg>
-                        ) : item.name === "Leaderboard" ? (
+                        )  : item.name === "Ask a Question" ? (
+                          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-question-circle" viewBox="0 0 16 16">
+                          <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                          <path d="M5.255 5.786a.237.237 0 0 0 .241.247h.825c.138 0 .248-.113.266-.25.09-.656.54-1.134 1.342-1.134.686 0 1.314.343 1.314 1.168 0 .635-.374.927-.965 1.371-.673.489-1.206 1.06-1.168 1.987l.003.217a.25.25 0 0 0 .25.246h.811a.25.25 0 0 0 .25-.25v-.105c0-.718.273-.927 1.01-1.486.609-.463 1.244-.977 1.244-2.056 0-1.511-1.276-2.241-2.673-2.241-1.267 0-2.655.59-2.75 2.286m1.557 5.763c0 .533.425.927 1.01.927.609 0 1.028-.394 1.028-.927 0-.552-.42-.94-1.029-.94-.584 0-1.009.388-1.009.94"/>
+                          </svg>
+                        ) :item.name === "Leaderboard" ? (
                           <svg
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
@@ -158,53 +169,16 @@ const Navbar = () => {
                             />
                           </svg>
                         )}
-                        {item.name}
+                        {item?.name}
                       </Link>
                     ))}
 
                     <div className="text-gray-200  mt-2 ml-2">
-                      Coins:{user.coins}
+                      Coins:{user?.coins}
                     </div>
                   </div>
                 </div>
-                {/* INPUT  */}
-                {/* <div className="relative mx-auto text-gray-600">
-                  <input
-                    className="border-2 border-gray-300 bg-white h-10 px-5 md:w-[600px] lg:w-[500px] w-[10vw] pr-8 rounded-lg text-sm focus:outline-none appearance-none"
-                    type="search"
-                    name="search"
-                    placeholder="Search"
-                    onKeyPress={(e) => {
-                      if (e.key === "Enter") {
-                        const searchTerm = e.target.value;
-                        window.location.href = `?search=${encodeURIComponent(
-                          searchTerm
-                        )}`;
-                      }
-                    }}
-                  />
-                  <button
-                    type="submit"
-                    className="absolute right-0 top-[-6px] mt-5 mr-4"
-                  >
-                    <svg
-                      className="text-gray-600 h-4 w-4 fill-current"
-                      xmlns="http://www.w3.org/2000/svg"
-                      xmlnsXlink="http://www.w3.org/1999/xlink"
-                      version="1.1"
-                      id="Capa_1"
-                      x="0px"
-                      y="0px"
-                      viewBox="0 0 56.966 56.966"
-                      style={{ enableBackground: "new 0 0 56.966 56.966" }}
-                      xmlSpace="preserve"
-                      width="512px"
-                      height="512px"
-                    >
-                      <path d="M55.146,51.887L41.588,37.786c3.486-4.144,5.396-9.358,5.396-14.786c0-12.682-10.318-23-23-23s-23,10.318-23,23  s10.318,23,23,23c4.761,0,9.298-1.436,13.177-4.162l13.661,14.208c0.571,0.593,1.339,0.92,2.162,0.92  c0.779,0,1.518-0.297,2.079-0.837C56.255,54.982,56.293,53.08,55.146,51.887z M23.984,6c9.374,0,17,7.626,17,17s-7.626,17-17,17  s-17-7.626-17-17S14.61,6,23.984,6z" />
-                    </svg>
-                  </button>
-                </div> */}
+              
               </div>
               <div className="absolute inset-y-0 right-0 flex gap-3 items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                 <Menu as="div" className="relative ml-3">

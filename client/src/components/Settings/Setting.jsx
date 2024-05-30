@@ -1,7 +1,17 @@
+
 import React, { useState } from "react";
 import Navbar from "../Navbar/Navbar";
+import { SUPPORTED_LANGUAGE } from '../../utils/constants';
+import {useDispatch, useSelector} from "react-redux"
+import lang from '../../utils/langaugeConstant';
+import { changeLanguage } from '../../utils/configSlice';
 
 const Settings = () => {
+
+  const langKey=useSelector((store)=>store.config.lang)
+
+  const dispatch=useDispatch()
+
   const [settings, setSettings] = useState({
     theme: "light",
     email: "",
@@ -12,6 +22,10 @@ const Settings = () => {
     accessibility: "Default",
     security: "Standard",
   });
+
+  const handleLanguageChange=(e)=>{
+    dispatch(changeLanguage(e.target.value))
+  }
 
   const handleInputChange = (event) => {
     const { name, value } = event.target;
@@ -178,6 +192,7 @@ const Settings = () => {
 
           {/* Accessibility */}
           {/* <div className="setting-item">
+
           <label htmlFor="accessibility">Accessibility:</label>
           <select name="accessibility" id="accessibility" value={settings.accessibility} onChange={handleInputChange}>
           </select>
