@@ -21,11 +21,10 @@ function App() {
   return (
     <UserContextProvider>
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<Signup />} />
-            <Route path="/verifyOtp" element={<VerifyOtp />} />
-            
-            <Route path="/" element={<MasterPage/>}>
+              <Route path="/login" element={<Login />} />
+              <Route path="/signup" element={<Signup />} />
+              <Route path="/verifyxOtp" element={<VerifyOtp />} />
+              <Route path="/" element={<MasterPage/>}>
               <Route index element={<Dashboard />}/>
               <Route path="/notifications" element={<Notifcation />} />
               <Route path="/questionNotifications" element={<QuestionNotifcation />} />
@@ -36,6 +35,7 @@ function App() {
               <Route path="/request" element={<RequestPage />} />
               <Route path="/leaderboard" element={<LeaderBoard />} />
               <Route path="/settings" element={<Settings />} />
+              <Route path="/open-note" element={<OpenNote />} />
             </Route>
           </Routes>
           <Analytics />

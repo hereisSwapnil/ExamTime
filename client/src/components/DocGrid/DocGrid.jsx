@@ -12,9 +12,7 @@ import { toast } from "react-toastify";
 import { useContext } from "react";
 import { UserContext } from "../../Context/UserContext";
 import { FcBookmark } from "react-icons/fc";
-import { Link } from "react-router-dom";
-import { FaHeart } from "react-icons/fa";
-import lang from "../../utils/langaugeConstant";
+import CopyButton from "../CopyButton/CopyButton";
 import { useSelector } from "react-redux";
 
 // const colleges = {
@@ -367,11 +365,11 @@ const DocGrid = () => {
                             <span className="font-bold mr-2">{lang[langKey].Likes}:</span>{" "}
                             {note_.likes}
                           </p>
-                          <div className="flex gap-2 ">
+                          <div className="flex gap-2">
                             <div style={{ width: "22px" }}>
                               <LikeButton noteId={note_?._id} />
                             </div>
-                            <div style={{ width: "40px" }}>
+                            <div style={{ width: "22px" }}>
                               {user?.bookMarkedNotes?.includes(note_._id) ? (
                                 <FcBookmark
                                   onClick={() => handleBookMark(note_._id)}
@@ -383,6 +381,9 @@ const DocGrid = () => {
                                   className="text-2xl cursor-pointer"
                                 />
                               )}
+                            </div>
+                            <div >
+                              <CopyButton noteID={note_._id}/>
                             </div>
                           </div>
                         </section>

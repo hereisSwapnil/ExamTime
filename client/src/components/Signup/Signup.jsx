@@ -29,6 +29,7 @@ const Signup = () => {
   const registerUser = async (data) => {
     setLoading(true);
     try {
+      console.log("created");
       const res = await axios.post(
         `${import.meta.env.VITE_BASE_URL}/user/register`,
         data

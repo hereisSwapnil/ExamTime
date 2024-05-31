@@ -2,6 +2,7 @@ const wrapAsync = require("../utils/wrapAsync.js");
 const Subject = require("../models/subject.model.js");
 const Note = require("../models/note.model.js");
 const User = require("../models/user.model.js");
+const { default: mongoose } = require("mongoose");
 
 const searchNotes = wrapAsync(async (req, res) => {
   const query = req.query;
@@ -214,6 +215,7 @@ const getBookMarkedNotesByUser = async (req, res) => {
     });
   }
 };
+
 const getSpecificNotesController = async (req, res) => {
   try {
     const { stream, course, year, semester, subject } = req.params;
@@ -237,6 +239,7 @@ const getSpecificNotesController = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
 const getFormatedNote = async (req, res) => {
   try {
     const notes = await Note.find();
@@ -275,6 +278,31 @@ const getFormatedNote = async (req, res) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+const getNoteByID = async(req,res)=>{
+  try 
+  {
+    const {id} = req.params;
+
+    console.log("hv"+id);
+    const note=await Note.findOne({_id:id})
+    .populate("author");
+
+    if (!note) {
+      console.log("not fnd");
+      return res
+        .status(404)
+        .json({ message: "No notes found for the provided criteria." });
+    }
+
+
+    res.status(200).json(note);
+
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+
 module.exports = {
   searchNotes,
   addNote,
@@ -285,4 +313,5 @@ module.exports = {
   getBookMarkedNotesByUser,
   getSpecificNotesController,
   getFormatedNote,
+  getNoteByID
 };
