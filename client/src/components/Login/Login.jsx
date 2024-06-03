@@ -35,7 +35,6 @@ const Login = () => {
     axios
       .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data)
       .then((res) => {
-        console.log(res.data.message);
         if (res.data.message === "login success") {
           localStorage.setItem("token", res.data.token);
           setUser(res.data.user);

@@ -3,7 +3,7 @@ const wrapAsync = require("../utils/wrapAsync");
 // import nodemailer from "nodemailer";
 const nodemailer = require("nodemailer");
 const User = require("../models/user.model");
-
+const ResetPassword = require("../models/resetPasswordModel.js");
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
@@ -20,10 +20,9 @@ function generateSixDigitOTP() {
   return otp;
 }
 
-const sendOTP = wrapAsync(async (email) => {
+const sendOTP = wrapAsync(async (email, tosetPassword = false) => {
   try {
     const otp = generateSixDigitOTP();
-
     const mailOptions = {
       from: process.env.APP_EMAIL,
       to: email,
@@ -48,7 +47,12 @@ const sendOTP = wrapAsync(async (email) => {
     </div>`,
     };
     await transporter.sendMail(mailOptions);
-    await User.updateOne({ email: email }, { $set: { otp: otp } });
+    if (tosetPassword) {
+      const resetPassword = await ResetPassword({ email, otp });
+      await resetPassword.save();
+    }else{
+      await User.updateOne({ email: email }, { $set: { otp: otp } });
+    }
   } catch (error) {
     console.log("Error sending OTP: ", error.message);
   }
