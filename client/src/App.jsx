@@ -11,11 +11,14 @@ import RequestPage from "./components/RequestPage/RequestPage";
 import VerifyOtp from "./components/OtpVerificationPage/verifyOtp";
 import LeaderBoard from "./components/Leaderboard/LeaderBoard";
 import Notifcation from "./components/NotifcationPage/Notifcation";
+import Footer from "./components/Footer";
 import Settings from "./components/Settings/Setting";
+import Statistics from "./components/Statistics/Statistics";
 import QuestionPage from "./components/QuestionPage/QuestionPage";
 import QuestionNotifcation from "./components/QuestionPage/QuestionNotification";
 import AnswerPage from "./components/QuestionPage/AnswerPage";
 import MasterPage from "./MasterPage";
+
 
 function App() {
   return (
@@ -24,7 +27,7 @@ function App() {
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<Signup />} />
             <Route path="/verifyOtp" element={<VerifyOtp />} />
-            
+            <Route path="/statistics" element={<Statistics />} />            
             <Route path="/" element={<MasterPage/>}>
               <Route index element={<Dashboard />}/>
               <Route path="/notifications" element={<Notifcation />} />
