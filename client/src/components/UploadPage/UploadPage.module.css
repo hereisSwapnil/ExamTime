@@ -1,0 +1,38 @@
+.subjects {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  max-height: 150px;
+  overflow-y: auto;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #fff;
+
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  right: 0;
+  box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+}
+
+/* Style for each suggestion item */
+.subjects li {
+  padding: 10px;
+  cursor: pointer;
+}
+
+/* Highlight for the matched part of the suggestion */
+.match {
+  background-color: yellow;
+}
+
+/* Example additional styles */
+.input-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+button:hover {
+  background-color: #5a54c4;
+}

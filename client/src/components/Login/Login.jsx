@@ -7,6 +7,7 @@ import { UserContext } from "../../Context/UserContext";
 import TextLogo from "../../assets/blackLogo.png";
 import { toast, Bounce, ToastContainer } from "react-toastify";
 import { Loader } from "../Loader/Loader";
+import { Link } from "react-router-dom";
 
 const Login = () => {
   const {
@@ -209,12 +210,13 @@ const Login = () => {
 
           <p className="mt-10 text-center text-sm text-gray-500">
             Don't have an account?{" "}
-            <a
-              href="/signup"
+            <Link
+              onClick={console.log}
+              to="/signup"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
             >
               Sign Up
-            </a>
+            </Link>
           </p>
         </div>
       </div>
