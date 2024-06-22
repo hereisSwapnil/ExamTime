@@ -19,9 +19,6 @@ const {
   forgetPassword,
   vefifyPasswordOtp,
   updatePassword,
-  
-
-
 } = require("../controllers/user.controller");
 
 const router = Router();
@@ -36,7 +33,7 @@ router.get("/get", getUser);
 router.get("/leaderboard", getLeaderBoard);
 router.get("/sendotp", verifyToken, sendOTPcon);
 router.post("/forget-password", forgetPassword);
-router.post("/vefify-password-otp",vefifyPasswordOtp);
+router.post("/vefify-password-otp", vefifyPasswordOtp);
 router.post("/update-password", updatePassword);
 
 module.exports = router;

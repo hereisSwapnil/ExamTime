@@ -1,4 +1,5 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext, useState, useEffect, useRef } from "react";
+import styles from "./UploadPage.module.css";
 import { Loader } from "../Loader/Loader";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
@@ -26,7 +27,7 @@ const UploadPage = () => {
   const [loading, setLoading] = useState(true);
   const [subjects, setSubjects] = useState([]);
   const [fileUploadProgress, setFileUploadProgress] = useState(0);
-  const langKey=useSelector((store)=>store.config.lang)
+  const langKey = useSelector((store) => store.config.lang);
 
   const {
     register,
@@ -39,9 +40,17 @@ const UploadPage = () => {
   const [fileUrl, setFileUrl] = useState("");
   const [thumbnailURL, setThumbnailURL] = useState("");
   const [addSubject_, setAddSubject_] = useState("");
+  const [isSubjectInputActive, setIsSubjectInputActive] = useState("");
+  const [areSuggestionsLoading, setAreSuggestionsLoading] = useState(false);
 
   // Storing the request id from the route path(may or may not be present)
   const { requestId } = useParams();
+
+  const hideSuggestionsList = () => {
+    setTimeout(() => {
+      setIsSubjectInputActive(false);
+    }, 1000);
+  };
 
   const addSubject = () => {
     if (addSubject_ === "") {
@@ -260,6 +269,60 @@ const UploadPage = () => {
     return <Loader />;
   }
 
+  const refreshSuggestionsList = (subjectName) => {
+    setAreSuggestionsLoading(true);
+    // Fetch subjects matching with the subject name from the server
+    const token = localStorage.getItem("token");
+    const config = {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+      withCredentials: true,
+    };
+    axios
+      .get(`${import.meta.env.VITE_BASE_URL}/subject/match`, {
+        params: { subjectName },
+        ...config,
+      })
+      .then((res) => {
+        setSubjects(res.data);
+        setAreSuggestionsLoading(false);
+      })
+      .catch((error) => {
+        console.error("Error fetching subjects:", error);
+        setAreSuggestionsLoading(false);
+      });
+  };
+
+  const handleSubjectValueChange = (subjectName) => {
+    setAddSubject_(subjectName);
+    refreshSuggestionsList(subjectName);
+  };
+
+  const handleSuggestionClick = (e, subject) => {
+    e.preventDefault();
+    setAddSubject_(subject);
+    console.log(subject);
+  };
+
+  const hasSubject = (subjectName) => {
+    return subjects.find((s) => s.subjectName === subjectName) ? true : false;
+  };
+  
+  const markSearchedPart = (subjectName) => {
+    const regex = new RegExp(addSubject_.toLowerCase() || "#");
+    const found = regex.test(subjectName.toLowerCase());
+    const [first, last] = subjectName.toLowerCase().split(regex);
+    console.table({ first, last });
+    return (
+      <>
+        {first}
+        {found && <mark> {addSubject_} </mark>}
+        {last}
+      </>
+    );
+  };
+
   return (
     <>
       <div>
@@ -334,7 +397,7 @@ const UploadPage = () => {
                 )}
               </div>
 
-              <div className="mb-5">
+              {/* <div className="mb-5">
                 <label
                   htmlFor="subject"
                   className="mb-3 block text-base font-small text-[#07074D]"
@@ -366,9 +429,9 @@ const UploadPage = () => {
                     }}
                   ></p>
                 )}
-              </div>
+              </div> */}
 
-              <div className="mb-5 mt-10">
+              {/* <div className="mb-5 mt-10">
                 <label
                   htmlFor="subject"
                   className="mb-1 block text-base text-[14px] text-red-500"
@@ -391,6 +454,58 @@ const UploadPage = () => {
                   >
                     {lang[langKey].AddSubject}
                   </div>
+                </div>
+              </div> */}
+              <div className="mb-5 mt-10">
+                <label
+                  htmlFor="subject"
+                  className="mb-3 block text-base font-small text-[#07074D]"
+                >
+                  {lang[langKey].Subject}
+                </label>
+                <div
+                  className={
+                    styles.subjectInput +
+                    "flex flex-col md:flex-row justify-center gap-5 relative"
+                  }
+                >
+                  <input
+                    type="text"
+                    name="subject"
+                    id="subject"
+                    value={addSubject_}
+                    onChange={(e) => handleSubjectValueChange(e.target.value)}
+                    onFocus={() => setIsSubjectInputActive(true)}
+                    onBlur={() => hideSuggestionsList()}
+                    placeholder={lang[langKey].AddSubject}
+                    className={
+                      " rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md w-full"
+                    }
+                  ></input>
+                  {addSubject_ !== "" && !hasSubject(addSubject_) && (
+                    <div
+                      className="hover:shadow-form rounded-md cursor-pointer bg-[#6A64F1] py-1 px-4 text-center text-base font-semibold text-white outline-none absolute right-2 top-1/2 transform -translate-y-1/2"
+                      onClick={addSubject}
+                    >
+                      {lang[langKey].AddSubject}
+                    </div>
+                  )}
+                  {subjects.length > 0 &&
+                    isSubjectInputActive &&
+                    !areSuggestionsLoading && (
+                      <ul className={styles.subjects}>
+                        {subjects.map((subject) => (
+                          <li
+                            key={subject.id}
+                            onClick={(e) =>
+                              handleSuggestionClick(e, subject.subjectName)
+                            }
+                          >
+                            {markSearchedPart(subject.subjectName)}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                 </div>
               </div>
 
@@ -486,7 +601,8 @@ const UploadPage = () => {
                   ""
                 ) : (
                   <p className="text-sm text-red-500 mt-1">
-                    {lang[langKey].selectfile} <br /> {lang[langKey].Allowedformat} - .pdf
+                    {lang[langKey].selectfile} <br />{" "}
+                    {lang[langKey].Allowedformat} - .pdf
                   </p>
                 )}
 

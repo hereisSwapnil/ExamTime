@@ -25,6 +25,21 @@ const getSubjects = wrapAsync(async (req, res) => {
   }
 });
 
+const getMatchingSubjects = wrapAsync(async (req, res) => {
+  try {
+    const { subjectName } = req.query;
+    if (!subjectName) {
+      return res.status(400).json({ message: "Subject name query parameter is required" });
+    }
+    // Use a case-insensitive regex to match subjects starting with the provided string
+    const subjects = await Subject.find({ subjectName: { $regex: `^${subjectName}`, $options: 'i' } });
+    res.status(200).json(subjects);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Could not get subjects" });
+  }
+});
+
 const getNotesBySubject = wrapAsync(async (req, res) => {
   try {
     const { subjectId } = req.params;
@@ -40,4 +55,4 @@ const getNotesBySubject = wrapAsync(async (req, res) => {
   }
 });
 
-module.exports = { addSubject, getSubjects, getNotesBySubject };
+module.exports = { addSubject, getSubjects, getMatchingSubjects, getNotesBySubject };
