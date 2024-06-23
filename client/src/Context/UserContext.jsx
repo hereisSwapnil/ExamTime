@@ -1,19 +1,22 @@
 import { createContext, useEffect, useState } from "react";
 import axios from "axios";
 import { Loader } from "../components/Loader/Loader";
-import { useNavigate } from "react-router-dom";
+import { useNavigate , useParams } from "react-router-dom";
 
 export const UserContext = createContext();
-
 export const UserContextProvider = ({ children }) => {
+  const id= window.location.pathname
   const [user, setUser] = useState(null);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
 
   const token = localStorage.getItem("token");
 
-  if (!token) {
-    navigate("/login");
+  if (!token ) {
+    if(id!='/login' && id!='/signup'){
+      
+      navigate("/login");
+    }
   }
 
   const config = {
