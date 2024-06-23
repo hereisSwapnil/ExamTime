@@ -48,7 +48,6 @@ const Footer = () => {
                 Contact
               </Link>
                 {lang[langKey].PrivacyPolicy}
-              </a>
             </li>
             <li>
               <a href="/licensing" className="hover:underline me-4 md:me-6">
