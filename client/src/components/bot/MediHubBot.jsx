@@ -88,8 +88,8 @@ function MediHubBot(props) {
       if (chat) {
         const input_prompt = `
         If ${userInput} is informal like "hi"/"hello" etc ,respond like a general chatbot informally and greet back the user.Else,
-        Identify book based on the  given book category by the user through ${userInput} and also list books for the same.
-        If the user is asking general category books doubts like details of any books,etc through ${userInput} provide assistance for the same. 
+        Identify answer based on the  given exam question  by the user through ${userInput} and also list possible correct answer for the same.
+        If the user is asking general question etc through ${userInput} provide assistance for the same. 
         Don't give * in response please.
         Generate response in proper points on new line.
         
