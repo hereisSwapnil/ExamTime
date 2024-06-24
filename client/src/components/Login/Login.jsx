@@ -31,6 +31,17 @@ const Login = () => {
   };
 
   const loginUser = async (data) => {
+    const tostStyle=  {
+              position: "top-center",
+              autoClose: 5000,
+              hideProgressBar: false,
+              closeOnClick: false,
+              pauseOnHover: false,
+              draggable: false,
+              progress: undefined,
+              theme: "light",
+              transition: Bounce,
+            };
     setLoading(true);
     axios
       .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data)
@@ -41,70 +52,29 @@ const Login = () => {
           setloginError("");
           setTimeout(() => {
             navigate("/");
-          }, 1000);
-          toast.success("Logged in successfully!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-          });
-        }
-      })
-      .catch((err) => {
-        if (err.response.data.message === "user not found") {
-          setloginError("User not found");
-          toast.warning("User not found!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-          });
-          setLoading(false);
-        } else if (err.response.data.message === "Please verify email first") {
-          setloginError("Please verify email first");
-          localStorage.setItem("token", err.response.data.token);
-          setLoading(false);
-          navigate("/verifyotp");
-        } else if (err.response.data.message === "Invalid credentials") {
-          setloginError("Invalid Credentials");
-          toast.error("Invalid Credentials!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-          });
-          setLoading(false);
-        } else {
-          setloginError("Something went wrong!");
-          toast.error("An error occurred!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-          });
-          setLoading(false);
-        }
-      });
+
+          } else if (res.data.message === "user not found") {
+            setloginError("User not found");
+            toast.warning("User not found!",tostStyle);
+          } else if (res.data.message === "Invalid Credentials") {
+            setloginError("Invalid Credentials");
+            toast.error("Invalid credentials!",tostStyle);
+          } else if (res.data.message === "Unauthorized") {
+            setloginError("Invalid Credentials");
+            toast.error("Invalid credentials!",tostStyle);
+          } 
+          else {
+            setloginError("Something went wrong!");
+            toast.error("An error occurred!",tostStyle);
+          }
+        });
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      setLoading(false);
+    }
+
+
   };
 
   if (loading) {
