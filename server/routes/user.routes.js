@@ -1,4 +1,6 @@
+// user.routes.js
 const Router = require("express");
+const passport = require("passport");
 const {
   searchNotes,
   addNote,
@@ -19,9 +21,6 @@ const {
   forgetPassword,
   vefifyPasswordOtp,
   updatePassword,
-  
-
-
 } = require("../controllers/user.controller");
 
 const router = Router();
@@ -36,7 +35,20 @@ router.get("/get", getUser);
 router.get("/leaderboard", getLeaderBoard);
 router.get("/sendotp", verifyToken, sendOTPcon);
 router.post("/forget-password", forgetPassword);
-router.post("/vefify-password-otp",vefifyPasswordOtp);
+router.post("/vefify-password-otp", vefifyPasswordOtp);
 router.post("/update-password", updatePassword);
+
+// Google OAuth routes
+router.get("/auth/google", passport.authenticate("google", { scope: ["profile", "email"] }));
+
+router.get(
+  "/auth/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    // Successful authentication, redirect home.
+    const token = req.user.createToken();
+    res.redirect(`${process.env.ORIGIN}?token=${token}`);
+  }
+);
 
 module.exports = router;

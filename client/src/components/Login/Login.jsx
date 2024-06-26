@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { useNavigate } from "react-router";
+import { useNavigate, Link } from "react-router-dom";
 import axios from "axios";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import { UserContext } from "../../Context/UserContext";
@@ -15,7 +15,7 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const [loginError, setloginError] = useState();
+  const [loginError, setLoginError] = useState();
   const { user, setUser } = useContext(UserContext);
   const [passToggle, setPassToggle] = useState("password");
   const [loading, setLoading] = useState(false);
@@ -23,11 +23,7 @@ const Login = () => {
   const navigate = useNavigate();
 
   const togglePassword = () => {
-    if (passToggle === "password") {
-      setPassToggle("text");
-    } else {
-      setPassToggle("password");
-    }
+    setPassToggle((prev) => (prev === "password" ? "text" : "password"));
   };
 
   const loginUser = async (data) => {
@@ -38,7 +34,7 @@ const Login = () => {
         if (res.data.message === "login success") {
           localStorage.setItem("token", res.data.token);
           setUser(res.data.user);
-          setloginError("");
+          setLoginError("");
           setTimeout(() => {
             navigate("/");
           }, 1000);
@@ -56,8 +52,9 @@ const Login = () => {
         }
       })
       .catch((err) => {
-        if (err.response.data.message === "user not found") {
-          setloginError("User not found");
+        const { message } = err.response.data;
+        if (message === "user not found") {
+          setLoginError("User not found");
           toast.warning("User not found!", {
             position: "top-right",
             autoClose: 5000,
@@ -69,14 +66,12 @@ const Login = () => {
             theme: "light",
             transition: Bounce,
           });
-          setLoading(false);
-        } else if (err.response.data.message === "Please verify email first") {
-          setloginError("Please verify email first");
+        } else if (message === "Please verify email first") {
+          setLoginError("Please verify email first");
           localStorage.setItem("token", err.response.data.token);
-          setLoading(false);
           navigate("/verifyotp");
-        } else if (err.response.data.message === "Invalid credentials") {
-          setloginError("Invalid Credentials");
+        } else if (message === "Invalid credentials") {
+          setLoginError("Invalid Credentials");
           toast.error("Invalid Credentials!", {
             position: "top-right",
             autoClose: 5000,
@@ -88,9 +83,8 @@ const Login = () => {
             theme: "light",
             transition: Bounce,
           });
-          setLoading(false);
         } else {
-          setloginError("Something went wrong!");
+          setLoginError("Something went wrong!");
           toast.error("An error occurred!", {
             position: "top-right",
             autoClose: 5000,
@@ -102,8 +96,8 @@ const Login = () => {
             theme: "light",
             transition: Bounce,
           });
-          setLoading(false);
         }
+        setLoading(false);
       });
   };
 
@@ -134,14 +128,12 @@ const Login = () => {
             })}
           >
             <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Email
-                </label>
-              </div>
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Email
+              </label>
               <div className="mt-2">
                 <input
                   id="email"
@@ -151,7 +143,7 @@ const Login = () => {
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   {...register("email", {
                     validate: {
-                      matchPatern: (value) =>
+                      matchPattern: (value) =>
                         /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi.test(value) ||
                         "Enter a valid email address",
                     },
@@ -161,14 +153,12 @@ const Login = () => {
             </div>
 
             <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Password
-                </label>
-              </div>
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium leading-6 text-gray-900"
+              >
+                Password
+              </label>
               <div className="mt-2 relative">
                 <input
                   id="password"
@@ -178,8 +168,8 @@ const Login = () => {
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                   {...register("password", {
                     validate: {
-                      matchPatern: (value) =>
-                        !/^$|\s+/.test(value) || "please enter  password",
+                      matchPattern: (value) =>
+                        !/^$|\s+/.test(value) || "please enter a password",
                     },
                   })}
                 />
@@ -207,18 +197,27 @@ const Login = () => {
             </div>
           </form>
 
+          <div className="mt-6">
+            <a href={`${import.meta.env.VITE_BASE_URL}/user/auth/google`}>
+              <button className="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                Sign in with Google
+              </button>
+            </a>
+          </div>
+
           <p className="mt-10 text-center text-sm text-gray-500">
-            Don't have an account?{" "}
-            <a
-              href="/signup"
+            Don&apos;t have an account?{" "}
+            <Link
+              to="/signup"
               className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
             >
               Sign Up
-            </a>
+            </Link>
           </p>
         </div>
       </div>
     </>
   );
 };
+
 export default Login;
