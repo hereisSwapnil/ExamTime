@@ -304,6 +304,13 @@ const Signup = () => {
                 {registerError && registerError}
               </p>
             </div>
+            <div className="mt-4">
+            <a href={`${import.meta.env.VITE_BASE_URL}/user/auth/google`}>
+              <button className="flex w-full justify-center rounded-md bg-red-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-600">
+                Sign Up with Google
+              </button>
+            </a>
+          </div>
           </form>
 
           <p className="mt-5 text-center text-sm text-gray-500">
