@@ -1,6 +1,6 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
-
+const jwt = require("jsonwebtoken");
 const userSchema = new Schema(
   {
     username: {
@@ -20,12 +20,14 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
+    },
+    googleId: {
+      type: String,
     },
     otp: {
       code: {
         type: Number,
-      }
+      },
     },
     isverified: {
       type: Boolean,
@@ -52,10 +54,10 @@ const userSchema = new Schema(
         ref: "Note",
       },
     ],
-    coins:{
+    coins: {
       type: Number,
-      default: 0
-    }
+      default: 0,
+    },
   },
   {
     timestamps: true,
@@ -66,6 +68,13 @@ const userSchema = new Schema(
 userSchema.virtual("otp.expiresAt").get(function () {
   return new Date(this.otp.createdAt.getTime() + 5 * 60 * 1000); // Adding 5 minutes to the createdAt timestamp
 });
+
+// Method to create token
+userSchema.methods.createToken = function() {
+  return jwt.sign({ _id: this._id, email: this.email, isverified: this.isverified }, process.env.SECRET, {
+    expiresIn: "365d",
+  });
+};
 
 const User = mongoose.model("User", userSchema);
 
