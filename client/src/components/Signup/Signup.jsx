@@ -20,11 +20,19 @@ const Signup = () => {
 
   const navigate = useNavigate();
 
+  const isPasswordStrong = (password)=>{
+    return password.length>=8 && /[a-z]/.test(password) && /[A-Z]/.test(password) && /\d/.test(password) && /[!@#$%^&*(),.?":{}|<>]/.test(password);
+  };
+
   const [registerError, setRegisterError] = useState();
   const [passToggle, setPassToggle] = useState("password");
   const [checkUsernameLoading, setCheckUsernameLoading] = useState(null);
   const [usernameExists, setUsernameExists] = useState();
   const [loading, setLoading] = useState(false);
+  const [Focused,setFocused] = useState(false);
+  const [passwordStrong , setPasswordStrong] = useState(false);
+
+
 
   const registerUser = async (data) => {
     setLoading(true);
@@ -38,6 +46,7 @@ const Signup = () => {
       navigate("/verifyotp");
       setLoading(false);
     } catch (error) {
+      console.error(error);
       if (error.response.data.message === "User already exists") {
         toast.error(error.response.data.message, {
           position: "top-center",
@@ -92,6 +101,12 @@ const Signup = () => {
         setCheckUsernameLoading(false);
       }
     }
+  };
+
+  const handlePasswordChange = (event) => {
+    const password = event.target.value;
+    setPasswordStrong(isPasswordStrong(password));
+
   };
 
   if (loading) {
@@ -221,6 +236,7 @@ const Signup = () => {
                   Password
                 </label>
               </div>
+
               <div className="mt-2 relative">
                 <input
                   id="password"
@@ -237,6 +253,9 @@ const Signup = () => {
                         "- at least 8 characters <br />- must contain at least 1 uppercase letter, 1 lowercase letter, and 1 number<br />- Can contain special characters",
                     },
                   })}
+                  onChange={handlePasswordChange}
+                  onFocus={()=>setFocused(true)}
+                  onBlur={() => setFocused(false)}
                 />
                 <button
                   type="button"
@@ -249,6 +268,19 @@ const Signup = () => {
                     <GoEye className="text-lg" />
                   )}
                 </button>
+                {passwordStrong && (<p className="text-sm text-green-500">Password is Strong</p>)}
+                {!passwordStrong && (<p className="text-sm text-red-500">Password is not Strong</p>)}
+                {Focused && (<div className="text-sm text-gray-500 mt-2">
+                <p>Password Must Include</p>
+              <ul className="list-disc list-inside">
+              <li>At least 8 characters</li>
+                  <li>One uppercase letter</li>
+                  <li>One lowercase letter</li>
+                  <li>One number</li>
+                  <li>One special character</li>
+
+                </ul>
+                </div>)}
               </div>
               {errors.password && (
                 <p
