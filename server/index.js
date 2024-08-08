@@ -10,3 +10,22 @@ connectDB()
   .catch((err) => {
     console.log("MONGODB Connection failed !! ", err);
   });
+
+//MongoDB Connection
+mongoose.connect("mongodb://localhost:27017/your-database-name", {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+  useCreateIndex: true,
+});
+const connection = mongoose.connection;
+connection.once("open", () => {
+  console.log("MongoDB database connection established successfully");
+});
+
+//Routes
+const forgotPasswordRouter = require("./routes/forgotPassword");
+app.use("/forgot-password", forgotPasswordRouter);
+
+app.listen(port, () => {
+  console.log(`Server is running on port: ${port}`);
+});
