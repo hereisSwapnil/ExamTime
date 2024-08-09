@@ -12,10 +12,6 @@ export const UserContextProvider = ({ children }) => {
 
   const token = localStorage.getItem("token");
 
-  if (!token) {
-    navigate("/login");
-  }
-
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
@@ -34,6 +30,7 @@ export const UserContextProvider = ({ children }) => {
         setUser(res.data);
       }
     } catch (error) {
+      console.log("hello");
       console.log(error);
     } finally {
       setLoading(false);

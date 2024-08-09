@@ -5,7 +5,8 @@ const nodemailer = require("nodemailer");
 const User = require("../models/user.model");
 const ResetPassword = require("../models/resetPasswordModel.js");
 const transporter = nodemailer.createTransport({
-  service: "gmail",
+  host: "smtp.ethereal.email",
+  port: 587,
   auth: {
     user: process.env.APP_EMAIL,
     pass: process.env.APP_PASSWORD,
@@ -50,7 +51,7 @@ const sendOTP = wrapAsync(async (email, tosetPassword = false) => {
     if (tosetPassword) {
       const resetPassword = await ResetPassword({ email, otp });
       await resetPassword.save();
-    }else{
+    } else {
       await User.updateOne({ email: email }, { $set: { otp: otp } });
     }
   } catch (error) {
