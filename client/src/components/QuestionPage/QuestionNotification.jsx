@@ -66,7 +66,6 @@ const QuestionNotifcation = () => {
 
   return (
     <>
-      <Navbar />
       <main className="max-w-screen-sm mx-auto m-2 p-4">
         <h1 className="text-2xl font-semibold">Questions...</h1>
         <div className="mt-4">
