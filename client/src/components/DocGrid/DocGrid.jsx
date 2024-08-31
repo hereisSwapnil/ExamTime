@@ -40,7 +40,7 @@ const DocGrid = () => {
   const [searchInput, setSearchInput] = useState("");
   const [activeTab, setActiveTab] = useState("All");
   const { user, setUser, getUser } = useContext(UserContext);
-  const langKey=useSelector((store)=>store.config.lang)
+  const langKey = useSelector((store) => store.config.lang);
 
   console.log(user);
 
@@ -167,42 +167,40 @@ const DocGrid = () => {
     <>
       <div className="bg-white">
         <div className="mx-auto max-w-2xl px-4 py-8 sm:px-6 sm:py-12 lg:max-w-7xl lg:px-4">
-        <div className="flex gap-6 mb-2">
-          <div className="flex rounded-md overflow-hidden w-full">
-            <input
-              type="text"
-              className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
-              placeholder={lang[langKey].Searchcourses}
-              value={searchInput}
-              onChange={(e) => setSearchInput(e.target.value)}
-              onKeyPress={(e) => {
-                if (e.key === "Enter") {
-                  const searchTerm = e.target.value;
+          <div className="flex gap-6 mb-2">
+            <div className="flex rounded-md overflow-hidden w-full">
+              <input
+                type="text"
+                className="w-full rounded-md mt-3 mb-10 rounded-r-none text-black pl-4"
+                placeholder={lang[langKey].Searchcourses}
+                value={searchInput}
+                onChange={(e) => setSearchInput(e.target.value)}
+                onKeyPress={(e) => {
+                  if (e.key === "Enter") {
+                    const searchTerm = e.target.value;
+                    window.location.href = `?search=${encodeURIComponent(
+                      searchTerm
+                    )}`;
+                  }
+                }}
+              />
+              <button
+                className="rounded-md mt-3 mb-10 rounded-l-none pl-4 bg-indigo-600 text-white px-6 text-lg font-semibold py-4 rounded-r-md"
+                onClick={() => {
                   window.location.href = `?search=${encodeURIComponent(
-                    searchTerm
+                    searchInput
                   )}`;
-                }
-              }}
-            />
-            <button
-              className="rounded-md mt-3 mb-10 rounded-l-none pl-4 bg-indigo-600 text-white px-6 text-lg font-semibold py-4 rounded-r-md"
-              onClick={() => {
-                window.location.href = `?search=${encodeURIComponent(
-                  searchInput
-                )}`;
-              }}
-            >
-              {lang[langKey].Go}
-            </button>
+                }}
+              >
+                {lang[langKey].Go}
+              </button>
             </div>
             <Link to="./questionNotifications">
-            <button
-              className="rounded-md mt-3 mb-10 pl-4 bg-indigo-600 text-white px-6 text-lg font-semibold py-4"
-            >
-              Doubts
-            </button>
+              <button className="rounded-md mt-3 mb-10 pl-4 bg-indigo-600 text-white px-6 text-lg font-semibold py-4">
+                Doubts
+              </button>
             </Link>
-            </div>
+          </div>
           <div className="flex gap-2 mb-2">
             <div
               onClick={() => {
@@ -247,15 +245,22 @@ const DocGrid = () => {
               >
                 <div className="text-center shadow-xl rounded-lg bg-white py-2 px-2 bg-slate-100">
                   <div className="aspect-h-1 aspect-w-1 flex items-center w-full overflow-hidden bg-gray-800 lg:aspect-none group-hover:opacity-50 lg:h-80">
-                    <MyImage
+                    {/* <MyImage
                       src={note.thumbnail}
                       alt={note.thumbnail}
+                      className="h-full w-full object-cover object-center lg:h-full lg:w-full"
+                    /> */}
+                    <MyImage
+                      src="https://farm4.staticflickr.com/3789/10177514664_0ff9a53cf8_z.jpg"
                       className="h-full w-full object-cover object-center lg:h-full lg:w-full"
                     />
                   </div>
                   <div className="mt-2">
                     <h3 className="text-lg text-gray-800 font-bold">
-                      <p>{note.title}</p>
+                      <p>
+                        {note.title.slice(0, 25)}
+                        {note.title.length > 25 ? "..." : ""}
+                      </p>
                     </h3>
                     <p className="mt-1 pb-2 text-base text-gray-700">
                       {note.subject.subjectName}
@@ -280,7 +285,7 @@ const DocGrid = () => {
 
           {activeTab !== "All" && notes.length === 0 ? (
             <h2 className="text-2xl font-bold tracking-tight text-gray-900">
-             {lang[langKey].NoBookMarkedNotes}
+              {lang[langKey].NoBookMarkedNotes}
             </h2>
           ) : (
             ""
@@ -326,8 +331,7 @@ const DocGrid = () => {
                     <div className="grid w-full grid-cols-1 items-start gap-x-6 gap-y-8 sm:grid-cols-12 lg:gap-x-8">
                       <div className="aspect-h-3 aspect-w-2 overflow-hidden rounded-lg bg-gray-200 sm:col-span-4 lg:col-span-5">
                         <img
-                          src={note_.thumbnail}
-                          alt={note_.thumbnail}
+                          src="https://farm4.staticflickr.com/3789/10177514664_0ff9a53cf8_z.jpg"
                           className="object-cover object-center"
                         />
                       </div>
@@ -344,27 +348,37 @@ const DocGrid = () => {
                           </h3>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">{lang[langKey].Subject}:</span>{" "}
+                            <span className="font-bold mr-2">
+                              {lang[langKey].Subject}:
+                            </span>{" "}
                             {note_.subject?.subjectName}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">{lang[langKey].Description}:</span>{" "}
+                            <span className="font-bold mr-2">
+                              {lang[langKey].Description}:
+                            </span>{" "}
                             {note_.description}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">{lang[langKey].Year}:</span>{" "}
+                            <span className="font-bold mr-2">
+                              {lang[langKey].Year}:
+                            </span>{" "}
                             {note_.year}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">{lang[langKey].Course}:</span>{" "}
+                            <span className="font-bold mr-2">
+                              {lang[langKey].Course}:
+                            </span>{" "}
                             {note_.course}
                           </p>
 
                           <p className="text-md text-gray-700">
-                            <span className="font-bold mr-2">{lang[langKey].Likes}:</span>{" "}
+                            <span className="font-bold mr-2">
+                              {lang[langKey].Likes}:
+                            </span>{" "}
                             {note_.likes}
                           </p>
                           <div className="flex gap-2 ">
@@ -392,7 +406,7 @@ const DocGrid = () => {
                             {lang[langKey].Productoptions}
                           </h3>
                           <p className="text-sm mt-8 text-gray-700">
-                            Uploaded by {" "}
+                            Uploaded by{" "}
                             <a
                               href="#"
                               className="hover:underline hover:text-gray-900"

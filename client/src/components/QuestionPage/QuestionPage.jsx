@@ -70,7 +70,6 @@ const QuestionPage = () => {
 
   return (
     <>
-      <Navbar />
       <div>
         <div className="flex items-center justify-center">
           <div className="mx-auto w-full max-w-[550px] bg-white">
@@ -85,18 +84,18 @@ const QuestionPage = () => {
               </h2>
               <div className="mb-5">
                 <div className="flex items-center justify-between rounded-md border-[1px] h-[90px] border-black p-8 px-12">
-          <img
-            src={user?.userPhoto}
-            alt={`profile-${user?.username}`}
-            className="aspect-square w-[65px] rounded-full object-cover"
-          />
-          <div className="space-y-1">
-            <p className="text-lg font-semibold text-black">
-              {user?.username}
-            </p>
-            <p className="text-sm text-black">{user?.email}</p>
-          </div>
-      </div>
+                  <img
+                    src={user?.userPhoto}
+                    alt={`profile-${user?.username}`}
+                    className="aspect-square w-[65px] rounded-full object-cover"
+                  />
+                  <div className="space-y-1">
+                    <p className="text-lg font-semibold text-black">
+                      {user?.username}
+                    </p>
+                    <p className="text-sm text-black">{user?.email}</p>
+                  </div>
+                </div>
                 <textarea
                   type="text"
                   name="description"
