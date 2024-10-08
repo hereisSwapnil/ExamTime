@@ -19,7 +19,7 @@ const QuestionNotifcation = () => {
 
   useEffect(() => {
     if (!user) {
-      navigate("/login");
+      navigate("/homepage");
     }
     setLoading(false);
   }, [user, navigate]);

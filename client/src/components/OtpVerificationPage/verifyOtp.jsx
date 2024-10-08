@@ -12,7 +12,7 @@ const VerifyOtp = () => {
   useEffect(() => {
     const token = localStorage.getItem("token");
     if (!token) {
-      navigate("/login");
+      navigate("/homepage");
     }
     axios
       .get(`${import.meta.env.VITE_BASE_URL}/user/sendotp`, {

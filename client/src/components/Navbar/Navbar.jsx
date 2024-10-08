@@ -32,7 +32,7 @@ const Navbar = () => {
   const [requests, setRequests] = useState([]);
 
   const handleSignout = () => {
-    navigate("/login");
+    navigate("/homepage");
     localStorage.removeItem("token");
     setUser(null);
   };

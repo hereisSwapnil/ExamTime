@@ -28,6 +28,7 @@
     "nodemailer": "^6.9.13",
     "passport": "^0.7.0",
     "passport-local-mongoose": "^8.0.0",
+    "server": "file:",
     "sharp": "^0.33.1",
     "unique-filename": "^3.0.0"
   },

@@ -16,6 +16,7 @@ import QuestionPage from "./components/QuestionPage/QuestionPage";
 import QuestionNotifcation from "./components/QuestionPage/QuestionNotification";
 import AnswerPage from "./components/QuestionPage/AnswerPage";
 import MasterPage from "./MasterPage";
+import HomePage from "./components/HomePage/HomePage";
 
 function App() {
   return (
@@ -27,6 +28,7 @@ function App() {
             
             <Route path="/" element={<MasterPage/>}>
               <Route index element={<Dashboard />}/>
+              <Route path="/homepage" element={<HomePage/>}/>
               <Route path="/notifications" element={<Notifcation />} />
               <Route path="/questionNotifications" element={<QuestionNotifcation />} />
               <Route path="/upload/:requestId" element={<UploadPage />} />
