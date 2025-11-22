@@ -6,10 +6,20 @@ const connectDB = require("./db/index.js");
 
 const app = express();
 
-// Initialize database connection immediately for Vercel
-// This ensures connection is ready before any routes are hit
-connectDB().catch(err => {
-  console.error("Failed to connect to MongoDB:", err);
+// ✅ Fix: Use a global cached connection middleware
+// This ensures database connection is established/checked for EVERY request
+// before any route handler is executed.
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+    next();
+  } catch (error) {
+    console.error("Database connection failed:", error);
+    res.status(500).json({ 
+      message: "Internal Server Error", 
+      error: "Database connection failed" 
+    });
+  }
 });
 
 // CORS configuration

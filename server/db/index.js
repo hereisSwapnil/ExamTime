@@ -7,47 +7,45 @@ dotenv.config({
 });
 
 // Cache the database connection for serverless environments
-let cachedConnection = null;
+let isConnected = false;
 
 const connectDB = async () => {
-  // If we have a cached connection and it's ready, return it
-  if (cachedConnection && mongoose.connection.readyState === 1) {
+  mongoose.set('strictQuery', false);
+
+  // If already connected, reuse the connection
+  if (isConnected) {
     console.log("Using cached MongoDB connection");
-    return cachedConnection;
+    return;
+  }
+
+  if (mongoose.connection.readyState === 1) {
+    isConnected = true;
+    console.log("Using cached MongoDB connection (readyState check)");
+    return;
   }
 
   try {
     // Connection options optimized for Vercel serverless
     const options = {
+      dbName: DB_NAME,
+      bufferCommands: false, // Disable mongoose buffering
       serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
-      socketTimeoutMS: 45000, // Socket timeout
-      maxPoolSize: 10, // Connection pool size
-      minPoolSize: 2,
-      maxIdleTimeMS: 10000,
-      connectTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
     };
 
     const connectionInstance = await mongoose.connect(
-      `${process.env.MONGODB_URI}${DB_NAME}`,
+      process.env.MONGODB_URI,
       options
     );
     
+    isConnected = true;
     console.log(
       `\nMONGODB Connected !! HOST: ${connectionInstance.connection.host}`
     );
-    
-    // Cache the connection
-    cachedConnection = connectionInstance;
-    return connectionInstance;
   } catch (error) {
     console.log("MongoDB Connection Error: " + error);
-    cachedConnection = null;
-    
-    // Don't exit process in serverless environment
-    if (process.env.VERCEL) {
-      throw error;
-    }
-    process.exit(1);
+    isConnected = false;
+    throw error;
   }
 };
 
