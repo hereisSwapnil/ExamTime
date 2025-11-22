@@ -89,6 +89,8 @@ const userSchema = new Schema(
   },
   {
     timestamps: true,
+    bufferCommands: false, // Disable buffering for this model
+    autoCreate: false // Disable auto creation of collection
   }
 );
 

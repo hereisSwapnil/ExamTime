@@ -6,22 +6,21 @@ dotenv.config({
   path: ".env",
 });
 
-// Cache the database connection for serverless environments
-let isConnected = false;
-
 const connectDB = async () => {
   mongoose.set('strictQuery', false);
 
-  // If already connected, reuse the connection
-  if (isConnected) {
+  // Check current connection state
+  // 0 = disconnected, 1 = connected, 2 = connecting, 3 = disconnecting
+  if (mongoose.connection.readyState === 1) {
     console.log("Using cached MongoDB connection");
     return;
   }
 
-  if (mongoose.connection.readyState === 1) {
-    isConnected = true;
-    console.log("Using cached MongoDB connection (readyState check)");
-    return;
+  // If connecting, wait for it
+  if (mongoose.connection.readyState === 2) {
+    console.log("Connection already in progress, waiting...");
+    // Wait for connection to complete
+    return mongoose.connection.asPromise();
   }
 
   try {
@@ -38,13 +37,11 @@ const connectDB = async () => {
       options
     );
     
-    isConnected = true;
     console.log(
       `\nMONGODB Connected !! HOST: ${connectionInstance.connection.host}`
     );
   } catch (error) {
     console.log("MongoDB Connection Error: " + error);
-    isConnected = false;
     throw error;
   }
 };
