@@ -21,6 +21,7 @@
     "firebase": "^10.7.1",
     "firebase-admin": "^12.0.0",
     "fs": "^0.0.1-security",
+    "google-auth-library": "^10.5.0",
     "jsonwebtoken": "^9.0.2",
     "method-override": "^3.0.0",
     "mongoose": "^8.0.3",

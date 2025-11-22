@@ -20,7 +20,17 @@ const userSchema = new Schema(
     },
     password: {
       type: String,
-      required: true,
+      required: false, // Optional for OAuth users
+    },
+    googleId: {
+      type: String,
+      unique: true,
+      sparse: true, // Allows null values while maintaining uniqueness
+    },
+    authProvider: {
+      type: String,
+      enum: ['local', 'google'],
+      default: 'local',
     },
     otp: {
       code: {
@@ -55,6 +65,26 @@ const userSchema = new Schema(
     coins:{
       type: Number,
       default: 0
+    },
+    settings: {
+      theme: {
+        type: String,
+        enum: ['light', 'dark'],
+        default: 'light'
+      },
+      language: {
+        type: String,
+        default: 'en'
+      },
+      notifications: {
+        type: Boolean,
+        default: true
+      },
+      privacy: {
+        type: String,
+        enum: ['Public', 'Private'],
+        default: 'Public'
+      }
     }
   },
   {

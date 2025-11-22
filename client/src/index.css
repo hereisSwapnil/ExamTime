@@ -2,7 +2,74 @@
 @tailwind components;
 @tailwind utilities;
 
-::selection {
-  color: #fff;
-  background-color: #4f46e5;
+@layer base {
+  :root {
+    --primary: 99 102 241;
+    --primary-dark: 79 70 229;
+    --secondary: 139 92 246;
+    --accent: 236 72 153;
+    --success: 34 197 94;
+    --warning: 251 191 36;
+    --error: 239 68 68;
+    --gray-50: 249 250 251;
+    --gray-100: 243 244 246;
+    --gray-200: 229 231 235;
+    --gray-300: 209 213 219;
+    --gray-400: 156 163 175;
+    --gray-500: 107 114 128;
+    --gray-600: 75 85 99;
+    --gray-700: 55 65 81;
+    --gray-800: 31 41 55;
+    --gray-900: 17 24 39;
+  }
+
+  * {
+    @apply transition-colors duration-200;
+  }
+
+  body {
+    @apply bg-gradient-to-br from-gray-50 via-white to-gray-100 text-gray-900 antialiased;
+  }
+
+  ::selection {
+    @apply bg-indigo-500 text-white;
+  }
+
+  ::-webkit-scrollbar {
+    @apply w-2;
+  }
+
+  ::-webkit-scrollbar-track {
+    @apply bg-gray-100;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    @apply bg-gray-300 rounded-full hover:bg-gray-400;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply inline-flex items-center justify-center rounded-lg bg-gradient-to-r from-indigo-600 to-indigo-700 px-6 py-3 text-sm font-semibold text-white shadow-lg shadow-indigo-500/50 transition-all duration-200 hover:from-indigo-700 hover:to-indigo-800 hover:shadow-xl hover:shadow-indigo-500/60 hover:-translate-y-0.5 active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2;
+  }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center rounded-lg bg-white px-6 py-3 text-sm font-semibold text-gray-700 shadow-md border border-gray-300 transition-all duration-200 hover:bg-gray-50 hover:shadow-lg active:translate-y-0 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2;
+  }
+
+  .card {
+    @apply bg-white rounded-xl shadow-md hover:shadow-xl transition-all duration-300 border border-gray-100;
+  }
+
+  .input-field {
+    @apply w-full rounded-lg border border-gray-300 bg-white px-4 py-3 text-sm text-gray-900 placeholder-gray-400 shadow-sm transition-all duration-200 focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/20 focus:outline-none hover:border-gray-400;
+  }
+
+  .label {
+    @apply block text-sm font-semibold text-gray-700 mb-2;
+  }
+
+  .gradient-text {
+    @apply bg-gradient-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent;
+  }
 }

@@ -3,7 +3,6 @@ const Question=require("../models/question.model.js")
 
 const askQuestion = wrapAsync(async (req, res) => {
   try {
-    console.log("q req", req);
     const { description } = req.body;
     const author = req.user._id;
     if (author === undefined) {

@@ -1,12 +1,14 @@
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import { UserContext } from "../../Context/UserContext";
 import TextLogo from "../../assets/blackLogo.png";
 import { toast, Bounce, ToastContainer } from "react-toastify";
-import { Loader } from "../Loader/Loader";
+import { Loader, ButtonLoader } from "../Loader/Loader";
+import { GoogleLogin } from "@react-oauth/google";
 
 const Login = () => {
   const {
@@ -15,8 +17,7 @@ const Login = () => {
     formState: { errors },
   } = useForm();
 
-  const [loginError, setloginError] = useState();
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const [passToggle, setPassToggle] = useState("password");
   const [loading, setLoading] = useState(false);
 
@@ -32,79 +33,107 @@ const Login = () => {
 
   const loginUser = async (data) => {
     setLoading(true);
-    axios
-      .post(`${import.meta.env.VITE_BASE_URL}/user/login`, data)
-      .then((res) => {
-        if (res.data.message === "login success") {
-          localStorage.setItem("token", res.data.token);
-          setUser(res.data.user);
-          setloginError("");
-          setTimeout(() => {
-            navigate("/");
-          }, 1000);
-          toast.success("Logged in successfully!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-          });
-        }
-      })
-      .catch((err) => {
-        if (err.response.data.message === "user not found") {
-          setloginError("User not found");
-          toast.warning("User not found!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-          });
-          setLoading(false);
-        } else if (err.response.data.message === "Please verify email first") {
-          setloginError("Please verify email first");
-          localStorage.setItem("token", err.response.data.token);
-          setLoading(false);
-          navigate("/verifyotp");
-        } else if (err.response.data.message === "Invalid credentials") {
-          setloginError("Invalid Credentials");
-          toast.error("Invalid Credentials!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-          });
-          setLoading(false);
-        } else {
-          setloginError("Something went wrong!");
-          toast.error("An error occurred!", {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: false,
-            draggable: false,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-          });
-          setLoading(false);
-        }
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/user/login`,
+        data
+      );
+      if (res.data.message === "login success") {
+        localStorage.setItem("token", res.data.token);
+        setUser(res.data.user);
+        toast.success("Logged in successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          transition: Bounce,
+        });
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      }
+    } catch (err) {
+      const errorMessage =
+        err.response?.data?.message || "An unexpected error occurred";
+
+      if (errorMessage === "user not found") {
+        toast.warning("User not found!", {
+          position: "top-right",
+          autoClose: 5000,
+          transition: Bounce,
+        });
+      } else if (errorMessage === "Please verify email first") {
+        localStorage.setItem("token", err.response.data.token);
+        navigate("/verifyotp");
+        return;
+      } else if (errorMessage === "Invalid credentials") {
+        toast.error("Invalid Credentials!", {
+          position: "top-right",
+          autoClose: 5000,
+          transition: Bounce,
+        });
+      } else if (err.code === "ERR_NETWORK") {
+        toast.error("Network error. Please try again.", {
+          position: "top-right",
+          autoClose: 5000,
+          transition: Bounce,
+        });
+      } else {
+        toast.error(errorMessage, {
+          position: "top-right",
+          autoClose: 5000,
+          transition: Bounce,
+        });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleSuccess = async (credentialResponse) => {
+    setLoading(true);
+    try {
+      const res = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/user/google-auth`,
+        { credential: credentialResponse.credential }
+      );
+
+      if (res.data.token) {
+        localStorage.setItem("token", res.data.token);
+        setUser(res.data.user);
+        toast.success("Logged in successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          transition: Bounce,
+        });
+        setTimeout(() => {
+          navigate("/");
+        }, 1000);
+      }
+    } catch (error) {
+      console.error("Google login error:", error);
+      const errorMessage =
+        error.response?.data?.message || "Google authentication failed";
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 5000,
+        transition: Bounce,
       });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleGoogleError = () => {
+    toast.error("Google login failed!", {
+      position: "top-right",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: false,
+      pauseOnHover: false,
+      draggable: false,
+      progress: undefined,
+      theme: "light",
+      transition: Bounce,
+    });
   };
 
   if (loading) {
@@ -113,108 +142,159 @@ const Login = () => {
 
   return (
     <>
-      <div className="flex min-h-screen flex-1 flex-col justify-center px-6 lg:px-8">
+      <div className="flex min-h-screen flex-1 flex-col justify-center px-6 lg:px-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
         <ToastContainer />
-        <div className="sm:mx-auto sm:w-full sm:max-w-sm">
-          <img
-            className="text-center m-auto h-[50px]"
-            src={TextLogo}
-            alt="ExamTime"
-          />
-          <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
-            Sign in to your account
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          <div className="flex justify-center mb-8">
+            <img className="h-12 w-auto" src={TextLogo} alt="ExamTime" />
+          </div>
+          <h2 className="mt-6 text-center text-3xl font-bold leading-9 tracking-tight gradient-text">
+            Welcome back
           </h2>
+          <p className="mt-2 text-center text-sm text-gray-600">
+            Sign in to your account to continue
+          </p>
         </div>
 
-        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form
-            className="space-y-6"
-            onSubmit={handleSubmit((data) => {
-              loginUser(data);
-            })}
-          >
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="email"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Email
+        <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-md">
+          <div className="card p-8">
+            <form
+              className="space-y-6"
+              onSubmit={handleSubmit((data) => {
+                loginUser(data);
+              })}
+            >
+              <div>
+                <label htmlFor="email" className="label">
+                  Email address
                 </label>
+                <div className="mt-2">
+                  <input
+                    id="email"
+                    name="email"
+                    type="text"
+                    autoComplete="email"
+                    className="input-field"
+                    placeholder="you@example.com"
+                    {...register("email", {
+                      validate: {
+                        matchPatern: (value) =>
+                          /\b[\w.-]+@[\w.-]+\.\w{2,4}\b/gi.test(value) ||
+                          "Enter a valid email address",
+                      },
+                    })}
+                  />
+                  {errors.email && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.email.message}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="mt-2">
-                <input
-                  id="email"
-                  name="email"
-                  type="text"
-                  autoComplete="email"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("email", {
-                    validate: {
-                      matchPatern: (value) =>
-                        /\b[\w\.-]+@[\w\.-]+\.\w{2,4}\b/gi.test(value) ||
-                        "Enter a valid email address",
-                    },
-                  })}
-                />
-              </div>
-            </div>
 
-            <div>
-              <div className="flex items-center justify-between">
-                <label
-                  htmlFor="password"
-                  className="block text-sm font-medium leading-6 text-gray-900"
-                >
-                  Password
-                </label>
+              <div>
+                <div className="flex items-center justify-between">
+                  <label htmlFor="password" className="label">
+                    Password
+                  </label>
+                  <Link
+                    to="/forgot-password"
+                    className="text-sm font-medium text-indigo-600 hover:text-indigo-500 transition-colors"
+                  >
+                    Forgot password?
+                  </Link>
+                </div>
+                <div className="mt-2 relative">
+                  <input
+                    id="password"
+                    name="password"
+                    type={passToggle}
+                    autoComplete="current-password"
+                    className="input-field pr-10"
+                    placeholder="Enter your password"
+                    {...register("password", {
+                      validate: {
+                        matchPatern: (value) =>
+                          !/^$|\s+/.test(value) || "please enter password",
+                      },
+                    })}
+                  />
+                  <button
+                    type="button"
+                    onClick={togglePassword}
+                    className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600 transition-colors"
+                  >
+                    {passToggle === "text" ? (
+                      <GoEyeClosed className="h-5 w-5" />
+                    ) : (
+                      <GoEye className="h-5 w-5" />
+                    )}
+                  </button>
+                  {errors.password && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors.password.message}
+                    </p>
+                  )}
+                </div>
               </div>
-              <div className="mt-2 relative">
-                <input
-                  id="password"
-                  name="password"
-                  type={passToggle}
-                  autoComplete="current-password"
-                  className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-                  {...register("password", {
-                    validate: {
-                      matchPatern: (value) =>
-                        !/^$|\s+/.test(value) || "please enter  password",
-                    },
-                  })}
-                />
+
+              <div>
                 <button
-                  type="button"
-                  onClick={togglePassword}
-                  className="absolute inset-y-0 right-0 pr-3 flex items-center text-sm leading-5"
+                  type="submit"
+                  className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                  disabled={loading}
                 >
-                  {passToggle === "text" ? (
-                    <GoEyeClosed className="text-lg" />
+                  {loading ? (
+                    <>
+                      <ButtonLoader size="small" />
+                      <span>Signing in...</span>
+                    </>
                   ) : (
-                    <GoEye className="text-lg" />
+                    "Sign in"
                   )}
                 </button>
               </div>
-            </div>
 
-            <div>
-              <button
-                type="submit"
-                className="flex w-full justify-center rounded-md bg-indigo-600 px-3 py-1.5 text-sm font-semibold leading-6 text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-              >
-                Sign in
-              </button>
-            </div>
-          </form>
+              {/* Google Sign In - Only show if client ID is configured */}
+              {import.meta.env.VITE_GOOGLE_CLIENT_ID &&
+                import.meta.env.VITE_GOOGLE_CLIENT_ID.trim() !== "" && (
+                  <>
+                    {/* Divider */}
+                    <div className="relative my-6">
+                      <div className="absolute inset-0 flex items-center">
+                        <div className="w-full border-t border-gray-200"></div>
+                      </div>
+                      <div className="relative flex justify-center text-sm">
+                        <span className="px-4 bg-white text-gray-500 font-medium">
+                          Or continue with
+                        </span>
+                      </div>
+                    </div>
 
-          <p className="mt-10 text-center text-sm text-gray-500">
-            Don't have an account?{" "}
-            <a
-              href="/signup"
-              className="font-semibold leading-6 text-indigo-600 hover:text-indigo-500"
+                    {/* Google Sign In Button */}
+                    <div className="flex justify-center">
+                      <GoogleLogin
+                        onSuccess={handleGoogleSuccess}
+                        onError={handleGoogleError}
+                        useOneTap
+                        theme="outline"
+                        size="large"
+                        width="384"
+                      />
+                    </div>
+                  </>
+                )}
+            </form>
+          </div>
+
+          <p className="mt-8 text-center text-sm text-gray-600">
+            Don&apos;t have an account?{" "}
+            <Link
+              to="/signup"
+              className="font-semibold text-indigo-600 hover:text-indigo-500 transition-colors"
             >
-              Sign Up
-            </a>
+              Sign up for free
+            </Link>
           </p>
         </div>
       </div>

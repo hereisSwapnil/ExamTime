@@ -19,9 +19,9 @@ const {
   forgetPassword,
   vefifyPasswordOtp,
   updatePassword,
-  
-
-
+  googleAuth,
+  updateProfile,
+  updateSettings,
 } = require("../controllers/user.controller");
 
 const router = Router();
@@ -38,5 +38,8 @@ router.get("/sendotp", verifyToken, sendOTPcon);
 router.post("/forget-password", forgetPassword);
 router.post("/vefify-password-otp",vefifyPasswordOtp);
 router.post("/update-password", updatePassword);
+router.post("/google-auth", googleAuth);
+router.put("/profile", verifyToken, updateProfile);
+router.put("/settings", verifyToken, updateSettings);
 
 module.exports = router;

@@ -14,7 +14,9 @@ const Dashboard = () => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
+      return;
     }
+    
     axios
       .get(`${import.meta.env.VITE_BASE_URL}/user/get`, {
         headers: {
@@ -22,7 +24,6 @@ const Dashboard = () => {
         },
       })
       .then((res) => {
-        console.log(res.data);
         if (!res.data.isverified) {
           navigate("/verifyotp");
         } else {
@@ -31,17 +32,20 @@ const Dashboard = () => {
         setLoading(false);
       })
       .catch((err) => {
-        console.log(err.response.data.message);
+        console.error("Dashboard error:", err);
+        const errorMessage = err.response?.data?.message;
         if (
-          err.response.data.message === "Unauthorized" ||
-          err.response.data.message === "Failed to verify token" ||
-          err.response.data.message === "User not found"
+          errorMessage === "Unauthorized" ||
+          errorMessage === "Failed to verify token" ||
+          errorMessage === "User not found"
         ) {
           localStorage.removeItem("token");
           navigate("/login");
+        } else {
+          setLoading(false);
         }
       });
-  }, []);
+  }, [navigate, setUser]);
 
   if (loading) {
     return <Loader />;

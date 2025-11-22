@@ -1,22 +1,25 @@
 import React, { useContext, useState, useEffect } from "react";
 import Navbar from "../Navbar/Navbar";
-import { Loader } from "../Loader/Loader";
+import { Loader, ButtonLoader } from "../Loader/Loader";
+import axios from "axios";
+import { toast, Bounce } from "react-toastify";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
 import { useForm } from "react-hook-form";
 
 const AnswerPage = () => {
-  const { user, setUser } = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const {
     register,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  // Storing the request id from the route path(may or may not be present)
+  // Storing the question id from the route path
   const { questionId } = useParams();
 
   useEffect(() => {
@@ -27,6 +30,7 @@ const AnswerPage = () => {
   }, [user, navigate]);
 
   const answerQuestion = async (data) => {
+    setSubmitting(true);
     try {
       const token = localStorage.getItem("token");
       const config = {
@@ -36,13 +40,28 @@ const AnswerPage = () => {
         withCredentials: true,
       };
 
-      //handle answers
+      await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/question/answer/${questionId}`,
+        { answer: data.description },
+        config
+      );
 
-      // After successful upload
-
-      navigate("/");
+      toast.success("Answer submitted successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        transition: Bounce,
+      });
+      navigate("/questionNotifications");
     } catch (error) {
-      console.log(error);
+      console.error("Error submitting answer:", error);
+      const errorMessage = error.response?.data?.message || "Failed to submit answer. Please try again.";
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 5000,
+        transition: Bounce,
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -52,69 +71,67 @@ const AnswerPage = () => {
 
   return (
     <>
-      <div className="flex items-center justify-center">
-        <div className="mx-auto w-full max-w-[550px] bg-white">
-          <form
-            className="py-6 px-9"
-            onSubmit={handleSubmit((data) => {
-              answerQuestion(data);
-            })}
-          >
-            <div className="mb-5">
-              <label
-                htmlFor="title"
-                className="mb-3 block text-base font-small text-[#07074D]"
-              >
-                Question
-              </label>
-              {errors.title && (
-                <p
-                  className="text-sm text-red-500 mt-1"
-                  dangerouslySetInnerHTML={{
-                    __html: errors.title.message,
-                  }}
-                ></p>
-              )}
-            </div>
-
-            <div className="mb-5">
-              <label
-                htmlFor="description"
-                className="mb-3 block text-base font-small text-[#07074D]"
-              >
-                Write your Answer
-              </label>
-              <textarea
-                type="text"
-                name="description"
-                id="description"
-                placeholder="answer of the question is...."
-                rows={10}
-                className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                {...register("description", {
-                  required: "Description is required.",
-                  maxLength: {
-                    value: 250,
-                    message: "Description should not exceed 250 characters.",
-                  },
+      <div className="bg-gradient-to-br from-gray-50 via-white to-indigo-50 min-h-screen py-12">
+        <div className="flex items-center justify-center">
+          <div className="mx-auto w-full max-w-2xl">
+            <div className="card p-8">
+              <div className="mb-6">
+                <h1 className="text-3xl font-bold gradient-text mb-2">Answer Question</h1>
+                <p className="text-gray-600">Share your knowledge and help others learn</p>
+              </div>
+              <form
+                className="space-y-6"
+                onSubmit={handleSubmit((data) => {
+                  answerQuestion(data);
                 })}
-              />
-              {errors.description && (
-                <p
-                  className="text-sm text-red-500 mt-1"
-                  dangerouslySetInnerHTML={{
-                    __html: errors.description.message,
-                  }}
-                ></p>
-              )}
-            </div>
+              >
+                <div>
+                  <label htmlFor="description" className="label">
+                    Your Answer
+                  </label>
+                  <textarea
+                    name="description"
+                    id="description"
+                    placeholder="Write a detailed answer to help the community..."
+                    rows={10}
+                    className="input-field resize-none"
+                    {...register("description", {
+                      required: "Answer is required.",
+                      maxLength: {
+                        value: 500,
+                        message: "Answer should not exceed 500 characters.",
+                      },
+                    })}
+                  />
+                  {errors.description && (
+                    <p className="text-sm text-red-600 mt-1">{errors.description.message}</p>
+                  )}
+                </div>
 
-            <div>
-              <button className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
-                Submit your Answer
-              </button>
+                <div>
+                  <button 
+                    type="submit" 
+                    className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={submitting}
+                  >
+                    {submitting ? (
+                      <>
+                        <ButtonLoader size="small" />
+                        <span>Submitting answer...</span>
+                      </>
+                    ) : (
+                      <>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                        </svg>
+                        Submit Answer
+                      </>
+                    )}
+                  </button>
+                </div>
+              </form>
             </div>
-          </form>
+          </div>
         </div>
       </div>
     </>

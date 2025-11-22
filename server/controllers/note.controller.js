@@ -77,7 +77,6 @@ const likeNotes = wrapAsync(async (req, res) => {
 
   try {
     const note = await Note.findById(noteId);
-    console.log(note);
     if (!note) {
       return res.status(404).json({ error: "Note not found" });
     }

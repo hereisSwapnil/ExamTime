@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { Loader } from "../Loader/Loader";
+import { Loader, ButtonLoader } from "../Loader/Loader";
 import { useNavigate } from "react-router";
 import { useParams } from "react-router-dom";
 import { UserContext } from "../../Context/UserContext";
@@ -24,9 +24,11 @@ const UploadPage = () => {
   const { user, setUser } = useContext(UserContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
   const [subjects, setSubjects] = useState([]);
   const [fileUploadProgress, setFileUploadProgress] = useState(0);
-  const langKey=useSelector((store)=>store.config.lang)
+  const [subjectsLoading, setSubjectsLoading] = useState(true);
+  const langKey = useSelector((store) => store.config.lang);
 
   const {
     register,
@@ -184,7 +186,8 @@ const UploadPage = () => {
     setLoading(false);
   }, [user, navigate]);
 
-  const getSubjects = () => {
+  const getSubjects = async () => {
+    setSubjectsLoading(true);
     const token = localStorage.getItem("token");
     const config = {
       headers: {
@@ -192,11 +195,22 @@ const UploadPage = () => {
       },
       withCredentials: true,
     };
-    axios
-      .get(`${import.meta.env.VITE_BASE_URL}/subject`, config)
-      .then((res) => {
-        setSubjects(res.data);
+    try {
+      const res = await axios.get(
+        `${import.meta.env.VITE_BASE_URL}/subject`,
+        config
+      );
+      setSubjects(res.data);
+    } catch (error) {
+      console.error("Error fetching subjects:", error);
+      toast.error("Failed to load subjects. Please refresh the page.", {
+        position: "top-right",
+        autoClose: 5000,
+        transition: Bounce,
       });
+    } finally {
+      setSubjectsLoading(false);
+    }
   };
 
   const deleteRequest = async (requestId) => {
@@ -220,11 +234,27 @@ const UploadPage = () => {
   };
 
   const uploadNotes = async (data) => {
+    if (!selectedFile || selectedFile.length === 0) {
+      setIsFileSelected(false);
+      toast.error("Please select a file to upload", {
+        position: "top-right",
+        autoClose: 3000,
+        transition: Bounce,
+      });
+      return;
+    }
+
+    if (fileUploadProgress !== 100) {
+      toast.warning("Please wait for the file to finish uploading", {
+        position: "top-right",
+        autoClose: 3000,
+        transition: Bounce,
+      });
+      return;
+    }
+
+    setSubmitting(true);
     try {
-      if (selectedFile.length == 0) {
-        setIsFileSelected(false);
-        return;
-      }
       const token = localStorage.getItem("token");
       const config = {
         headers: {
@@ -232,7 +262,7 @@ const UploadPage = () => {
         },
         withCredentials: true,
       };
-      const response = await axios.post(
+      await axios.post(
         `${import.meta.env.VITE_BASE_URL}/note`,
         {
           title: data.title,
@@ -245,14 +275,34 @@ const UploadPage = () => {
         },
         config
       );
+
       // After successful upload
       if (requestId) {
-        // If requestId is present, delete the associated request
-        await deleteRequest(requestId);
+        try {
+          await deleteRequest(requestId);
+        } catch (error) {
+          console.error("Error deleting request:", error);
+        }
       }
+
+      toast.success("Notes uploaded successfully!", {
+        position: "top-right",
+        autoClose: 3000,
+        transition: Bounce,
+      });
       navigate("/");
     } catch (error) {
-      console.log(error);
+      console.error("Upload error:", error);
+      const errorMessage =
+        error.response?.data?.message ||
+        "Failed to upload notes. Please try again.";
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 5000,
+        transition: Bounce,
+      });
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -262,300 +312,355 @@ const UploadPage = () => {
 
   return (
     <>
-      <div>
+      <div className="bg-gradient-to-br from-gray-50 via-white to-indigo-50 min-h-screen py-12">
         <div className="flex items-center justify-center">
-          <div className="mx-auto w-full max-w-[550px] bg-white">
-            <form
-              className="py-6 px-9"
-              onSubmit={handleSubmit((data) => {
-                uploadNotes(data);
-              })}
-            >
-              <div className="mb-5">
-                <label
-                  htmlFor="title"
-                  className="mb-3 block text-base font-small text-[#07074D]"
-                >
-                  {lang[langKey].Title}
-                </label>
-                <input
-                  type="text"
-                  name="title"
-                  id="title"
-                  placeholder={lang[langKey].uploadPlaceholder}
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  {...register("title", {
-                    required: "Title is required.",
-                    minLength: {
-                      value: 8,
-                      message: "Title should be a minimum of 8 characters.",
-                    },
-                  })}
-                />
-                {errors.title && (
-                  <p
-                    className="text-sm text-red-500 mt-1"
-                    dangerouslySetInnerHTML={{
-                      __html: errors.title.message,
-                    }}
-                  ></p>
-                )}
+          <div className="mx-auto w-full max-w-2xl">
+            <div className="card p-8">
+              <div className="mb-6">
+                <h1 className="text-3xl font-bold gradient-text mb-2">
+                  Upload Notes
+                </h1>
+                <p className="text-gray-600">
+                  Share your study materials with the community
+                </p>
               </div>
-
-              <div className="mb-5">
-                <label
-                  htmlFor="description"
-                  className="mb-3 block text-base font-small text-[#07074D]"
-                >
-                  {lang[langKey].Description}
-                </label>
-                <textarea
-                  type="text"
-                  name="description"
-                  id="description"
-                  placeholder={lang[langKey].uploadDescPlace}
-                  rows={10}
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  {...register("description", {
-                    required: "Description is required.",
-                    maxLength: {
-                      value: 250,
-                      message: "Description should not exceed 250 characters.",
-                    },
-                  })}
-                />
-                {errors.description && (
-                  <p
-                    className="text-sm text-red-500 mt-1"
-                    dangerouslySetInnerHTML={{
-                      __html: errors.description.message,
-                    }}
-                  ></p>
-                )}
-              </div>
-
-              <div className="mb-5">
-                <label
-                  htmlFor="subject"
-                  className="mb-3 block text-base font-small text-[#07074D]"
-                >
-                  {lang[langKey].Subject}
-                </label>
-                <select
-                  type="text"
-                  name="subject"
-                  id="subject"
-                  placeholder={lang[langKey].uploadPlaceholder}
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  {...register("subject", {
-                    required: "Please select a subject.",
-                  })}
-                >
-                  {subjects &&
-                    subjects.map((subject) => (
-                      <option key={subject._id} value={subject._id}>
-                        {subject.subjectName}
-                      </option>
-                    ))}
-                </select>
-                {errors.subject && (
-                  <p
-                    className="text-sm text-red-500 mt-1"
-                    dangerouslySetInnerHTML={{
-                      __html: errors.subject.message,
-                    }}
-                  ></p>
-                )}
-              </div>
-
-              <div className="mb-5 mt-10">
-                <label
-                  htmlFor="subject"
-                  className="mb-1 block text-base text-[14px] text-red-500"
-                >
-                  {lang[langKey].noSubUp}
-                </label>
-                <div className="flex flex-col md:flex-row justify-center gap-5">
+              <form
+                className="space-y-6"
+                onSubmit={handleSubmit((data) => {
+                  uploadNotes(data);
+                })}
+              >
+                <div>
+                  <label htmlFor="title" className="label">
+                    {lang[langKey].Title}
+                  </label>
                   <input
                     type="text"
-                    name="subject"
-                    id="subject"
-                    value={addSubject_}
-                    onChange={(e) => setAddSubject_(e.target.value)}
-                    placeholder={lang[langKey].AddSubject}
-                    className="rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  ></input>
-                  <div
-                    className="hover:shadow-form rounded-md cursor-pointer bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none"
-                    onClick={addSubject}
-                  >
-                    {lang[langKey].AddSubject}
+                    name="title"
+                    id="title"
+                    placeholder={lang[langKey].uploadPlaceholder}
+                    className="input-field"
+                    {...register("title", {
+                      required: "Title is required.",
+                      minLength: {
+                        value: 8,
+                        message: "Title should be a minimum of 8 characters.",
+                      },
+                    })}
+                  />
+                  {errors.title && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.title.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="description" className="label">
+                    {lang[langKey].Description}
+                  </label>
+                  <textarea
+                    name="description"
+                    id="description"
+                    placeholder={lang[langKey].uploadDescPlace}
+                    rows={6}
+                    className="input-field resize-none"
+                    {...register("description", {
+                      required: "Description is required.",
+                      maxLength: {
+                        value: 250,
+                        message:
+                          "Description should not exceed 250 characters.",
+                      },
+                    })}
+                  />
+                  {errors.description && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.description.message}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="subject" className="label">
+                    {lang[langKey].Subject}
+                  </label>
+                  {subjectsLoading ? (
+                    <div className="input-field flex items-center justify-center py-3">
+                      <ButtonLoader size="small" />
+                      <span className="ml-2 text-gray-600 text-sm">
+                        Loading subjects...
+                      </span>
+                    </div>
+                  ) : (
+                    <select
+                      name="subject"
+                      id="subject"
+                      className="input-field"
+                      {...register("subject", {
+                        required: "Please select a subject.",
+                      })}
+                    >
+                      <option value="">Select a subject</option>
+                      {subjects &&
+                        subjects.map((subject) => (
+                          <option key={subject._id} value={subject._id}>
+                            {subject.subjectName}
+                          </option>
+                        ))}
+                    </select>
+                  )}
+                  {errors.subject && (
+                    <p className="text-sm text-red-600 mt-1">
+                      {errors.subject.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="bg-indigo-50 border border-indigo-200 rounded-lg p-4">
+                  <label className="label text-indigo-700">
+                    {lang[langKey].noSubUp}
+                  </label>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <input
+                      type="text"
+                      value={addSubject_}
+                      onChange={(e) => setAddSubject_(e.target.value)}
+                      placeholder={lang[langKey].AddSubject}
+                      className="input-field flex-1"
+                    />
+                    <button
+                      type="button"
+                      onClick={addSubject}
+                      className="btn-secondary whitespace-nowrap"
+                    >
+                      {lang[langKey].AddSubject}
+                    </button>
                   </div>
                 </div>
-              </div>
 
-              <div className="mb-5">
-                <label
-                  htmlFor="course"
-                  className="mb-3 block text-base font-small text-[#07074D]"
-                >
-                  {lang[langKey].Course}
-                </label>
-                <input
-                  type="text"
-                  name="course"
-                  id="course"
-                  placeholder="Btech."
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  {...register("course", {
-                    required:
-                      "Please enter a course for which these notes are for.",
-                  })}
-                />
-                {errors.course && (
-                  <p
-                    className="text-sm text-red-500 mt-1"
-                    dangerouslySetInnerHTML={{
-                      __html: errors.course.message,
-                    }}
-                  ></p>
-                )}
-              </div>
-
-              <div className="mb-5">
-                <label
-                  htmlFor="year"
-                  className="mb-3 block text-base font-small text-[#07074D]"
-                >
-                  {lang[langKey].Year}
-                </label>
-                <input
-                  type="number"
-                  name="year"
-                  id="year"
-                  placeholder={lang[langKey].Year}
-                  className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-small text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-                  {...register("year", {
-                    required: "Enter a year of college these notes are for.",
-                  })}
-                />
-                {errors.year && (
-                  <p
-                    className="text-sm text-red-500 mt-1"
-                    dangerouslySetInnerHTML={{
-                      __html: errors.year.message,
-                    }}
-                  ></p>
-                )}
-              </div>
-
-              <div className="mb-6 pt-4 cursor-pointer">
-                <label className="mb-5 block text-xl font-semibold text-[#07074D]">
-                  {lang[langKey].UploadFile}
-                </label>
-
-                <div className="mb-8 cursor-pointer">
-                  <input
-                    type="file"
-                    name="file"
-                    id="file"
-                    onChange={handleFileChange}
-                    className="sr-only cursor-pointer"
-                    multiple={false}
-                    accept="application/pdf"
-                  />
-                  <label
-                    htmlFor="file"
-                    className="relative flex min-h-[200px] items-center justify-center rounded-md border border-dashed border-[#e0e0e0] p-12 text-center"
-                  >
-                    <div className="cursor-pointer">
-                      <span className="mb-2 block text-xl font-semibold text-[#07074D]">
-                        {selectedFile.name || "Drop files here"}
-                      </span>
-                      <span className="mb-2 block text-base font-small text-[#6B7280]">
-                        Or
-                      </span>
-                      <span className="inline-flex rounded border border-[#e0e0e0] py-2 px-7 text-base font-small text-[#07074D]">
-                        Browse
-                      </span>
-                    </div>
-                  </label>
-                </div>
-
-                {selectedFile && isFileSeleted ? (
-                  ""
-                ) : (
-                  <p className="text-sm text-red-500 mt-1">
-                    {lang[langKey].selectfile} <br /> {lang[langKey].Allowedformat} - .pdf
-                  </p>
-                )}
-
-                {selectedFile.name && (
-                  <div className="mb-5 rounded-md bg-[#F5F7FB] py-4 px-8">
-                    <div className="flex items-center justify-between">
-                      <span className="truncate pr-3 text-base font-small text-[#07074D]">
-                        {selectedFile?.name || "No file selected"}
-                      </span>
-                      <button
-                        className="text-[#07074D]"
-                        onClick={() => setSelectedFile([])}
-                      >
-                        <svg
-                          width="10"
-                          height="10"
-                          viewBox="0 0 10 10"
-                          fill="none"
-                          xmlns="http://www.w3.org/2000/svg"
-                        >
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M0.279337 0.279338C0.651787 -0.0931121 1.25565 -0.0931121 1.6281 0.279338L9.72066 8.3719C10.0931 8.74435 10.0931 9.34821 9.72066 9.72066C9.34821 10.0931 8.74435 10.0931 8.3719 9.72066L0.279337 1.6281C-0.0931125 1.25565 -0.0931125 0.651788 0.279337 0.279338Z"
-                            fill="currentColor"
-                          />
-                          <path
-                            fillRule="evenodd"
-                            clipRule="evenodd"
-                            d="M0.279337 9.72066C-0.0931125 9.34821 -0.0931125 8.74435 0.279337 8.3719L8.3719 0.279338C8.74435 -0.0931127 9.34821 -0.0931123 9.72066 0.279338C10.0931 0.651787 10.0931 1.25565 9.72066 1.6281L1.6281 9.72066C1.25565 10.0931 0.651787 10.0931 0.279337 9.72066Z"
-                            fill="currentColor"
-                          />
-                        </svg>
-                      </button>
-                    </div>
-
-                    {fileUploadProgress != 100 ? (
-                      <div className="relative mt-5 h-[6px] w-full rounded-lg bg-[#E2E5EF]">
-                        <div
-                          style={{ width: `${fileUploadProgress}%` }}
-                          className={`hover:shadow-form rounded-md bg-[#6A64F1] py-1 px-8 text-center text-base font-semibold text-white outline-none`}
-                        ></div>
-                      </div>
-                    ) : (
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                        strokeWidth={1.5}
-                        stroke="green"
-                        className="w-6 h-6"
-                      >
-                        <path
-                          strokeLinecap="round"
-                          strokeLinejoin="round"
-                          d="m4.5 12.75 6 6 9-13.5"
-                        />
-                      </svg>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="course" className="label">
+                      {lang[langKey].Course}
+                    </label>
+                    <input
+                      type="text"
+                      name="course"
+                      id="course"
+                      placeholder="e.g., B.Tech, B.Sc"
+                      className="input-field"
+                      {...register("course", {
+                        required: "Please enter a course.",
+                      })}
+                    />
+                    {errors.course && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {errors.course.message}
+                      </p>
                     )}
                   </div>
-                )}
-              </div>
 
-              <div>
-                <button className="hover:shadow-form w-full rounded-md bg-[#6A64F1] py-3 px-8 text-center text-base font-semibold text-white outline-none">
-                  {lang[langKey].UploadNotes}
-                </button>
-              </div>
-            </form>
+                  <div>
+                    <label htmlFor="year" className="label">
+                      {lang[langKey].Year}
+                    </label>
+                    <input
+                      type="number"
+                      name="year"
+                      id="year"
+                      placeholder="e.g., 2024"
+                      className="input-field"
+                      {...register("year", {
+                        required: "Enter a year.",
+                      })}
+                    />
+                    {errors.year && (
+                      <p className="text-sm text-red-600 mt-1">
+                        {errors.year.message}
+                      </p>
+                    )}
+                  </div>
+                </div>
+
+                <div>
+                  <label className="label">{lang[langKey].UploadFile}</label>
+                  <div className="mt-2">
+                    <input
+                      type="file"
+                      name="file"
+                      id="file"
+                      onChange={handleFileChange}
+                      className="sr-only"
+                      multiple={false}
+                      accept="application/pdf"
+                    />
+                    <label
+                      htmlFor="file"
+                      className="relative flex min-h-[200px] items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-12 text-center cursor-pointer hover:border-indigo-400 hover:bg-indigo-50 transition-all group"
+                    >
+                      <div>
+                        {selectedFile.name ? (
+                          <div className="space-y-2">
+                            <svg
+                              className="mx-auto h-12 w-12 text-indigo-500"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                              />
+                            </svg>
+                            <p className="text-lg font-semibold text-gray-900">
+                              {selectedFile.name}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="space-y-3">
+                            <svg
+                              className="mx-auto h-12 w-12 text-gray-400 group-hover:text-indigo-500 transition-colors"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                            >
+                              <path
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                                strokeWidth={2}
+                                d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                              />
+                            </svg>
+                            <div>
+                              <p className="text-lg font-semibold text-gray-700">
+                                Drop your PDF here
+                              </p>
+                              <p className="text-sm text-gray-500 mt-1">
+                                or click to browse
+                              </p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </label>
+                  </div>
+
+                  {!selectedFile.name && (
+                    <p className="text-sm text-gray-500 mt-2">
+                      {lang[langKey].selectfile} • {lang[langKey].Allowedformat}{" "}
+                      - .pdf
+                    </p>
+                  )}
+
+                  {selectedFile.name && (
+                    <div className="mt-4 rounded-lg bg-indigo-50 border border-indigo-200 p-4">
+                      <div className="flex items-center justify-between mb-3">
+                        <div className="flex items-center gap-3 flex-1 min-w-0">
+                          <svg
+                            className="h-8 w-8 text-indigo-600 flex-shrink-0"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                            />
+                          </svg>
+                          <span className="truncate text-sm font-medium text-gray-900">
+                            {selectedFile?.name}
+                          </span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => setSelectedFile([])}
+                          className="ml-2 text-gray-400 hover:text-red-500 transition-colors"
+                        >
+                          <svg
+                            className="h-5 w-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M6 18L18 6M6 6l12 12"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+
+                      {fileUploadProgress !== 100 ? (
+                        <div className="space-y-2">
+                          <div className="flex justify-between text-xs text-gray-600">
+                            <span>Uploading...</span>
+                            <span>{fileUploadProgress}%</span>
+                          </div>
+                          <div className="relative h-2 w-full rounded-full bg-gray-200 overflow-hidden">
+                            <div
+                              style={{ width: `${fileUploadProgress}%` }}
+                              className="absolute h-full bg-gradient-to-r from-indigo-500 to-indigo-600 rounded-full transition-all duration-300"
+                            />
+                          </div>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-green-600">
+                          <svg
+                            className="h-5 w-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 13l4 4L19 7"
+                            />
+                          </svg>
+                          <span className="text-sm font-medium">
+                            Upload complete!
+                          </span>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+
+                <div className="pt-4">
+                  <button
+                    type="submit"
+                    className="btn-primary w-full flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    disabled={
+                      submitting ||
+                      fileUploadProgress !== 100 ||
+                      !selectedFile.name
+                    }
+                  >
+                    {submitting ? (
+                      <>
+                        <ButtonLoader size="small" />
+                        <span>Uploading notes...</span>
+                      </>
+                    ) : fileUploadProgress !== 100 ? (
+                      <>
+                        <ButtonLoader size="small" />
+                        <span>Uploading file... {fileUploadProgress}%</span>
+                      </>
+                    ) : (
+                      lang[langKey].UploadNotes
+                    )}
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         </div>
       </div>

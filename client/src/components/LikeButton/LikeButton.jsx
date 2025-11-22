@@ -45,19 +45,15 @@ const LikeButton = ({ noteId }) => {
       );
 
       setIsLiked(true);
-      toast.success("Note liked successfully", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
+      // Don't show toast for like/unlike to avoid spam
     } catch (error) {
       console.error("Error liking note:", error);
+      const errorMessage = error.response?.data?.message || "Failed to like note. Please try again.";
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 3000,
+        transition: Bounce,
+      });
     }
   };
 
@@ -76,19 +72,15 @@ const LikeButton = ({ noteId }) => {
       );
 
       setIsLiked(false);
-      toast.success("Note unliked successfully", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: false,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "light",
-        transition: Bounce,
-      });
+      // Don't show toast for like/unlike to avoid spam
     } catch (error) {
       console.error("Error unliking note:", error);
+      const errorMessage = error.response?.data?.message || "Failed to unlike note. Please try again.";
+      toast.error(errorMessage, {
+        position: "top-right",
+        autoClose: 3000,
+        transition: Bounce,
+      });
     }
   };
 

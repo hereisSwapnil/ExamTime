@@ -1,31 +1,38 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Bounce, toast } from "react-toastify";
-import { useNavigate } from "react-router";
+import { useNavigate, useLocation } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
 import { ButtonLoader } from "../Loader/Loader";
-import "react-toastify/dist/ReactToastify.css";
 
-const VerifyOtp = () => {
+const VerifyPasswordOtp = () => {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [sendingOtp, setSendingOtp] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
+  const email = location.state?.email || "";
+
+  useEffect(() => {
+    if (!email) {
+      toast.error("Email not found. Please start over.", {
+        position: "top-right",
+        autoClose: 3000,
+        transition: Bounce,
+      });
+      navigate("/forgot-password");
+    }
+  }, [email, navigate]);
 
   const sendOTP = async () => {
+    if (!email) return;
+    
     setSendingOtp(true);
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
     try {
-      await axios.get(`${import.meta.env.VITE_BASE_URL}/user/sendotp`, {
-        headers: {
-          authorization: `Bearer ${token}`,
-        },
+      await axios.post(`${import.meta.env.VITE_BASE_URL}/user/forget-password`, {
+        email: email,
       });
-      toast.success("OTP sent to your email!", {
+      toast.success("OTP resent to your email!", {
         position: "top-right",
         autoClose: 3000,
         transition: Bounce,
@@ -43,16 +50,6 @@ const VerifyOtp = () => {
     }
   };
 
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      navigate("/login");
-      return;
-    }
-    sendOTP();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const handleVerification = async () => {
     if (otp.length !== 6) {
       toast.error("Please enter a 6-digit OTP", {
@@ -63,27 +60,34 @@ const VerifyOtp = () => {
       return;
     }
 
-    setLoading(true);
-    try {
-      const token = localStorage.getItem("token");
-      const response = await axios.post(
-        `${import.meta.env.VITE_BASE_URL}/user/verifyOtp`,
-        { otp: otp },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      toast.success("Email verified successfully!", {
+    if (!email) {
+      toast.error("Email not found. Please start over.", {
         position: "top-right",
         autoClose: 3000,
         transition: Bounce,
       });
-      localStorage.setItem("token", response.data.token);
-      setTimeout(() => {
-        navigate("/");
-      }, 1000);
+      navigate("/forgot-password");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_BASE_URL}/user/vefify-password-otp`,
+        {
+          email: email,
+          otp: otp,
+        }
+      );
+
+      if (response.status === 200) {
+        toast.success("OTP verified successfully!", {
+          position: "top-right",
+          autoClose: 3000,
+          transition: Bounce,
+        });
+        navigate("/reset-password", { state: { email: email } });
+      }
     } catch (error) {
       console.error("Error verifying OTP:", error);
       const errorMessage = error.response?.data?.message || "Invalid OTP. Please try again.";
@@ -107,18 +111,31 @@ const VerifyOtp = () => {
         <div className="card p-8">
           <div className="text-center mb-6">
             <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-indigo-100 mb-4">
-              <svg className="h-8 w-8 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+              <svg
+                className="h-8 w-8 text-indigo-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                />
               </svg>
             </div>
             <h1 className="text-3xl font-bold gradient-text mb-2">
-              Verify Your Email
+              Verify OTP
             </h1>
             <p className="text-gray-600">
-              We've sent a 6-digit code to your email. Please enter it below.
+              We&apos;ve sent a 6-digit code to your email. Please enter it below.
             </p>
+            {email && (
+              <p className="text-sm text-gray-500 mt-2">{email}</p>
+            )}
           </div>
-          
+
           <div className="space-y-4">
             <div>
               <label htmlFor="otp" className="label text-center block">
@@ -134,11 +151,11 @@ const VerifyOtp = () => {
                 className="input-field text-center text-2xl font-bold tracking-widest"
                 value={otp}
                 onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, '');
+                  const value = e.target.value.replace(/\D/g, "");
                   setOtp(value);
                 }}
                 onKeyPress={(e) => {
-                  if (e.key === 'Enter' && otp.length === 6) {
+                  if (e.key === "Enter" && otp.length === 6) {
                     handleVerification();
                   }
                 }}
@@ -147,12 +164,14 @@ const VerifyOtp = () => {
                 Enter the 6-digit code sent to your email
               </p>
             </div>
-            
+
             <button
               onClick={handleVerification}
               disabled={otp.length !== 6 || loading}
               className={`btn-primary w-full flex items-center justify-center gap-2 ${
-                otp.length !== 6 || loading ? 'opacity-50 cursor-not-allowed' : ''
+                otp.length !== 6 || loading
+                  ? "opacity-50 cursor-not-allowed"
+                  : ""
               }`}
             >
               {loading ? (
@@ -164,14 +183,14 @@ const VerifyOtp = () => {
                 "Verify OTP"
               )}
             </button>
-            
+
             <p className="text-sm text-center text-gray-600">
               Didn&apos;t receive the code?{" "}
               <button
                 onClick={sendOTP}
                 disabled={sendingOtp}
                 className={`font-semibold text-indigo-600 hover:text-indigo-700 ${
-                  sendingOtp ? 'opacity-50 cursor-not-allowed' : ''
+                  sendingOtp ? "opacity-50 cursor-not-allowed" : ""
                 }`}
               >
                 {sendingOtp ? (
@@ -191,4 +210,5 @@ const VerifyOtp = () => {
   );
 };
 
-export default VerifyOtp;
+export default VerifyPasswordOtp;
+

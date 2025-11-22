@@ -6,6 +6,7 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const { sendOTP } = require("../utils/sendOTP.js");
 const ResetPassword = require("../models/resetPasswordModel.js");
+
 const checkUsername = wrapAsync(async (req, res) => {
   try {
     let username = req.params.username;
@@ -86,7 +87,6 @@ const verifyOtp = wrapAsync(async (req, res) => {
   try {
     const { otp } = req.body;
     const user = await User.findById(req.user._id);
-    console.log(user.email);
     if (user) {
       if (user.otp == otp) {
         const updatedUser = await User.findOneAndUpdate(
@@ -251,7 +251,7 @@ const forgetPassword = async (req, res) => {
     }
 
     //sent true becuase we are sending otp for password reset
-    await sendOTP(email,true);
+    await sendOTP(email, true);
     return res.status(200).json({
       message: "OTP sent successfully",
     });
@@ -274,7 +274,7 @@ const vefifyPasswordOtp = async (req, res) => {
         message: "Invalid attempt, please try again",
       });
     }
-  
+
     if (user.otp == otp) {
       user.isVerified = true;
       const updated = await user.save();
@@ -330,6 +330,175 @@ const updatePassword = async (req, res) => {
     });
   }
 };
+
+// Google OAuth Authentication
+const { OAuth2Client } = require("google-auth-library");
+const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
+
+const googleAuth = wrapAsync(async (req, res) => {
+  try {
+    const { credential } = req.body;
+
+    // Verify the Google token
+    const ticket = await client.verifyIdToken({
+      idToken: credential,
+      audience: process.env.GOOGLE_CLIENT_ID,
+    });
+
+    const payload = ticket.getPayload();
+    const { sub: googleId, email, name, picture } = payload;
+
+    // Check if user exists by email or googleId
+    let user = await User.findOne({
+      $or: [{ email }, { googleId }],
+    });
+
+    if (user) {
+      // User exists - update googleId if not set
+      if (!user.googleId) {
+        user.googleId = googleId;
+        user.authProvider = "google";
+        await user.save();
+      }
+
+      // Generate token and return user
+      const token = createToken(user._id, user.email, true);
+      return res.status(200).json({
+        user,
+        token,
+        message: "Login successful",
+      });
+    } else {
+      // Create new user
+      const username =
+        email.split("@")[0] + "_" + Math.floor(Math.random() * 1000);
+      const userPhoto =
+        picture ||
+        `https://ui-avatars.com/api/?name=${name}&background=29335C&size=128&color=fff&format=png&length=1`;
+
+      const newUser = new User({
+        email,
+        username,
+        googleId,
+        authProvider: "google",
+        userPhoto,
+        isverified: true, // OAuth users are automatically verified
+      });
+
+      const savedUser = await newUser.save();
+      const token = createToken(savedUser._id, email, true);
+
+      return res.status(201).json({
+        user: savedUser,
+        token,
+        message: "Account created successfully",
+      });
+    }
+  } catch (error) {
+    console.error("Google Auth Error:", error);
+    return res.status(500).json({
+      message: "Google authentication failed",
+      error: error.message,
+    });
+  }
+});
+
+// Update user profile
+const updateProfile = wrapAsync(async (req, res) => {
+  try {
+    const { username, email } = req.body;
+    const userId = req.user._id;
+
+    // Check if username is already taken by another user
+    if (username) {
+      const existingUser = await User.findOne({
+        username: username.toLowerCase(),
+        _id: { $ne: userId },
+      });
+      if (existingUser) {
+        return res.status(400).json({
+          message: "Username already taken",
+        });
+      }
+    }
+
+    // Update user profile
+    const updateData = {};
+    if (username) {
+      updateData.username = username.toLowerCase();
+      // Update userPhoto if username changes
+      updateData.userPhoto = `https://ui-avatars.com/api/?name=${username}&background=29335C&size=128&color=fff&format=png&length=1`;
+    }
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    if (!updatedUser) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error updating profile:", error);
+    res.status(500).json({
+      message: "Failed to update profile",
+      error: error.message,
+    });
+  }
+});
+
+// Update user settings
+const updateSettings = wrapAsync(async (req, res) => {
+  try {
+    const { theme, language, notifications, privacy } = req.body;
+    const userId = req.user._id;
+
+    // Get current user to preserve existing settings
+    const currentUser = await User.findById(userId);
+    if (!currentUser) {
+      return res.status(404).json({
+        message: "User not found",
+      });
+    }
+
+    // Build settings object
+    const settingsUpdate = {
+      ...(currentUser.settings || {}),
+    };
+
+    if (theme !== undefined) settingsUpdate.theme = theme;
+    if (language !== undefined) settingsUpdate.language = language;
+    if (notifications !== undefined)
+      settingsUpdate.notifications = notifications;
+    if (privacy !== undefined) settingsUpdate.privacy = privacy;
+
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $set: { settings: settingsUpdate } },
+      { new: true, runValidators: true }
+    ).select("-password");
+
+    res.status(200).json({
+      message: "Settings updated successfully",
+      user: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error updating settings:", error);
+    res.status(500).json({
+      message: "Failed to update settings",
+      error: error.message,
+    });
+  }
+});
+
 module.exports = {
   checkUsername,
   registerUser,
@@ -342,4 +511,7 @@ module.exports = {
   forgetPassword,
   updatePassword,
   vefifyPasswordOtp,
+  googleAuth,
+  updateProfile,
+  updateSettings,
 };
