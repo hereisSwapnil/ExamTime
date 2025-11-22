@@ -19,11 +19,11 @@ const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps, Postman, or server-to-server requests)
     if (!origin) return callback(null, true);
-    
+
     // Check if origin is in allowed list
     if (allowedOrigins.includes(origin)) {
       callback(null, true);
-    } else if (origin.includes('vercel.app')) {
+    } else if (origin.includes("vercel.app")) {
       // Allow all Vercel preview deployments
       callback(null, true);
     } else if (process.env.NODE_ENV !== "production") {
@@ -37,7 +37,12 @@ const corsOptions = {
   },
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS"],
-  allowedHeaders: ["Content-Type", "Authorization", "X-Requested-With", "Accept"],
+  allowedHeaders: [
+    "Content-Type",
+    "Authorization",
+    "X-Requested-With",
+    "Accept",
+  ],
   exposedHeaders: ["Authorization"],
   optionsSuccessStatus: 200, // Some legacy browsers (IE11, various SmartTVs) choke on 204
 };
@@ -49,6 +54,16 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
 app.use(cookieParser());
 app.use(methodOverride("_method"));
+
+// Health check endpoint (before DB check)
+app.get("/health", (req, res) => {
+  const { isDBConnected } = require("./db/index.js");
+  res.status(isDBConnected() ? 200 : 503).json({
+    status: isDBConnected() ? "healthy" : "unhealthy",
+    database: isDBConnected() ? "connected" : "disconnected",
+    timestamp: new Date().toISOString(),
+  });
+});
 
 // routes import
 const userRoutes = require("./routes/user.routes.js");

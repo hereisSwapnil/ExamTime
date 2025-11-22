@@ -7,6 +7,7 @@ const {
   checkIfLiked,
 } = require("../controllers/note.controller.js");
 const verifyToken = require("../middlewares/verifyToken.js");
+const checkDBConnection = require("../middlewares/checkDBConnection.js");
 const {
   loginUser,
   registerUser,
@@ -25,6 +26,9 @@ const {
 } = require("../controllers/user.controller");
 
 const router = Router();
+
+// Apply database connection check to all routes
+router.use(checkDBConnection);
 
 router.get("/", verifyToken, searchNotes);
 router.post("/login", loginUser);
