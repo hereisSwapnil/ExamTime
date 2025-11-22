@@ -2,8 +2,15 @@ const express = require("express");
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
 const methodOverride = require("method-override");
+const connectDB = require("./db/index.js");
 
 const app = express();
+
+// Initialize database connection immediately for Vercel
+// This ensures connection is ready before any routes are hit
+connectDB().catch(err => {
+  console.error("Failed to connect to MongoDB:", err);
+});
 
 // CORS configuration
 const allowedOrigins = [
@@ -63,6 +70,25 @@ app.use("/note", noteRoutes);
 app.use("/subject", subjectRoutes);
 app.use("/request", requestRoutes);
 app.use("/question", questionRoutes);
+
+// Health check endpoint to verify database connection
+app.get("/health", async (req, res) => {
+  const mongoose = require("mongoose");
+  const dbState = mongoose.connection.readyState;
+  const states = {
+    0: 'disconnected',
+    1: 'connected',
+    2: 'connecting',
+    3: 'disconnecting'
+  };
+  
+  res.json({
+    status: dbState === 1 ? 'healthy' : 'unhealthy',
+    database: states[dbState],
+    timestamp: new Date().toISOString(),
+    bufferCommands: mongoose.get('bufferCommands')
+  });
+});
 
 app.get("/", (req, res) => {
   res.send("Yupp The server is runnng 🎉 !");

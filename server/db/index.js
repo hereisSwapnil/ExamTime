@@ -1,5 +1,5 @@
 const dotenv = require("dotenv");
-const mongoose = require("mongoose");
+const mongoose = require("./mongoose.js"); // Use pre-configured mongoose
 const DB_NAME = require("../constants.js");
 
 dotenv.config({
@@ -17,9 +17,6 @@ const connectDB = async () => {
   }
 
   try {
-    // Configure mongoose for serverless environments
-    mongoose.set('strictQuery', false);
-    
     // Connection options optimized for Vercel serverless
     const options = {
       serverSelectionTimeoutMS: 30000, // Increase timeout to 30 seconds
@@ -28,8 +25,6 @@ const connectDB = async () => {
       minPoolSize: 2,
       maxIdleTimeMS: 10000,
       connectTimeoutMS: 30000,
-      // Recommended for serverless
-      bufferCommands: false, // Disable mongoose buffering
     };
 
     const connectionInstance = await mongoose.connect(
