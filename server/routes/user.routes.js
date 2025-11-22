@@ -36,7 +36,7 @@ router.get("/get", getUser);
 router.get("/leaderboard", getLeaderBoard);
 router.get("/sendotp", verifyToken, sendOTPcon);
 router.post("/forget-password", forgetPassword);
-router.post("/vefify-password-otp",vefifyPasswordOtp);
+router.post("/vefify-password-otp", vefifyPasswordOtp);
 router.post("/update-password", updatePassword);
 router.post("/google-auth", googleAuth);
 router.put("/profile", verifyToken, updateProfile);
