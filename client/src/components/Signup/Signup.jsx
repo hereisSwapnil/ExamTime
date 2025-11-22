@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { useForm } from "react-hook-form";
 import { GoEye, GoEyeClosed } from "react-icons/go";
 import MoonLoader from "react-spinners/MoonLoader";
@@ -7,9 +7,10 @@ import { TiTick } from "react-icons/ti";
 import axios from "axios";
 import { useNavigate } from "react-router";
 import TextLogo from "../../assets/blackLogo.png";
-import { toast, Bounce } from "react-toastify";
+import { toast, Bounce, ToastContainer } from "react-toastify";
 import { Loader, ButtonLoader } from "../Loader/Loader.jsx";
 import { GoogleLogin } from "@react-oauth/google";
+import { UserContext } from "../../Context/UserContext";
 
 const Signup = () => {
   const {
@@ -20,6 +21,7 @@ const Signup = () => {
   } = useForm();
 
   const navigate = useNavigate();
+  const { setUser } = useContext(UserContext);
 
   const [registerError, setRegisterError] = useState();
   const [passToggle, setPassToggle] = useState("password");
@@ -139,6 +141,7 @@ const Signup = () => {
 
       if (res.data.token) {
         localStorage.setItem("token", res.data.token);
+        setUser(res.data.user);
         toast.success("Account created successfully!", {
           position: "top-right",
           autoClose: 3000,
@@ -183,6 +186,7 @@ const Signup = () => {
   return (
     <>
       <div className="flex min-h-screen flex-1 flex-col justify-center px-6 lg:px-8 bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+        <ToastContainer />
         <div className="sm:mx-auto sm:w-full sm:max-w-md">
           <div className="flex justify-center mb-8">
             <img className="h-12 w-auto" src={TextLogo} alt="ExamTime" />
