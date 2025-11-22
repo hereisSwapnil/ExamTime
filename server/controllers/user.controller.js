@@ -118,6 +118,7 @@ const verifyOtp = wrapAsync(async (req, res) => {
     return res.status(500).json({
       success: false,
       message: "Internal Server Error",
+      error: error.message,
     });
   }
 });
@@ -153,7 +154,9 @@ const loginUser = wrapAsync(async (req, res) => {
       res.status(401).json({ message: "Invalid credentials", success: false });
     }
   } catch (error) {
-    res.status(500).json({ message: "Internal Server Error" });
+    res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
   }
 });
 
