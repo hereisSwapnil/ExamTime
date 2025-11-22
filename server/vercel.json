@@ -1,7 +1,25 @@
 {
+  "version": 2,
+  "builds": [
+    {
+      "src": "index.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "index.js"
+    }
+  ],
   "build": {
     "env": {
       "NPM_CONFIG_LEGACY_PEER_DEPS": "true"
     }
+  },
+  "env": {
+    "MONGODB_URI": "@mongodb_uri",
+    "SECRET": "@secret",
+    "GOOGLE_CLIENT_ID": "@google_client_id"
   }
 }
